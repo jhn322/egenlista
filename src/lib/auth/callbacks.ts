@@ -15,7 +15,6 @@ export const configureCallbacks = () => ({
   async signIn({
     user,
     account,
-    _profile,
   }: {
     user: User;
     account: Account | null;
@@ -71,7 +70,7 @@ export const configureCallbacks = () => ({
   async jwt({
     token,
     user,
-    _account,
+
   }: {
     token: JWT;
     user?: User;
@@ -85,7 +84,7 @@ export const configureCallbacks = () => ({
         token.role = dbUser.role;
       } else {
         // Fallback om användaren av någon anledning inte hittas
-        token.role = USER_ROLES.STUDENT; // Eller någon annan default/hantering
+        token.role = USER_ROLES.USER; // Eller någon annan default/hantering
         console.error(`AUTH: User with id ${user.id} not found in JWT callback`);
       }
     }
