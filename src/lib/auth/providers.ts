@@ -19,7 +19,7 @@ export const configureProviders = () => [
         name: profile.name,
         email: profile.email,
         image: profile.picture,
-        role: USER_ROLES.STUDENT, // Använd konstant
+        role: USER_ROLES.USER, // Använd konstant
       };
     },
   }),

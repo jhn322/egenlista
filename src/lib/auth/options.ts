@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
     /**
      * Hanterar användarinloggning specifikt för Google-autentisering
      * - Om användaren finns: Uppdaterar namn och profilbild
-     * - Om ny användare: Skapar konto med STUDENT-roll
+     * - Om ny användare: Skapar konto med USER-roll
      * Detta säkerställer att databasen hålls synkroniserad med Google-profildata
      */
     async signIn({ user, account }) {
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email!,
             name: user.name!,
             image: user.image,
-            role: USER_ROLES.STUDENT,
+            role: USER_ROLES.USER,
           },
         });
       }

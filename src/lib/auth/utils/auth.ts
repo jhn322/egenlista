@@ -5,7 +5,7 @@ import { USER_ROLES, UserRole } from '@/lib/auth/constants/auth';
  */
 export const formatRole = (role: UserRole): string => {
   const roleMap: Record<UserRole, string> = {
-    [USER_ROLES.STUDENT]: 'Elev',
+    [USER_ROLES.USER]: 'Elev',
     [USER_ROLES.GUARDIAN]: 'Vårdnadshavare',
     [USER_ROLES.TEACHER]: 'Lärare',
     [USER_ROLES.ADMIN]: 'Administratör',
@@ -19,7 +19,7 @@ export const formatRole = (role: UserRole): string => {
 export const hasRequiredRole = (userRole: UserRole, requiredRole: UserRole | UserRole[]): boolean => {
   // Uppdaterad hierarki
   const roleHierarchy: UserRole[] = [
-    USER_ROLES.STUDENT,
+    USER_ROLES.USER,
     USER_ROLES.GUARDIAN,
     USER_ROLES.TEACHER,
     USER_ROLES.ADMIN
