@@ -1,0 +1,257 @@
+{
+  "info": {
+    "name": "App Auth API",
+    "description": "Postman collection för appens autentiserings-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "README - Authentication",
+      "item": [
+        {
+          "name": "Authentication Instructions (Cookie Method)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": ""
+            },
+            "description": "# NextAuth.js Autentisering i Postman\n\nNextAuth.js använder **cookie-baserad autentisering**. För att testa endpoints som kräver inloggning i Postman:\n\n1.  **Hämta CSRF Token:** Kör `GET /api/auth/csrf` först. Detta sätter `csrfToken` i din miljö automatiskt (via Test-skriptet).\n2.  **Logga in:** Kör `POST /api/auth/signin/credentials` med dina testanvändaruppgifter (från miljön). Om lyckat, kommer NextAuth.js att returnera sessionscookies som Postman **automatiskt sparar och skickar med** i framtida requests till samma domän (`{{baseUrl}}`).\n3.  **Verifiera Session:** Kör `GET /api/auth/session` för att se om du är inloggad och se sessionsdata.\n4.  **Testa skyddade endpoints:** Nu kan du anropa andra API-endpoints som kräver inloggning. Postman skickar med cookien automatiskt.\n5.  **Logga ut:** Kör `POST /api/auth/signout` (med giltig `csrfToken`) för att ta bort cookien.\n\n**Viktigt:**\n* Se till att din `{{baseUrl}}` i Postman-miljön matchar den URL din Next.js-app körs på.\n* Postman hanterar cookies per domän.\n* Google Sign-In kan inte slutföras helt inom Postman på grund av webbläsaromdirigeringar.\n"
+          }
+        }
+      ],
+      "description": "Viktig information om hur autentisering fungerar i Postman med detta API."
+    },
+    {
+      "name": "NextAuth Core",
+      "description": "Standard NextAuth.js endpoints",
+      "item": [
+        {
+          "name": "Get CSRF Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Hämtar en CSRF-token som behövs för POST-förfrågningar (t.ex. inloggning, utloggning, registrering).\nKopiera värdet för `csrfToken` från svaret och klistra in det i Postman-miljövariabeln `csrfToken`.",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/csrf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "csrf"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.csrfToken) {",
+                  "        pm.environment.set(\"csrfToken\", jsonData.csrfToken);",
+                  "        console.log(\"CSRF Token set in environment:\", jsonData.csrfToken);",
+                  "    } else {",
+                  "        console.warn(\"CSRF token not found in response JSON.\");",
+                  "    }",
+                  "} catch (e) {",
+                  "    console.error(\"Failed to parse JSON or set CSRF token:\", e);",
+                  "}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sign In (Credentials)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Loggar in en användare med e-post och lösenord. Kräver en giltig `csrfToken`. Sätter automatiskt cookies vid lyckad inloggning.",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin/credentials",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "signin",
+                "credentials"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testUserEmail}}\",\n  \"password\": \"{{testUserPassword}}\",\n  \"csrfToken\": \"{{csrfToken}}\",\n  \"redirect\": false,\n  \"json\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Hämtar information om den aktuella användarsessionen (om inloggad via cookie).",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/session",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "session"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Loggar ut den aktuella användaren. Kräver en giltig `csrfToken`. Tar bort sessionscookies.",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "signout"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"csrfToken\": \"{{csrfToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Initiate Google Sign In (Browser Only)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Denna URL används normalt i en webbläsare för att starta Google OAuth-flödet. Den kommer att omdirigera till Google. Kan inte testas fullt ut i Postman utan manuella steg.",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "signin",
+                "google"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Custom Auth",
+      "description": "Anpassade autentiserings-endpoints",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Registrerar en ny användare via din anpassade `/api/auth/register` slutpunkt. Kräver troligen `csrfToken`.",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"new-test-user@example.com\",\n  \"password\": \"password1234\",\n  \"csrfToken\": \"{{csrfToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Verifierar en användare via din anpassade `/api/auth/verify` slutpunkt. Anpassa body och metod efter behov. Kräver troligen `csrfToken`.",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"VERIFICATION_TOKEN_FROM_EMAIL_OR_LINK\",\n  \"csrfToken\": \"{{csrfToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
