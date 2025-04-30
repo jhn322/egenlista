@@ -55,7 +55,7 @@ function VerifyEmailContent() {
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
       <div className="w-full max-w-md space-y-8 bg-white p-6 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-2xl font-bold tracking-tight text-blue-900">
             E-postverifiering
           </h1>
         </div>
@@ -86,7 +86,7 @@ function VerifyEmailContent() {
                   />
                 </svg>
               </div>
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-lg font-medium text-blue-900">
                 {AUTH_MESSAGES.SUCCESS_VERIFICATION}
               </p>
               <div className="pt-4">
@@ -116,7 +116,7 @@ function VerifyEmailContent() {
                   />
                 </svg>
               </div>
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-lg font-medium text-blue-900">
                 Verifiering misslyckades
               </p>
               <p className="text-sm text-gray-600">
@@ -144,7 +144,7 @@ function VerifyEmailLoading() {
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
       <div className="w-full max-w-md space-y-8 bg-white p-6 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-2xl font-bold tracking-tight text-blue-900">
             E-postverifiering
           </h1>
         </div>
