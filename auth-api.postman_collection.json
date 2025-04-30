@@ -33,14 +33,8 @@
             "description": "Hämtar en CSRF-token som behövs för POST-förfrågningar (t.ex. inloggning, utloggning, registrering).\nKopiera värdet för `csrfToken` från svaret och klistra in det i Postman-miljövariabeln `csrfToken`.",
             "url": {
               "raw": "{{baseUrl}}/api/auth/csrf",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "csrf"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "csrf"]
             }
           },
           "response": [],
@@ -80,15 +74,8 @@
             "description": "Loggar in en användare med e-post och lösenord. Kräver en giltig `csrfToken`. Sätter automatiskt cookies vid lyckad inloggning.",
             "url": {
               "raw": "{{baseUrl}}/api/auth/signin/credentials",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "signin",
-                "credentials"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin", "credentials"]
             },
             "body": {
               "mode": "raw",
@@ -110,14 +97,8 @@
             "description": "Hämtar information om den aktuella användarsessionen (om inloggad via cookie).",
             "url": {
               "raw": "{{baseUrl}}/api/auth/session",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "session"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "session"]
             }
           },
           "response": []
@@ -135,14 +116,8 @@
             "description": "Loggar ut den aktuella användaren. Kräver en giltig `csrfToken`. Tar bort sessionscookies.",
             "url": {
               "raw": "{{baseUrl}}/api/auth/signout",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "signout"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signout"]
             },
             "body": {
               "mode": "raw",
@@ -164,15 +139,8 @@
             "description": "Denna URL används normalt i en webbläsare för att starta Google OAuth-flödet. Den kommer att omdirigera till Google. Kan inte testas fullt ut i Postman utan manuella steg.",
             "url": {
               "raw": "{{baseUrl}}/api/auth/signin/google",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "signin",
-                "google"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin", "google"]
             }
           },
           "response": []
@@ -196,14 +164,8 @@
             "description": "Registrerar en ny användare via din anpassade `/api/auth/register` slutpunkt. Kräver troligen `csrfToken`.",
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
             },
             "body": {
               "mode": "raw",
@@ -230,14 +192,8 @@
             "description": "Verifierar en användare via din anpassade `/api/auth/verify` slutpunkt. Anpassa body och metod efter behov. Kräver troligen `csrfToken`.",
             "url": {
               "raw": "{{baseUrl}}/api/auth/verify",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "verify"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify"]
             },
             "body": {
               "mode": "raw",

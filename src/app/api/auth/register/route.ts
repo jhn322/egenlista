@@ -11,12 +11,13 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-
     //* Validera input med det nya API-schemat
     const validationResult = registerApiSchema.safeParse(body); // Använd nya schemat
 
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map((e: ZodIssue) => e.message); // Använd ZodIssue typen
+      const errors = validationResult.error.errors.map(
+        (e: ZodIssue) => e.message
+      ); // Använd ZodIssue typen
       return NextResponse.json(
         // Använd specifikt fel eller standard om join är tom
         { message: errors.join(', ') || AUTH_MESSAGES.ERROR_MISSING_FIELDS },
@@ -131,4 +132,4 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-} 
+}

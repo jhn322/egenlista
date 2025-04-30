@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function BenefitsSection() {
   return (
-    <section className="w-full px-4 py-24 bg-white">
+    <section className="w-full bg-white px-4 py-24">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
+        <div className="mb-16 text-center">
+          <h2 className="text-3xl font-bold text-blue-900 md:text-4xl">
             Hitta allt. Direkt.
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-4">
+          <p className="mx-auto mt-4 max-w-2xl text-xl text-gray-600">
             Sluta leta efter information om dina kunder. Med Egen Lista har du
             allt på ett ställe.
           </p>
         </div>
 
-        <div className="relative h-[600px] rounded-xl overflow-hidden mb-12">
+        <div className="relative mb-12 h-[600px] overflow-hidden rounded-xl">
           <Image
             src="/placeholder.svg?height=600&width=1200"
             alt="Egen Lista dashboard overview"
@@ -25,10 +25,10 @@ export default function BenefitsSection() {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="space-y-3">
-            <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-              <span className="text-blue-900 font-bold">1</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+              <span className="font-bold text-blue-900">1</span>
             </div>
             <h3 className="text-xl font-bold text-blue-900">Snabb sökning</h3>
             <p className="text-gray-600">
@@ -37,8 +37,8 @@ export default function BenefitsSection() {
             </p>
           </div>
           <div className="space-y-3">
-            <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-              <span className="text-blue-900 font-bold">2</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+              <span className="font-bold text-blue-900">2</span>
             </div>
             <h3 className="text-xl font-bold text-blue-900">
               Smart filtrering
@@ -49,8 +49,8 @@ export default function BenefitsSection() {
             </p>
           </div>
           <div className="space-y-3">
-            <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-              <span className="text-blue-900 font-bold">3</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+              <span className="font-bold text-blue-900">3</span>
             </div>
             <h3 className="text-xl font-bold text-blue-900">Anpassade vyer</h3>
             <p className="text-gray-600">

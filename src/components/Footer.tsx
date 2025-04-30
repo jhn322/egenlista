@@ -1,12 +1,12 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
-import { CardContent, CardTitle, CardDescription } from "@/components/ui/card";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Separator } from '@/components/ui/separator';
+import { CardContent, CardTitle, CardDescription } from '@/components/ui/card';
 
 const socialLinks = [
   {
-    name: "Instagram",
-    url: "https://www.instagram.com/blueredgoldab/",
+    name: 'Instagram',
+    url: 'https://www.instagram.com/blueredgoldab/',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -20,8 +20,8 @@ const socialLinks = [
     ),
   },
   {
-    name: "Facebook",
-    url: "https://www.facebook.com/people/Blueredgold/100087048124977/",
+    name: 'Facebook',
+    url: 'https://www.facebook.com/people/Blueredgold/100087048124977/',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -35,8 +35,8 @@ const socialLinks = [
     ),
   },
   {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/company/blueredgold-ab/",
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/company/blueredgold-ab/',
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@ export default function Footer() {
         <div className="flex flex-col space-y-8">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <div className="w-32 h-16">
+            <div className="h-16 w-32">
               <Image
                 src="/logo.svg"
                 alt="Logo"
@@ -69,34 +69,34 @@ export default function Footer() {
                 height={64}
                 priority
                 sizes="128px"
-                className="object-contain w-full h-full"
+                className="h-full w-full object-contain"
               />
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight mt-6 -ml-8 text-black">
+            <h1 className="mt-6 -ml-8 text-3xl font-extrabold tracking-tight text-black">
               Egen Lista
             </h1>
           </div>
 
           {/* Main Content */}
-          <section className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-12 gap-8">
-            <nav className="lg:col-span-12 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <section className="grid grid-cols-1 gap-8 md:grid-cols-1 lg:grid-cols-12">
+            <nav className="grid grid-cols-2 gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-12 lg:col-span-12">
               <CardContent className="space-y-3 md:space-y-4">
-                <CardTitle className="font-semibold text-base text-black">
+                <CardTitle className="text-base font-semibold text-black">
                   Saffron
                 </CardTitle>
                 <div className="grid gap-2 md:gap-3">
                   <Link href="/">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Growing Saffron
                     </CardDescription>
                   </Link>
                   <Link href="/premium-saffron/food-beverages">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Food & Beverages
                     </CardDescription>
                   </Link>
                   <Link href="/premium-saffron/medical-cosmetics">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Medical & Cosmetics
                     </CardDescription>
                   </Link>
@@ -104,22 +104,22 @@ export default function Footer() {
               </CardContent>
 
               <CardContent className="space-y-3 md:space-y-4">
-                <CardTitle className="font-semibold text-base text-black">
+                <CardTitle className="text-base font-semibold text-black">
                   Technology
                 </CardTitle>
                 <div className="grid gap-2 md:gap-3">
                   <Link href="/technology/growing">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Growing
                     </CardDescription>
                   </Link>
                   <Link href="/technology/harvesting">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Harvesting
                     </CardDescription>
                   </Link>
                   <Link href="/technology/data/batches">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Batches
                     </CardDescription>
                   </Link>
@@ -127,27 +127,27 @@ export default function Footer() {
               </CardContent>
 
               <CardContent className="space-y-3 md:space-y-4">
-                <CardTitle className="font-semibold text-base text-black">
+                <CardTitle className="text-base font-semibold text-black">
                   Blog
                 </CardTitle>
                 <div className="grid gap-2 md:gap-3">
                   <Link href="/blogs/updates">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Updates
                     </CardDescription>
                   </Link>
                   <Link href="/blogs/news">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       In the News
                     </CardDescription>
                   </Link>
                   <Link href="/blogs/saffron-recipes">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Recipes
                     </CardDescription>
                   </Link>
                   <Link href="/blogs/science">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Science
                     </CardDescription>
                   </Link>
@@ -155,37 +155,37 @@ export default function Footer() {
               </CardContent>
 
               <CardContent className="space-y-3 md:space-y-4">
-                <CardTitle className="font-semibold text-base text-black">
+                <CardTitle className="text-base font-semibold text-black">
                   About us
                 </CardTitle>
                 <div className="grid gap-2 md:gap-3">
                   <Link href="/about-us/about">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       About
                     </CardDescription>
                   </Link>
                   <Link href="/about-us/career">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Career
                     </CardDescription>
                   </Link>
                   <Link href="/about-us/contact-us">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Contact
                     </CardDescription>
                   </Link>
                   <Link href="/about-us/investor-relations">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Investor Relations
                     </CardDescription>
                   </Link>
                   <Link href="/about-us/press">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Press
                     </CardDescription>
                   </Link>
                   <Link href="/about-us/sustainability/esg">
-                    <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                    <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                       Sustainability (ESG)
                     </CardDescription>
                   </Link>
@@ -195,7 +195,7 @@ export default function Footer() {
           </section>
 
           {/* Footer Bottom */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             <CardDescription className="text-sm text-black">
               © {currentYear} | Egen Lista.
             </CardDescription>
@@ -208,17 +208,17 @@ export default function Footer() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-black hover:text-primary transition-colors"
+                  className="hover:text-primary text-black transition-colors"
                   aria-label={social.name}
                 >
-                  <div className="w-5 h-5">{social.icon}</div>
+                  <div className="h-5 w-5">{social.icon}</div>
                 </a>
               ))}
             </div>
 
             <div className="flex gap-4 text-sm">
               <Link href="/privacy-policy">
-                <CardDescription className="text-sm text-black hover:text-primary transition-colors">
+                <CardDescription className="hover:text-primary text-sm text-black transition-colors">
                   Privacy Policy
                 </CardDescription>
               </Link>

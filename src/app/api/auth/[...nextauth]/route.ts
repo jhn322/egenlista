@@ -1,5 +1,5 @@
-import NextAuth from "next-auth/next";
-import { authOptions } from "@/lib/auth/options";
+import NextAuth from 'next-auth/next';
+import { authOptions } from '@/lib/auth/options';
 
 /**
  * Denna handler hanterar GET och POST-förfrågningar till /api/auth/*

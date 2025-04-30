@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 export default function ToolsSection() {
   return (
-    <section className="w-full px-4 py-24 bg-gray-50">
+    <section className="w-full bg-gray-50 px-4 py-24">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
+        <div className="mb-16 text-center">
+          <h2 className="text-3xl font-bold text-blue-900 md:text-4xl">
             Kraftfulla verktyg för ditt företag
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-4">
+          <p className="mx-auto mt-4 max-w-2xl text-xl text-gray-600">
             Egen Lista ger dig allt du behöver för att hantera dina
             kundrelationer på ett professionellt sätt.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-blue-900">
               Avancerad dataanalys
@@ -47,11 +47,11 @@ export default function ToolsSection() {
                 </span>
               </li>
             </ul>
-            <Button className="bg-blue-900 hover:bg-gray-800 text-white">
+            <Button className="bg-blue-900 text-white hover:bg-gray-800">
               Utforska analysfunktioner
             </Button>
           </div>
-          <div className="relative h-[500px] rounded-xl overflow-hidden">
+          <div className="relative h-[500px] overflow-hidden rounded-xl">
             <Image
               src="/placeholder.svg?height=500&width=700"
               alt="Dataanalys i Egen Lista"

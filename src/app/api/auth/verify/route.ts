@@ -3,7 +3,6 @@ import prisma from '@/lib/prisma';
 import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
 import { checkVerificationToken } from '@/lib/auth/utils/token';
 
-
 //* Verifierar en användares e-post med en token
 // Route: POST /api/auth/verify
 export async function POST(req: Request) {
@@ -82,7 +81,9 @@ export async function GET(req: Request) {
     const token = url.searchParams.get('token');
     const email = url.searchParams.get('email');
 
-    console.log(`Verifiering för email: ${email || 'saknas'}, token: ${token ? token.substring(0, 10) + '...' : 'saknas'}`);
+    console.log(
+      `Verifiering för email: ${email || 'saknas'}, token: ${token ? token.substring(0, 10) + '...' : 'saknas'}`
+    );
 
     if (!token || !email) {
       console.log('Saknade fält: token eller email');
@@ -155,4 +156,4 @@ export async function GET(req: Request) {
       { status: 500 }
     );
   }
-} 
+}

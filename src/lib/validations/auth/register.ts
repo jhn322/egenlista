@@ -5,18 +5,17 @@ import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
 /**
  * Valideringsschema för registreringsformuläret (används på klienten)
  */
-export const registerFormSchema = z.object({
-  name: nameSchema,
-  email: emailSchema,
-  password: passwordSchema,
-  confirmPassword: z.string()
-}).refine(
-  (data) => data.password === data.confirmPassword,
-  {
+export const registerFormSchema = z
+  .object({
+    name: nameSchema,
+    email: emailSchema,
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     message: AUTH_MESSAGES.ERROR_PASSWORD_MISMATCH,
     path: ['confirmPassword'],
-  }
-);
+  });
 
 /**
  * Valideringsschema för registrerings-API:et (används på servern)

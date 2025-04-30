@@ -24,7 +24,6 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
     try {
       //* Validera registreringsdata
       if (mode === 'register') {
-
         const validatedData = registerFormSchema.parse({
           name: data.name,
           email: data.email,
@@ -40,14 +39,15 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
         });
 
         if (!result.success) {
-          throw new Error(result.message || AUTH_MESSAGES.ERROR_REGISTRATION_FAILED);
+          throw new Error(
+            result.message || AUTH_MESSAGES.ERROR_REGISTRATION_FAILED
+          );
         }
 
         // Visa meddelande och omdirigera till login
         console.log(AUTH_MESSAGES.INFO_REGISTRATION_REDIRECT); // TODO: Byt ut mot en alert/toast
         router.push(`${AUTH_ROUTES.LOGIN}?registered=true`);
       } else {
-
         //* Logga in användare
         const result = await signIn('credentials', {
           redirect: false,
@@ -73,16 +73,20 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
           if (onSuccess) {
             onSuccess();
           } else {
-            console.error('useAuthForm: onSuccess callback saknas efter lyckad inloggning.');
+            console.error(
+              'useAuthForm: onSuccess callback saknas efter lyckad inloggning.'
+            );
           }
         }
       }
     } catch (error) {
       // Hantera Zod valideringsfel specifikt
       if (error instanceof z.ZodError) {
-        setError(error.errors.map(e => e.message).join(', '));
+        setError(error.errors.map((e) => e.message).join(', '));
       } else {
-        setError(error instanceof Error ? error.message : AUTH_MESSAGES.ERROR_DEFAULT);
+        setError(
+          error instanceof Error ? error.message : AUTH_MESSAGES.ERROR_DEFAULT
+        );
       }
     } finally {
       setLoading(false);

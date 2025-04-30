@@ -1,19 +1,19 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth/options";
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/options';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Metadata } from "next";
+} from '@/components/ui/card';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Admin Panel | Egen Lista",
+  title: 'Admin Panel | Egen Lista',
   description:
-    "Administration panel för att hantera kundlistor och inställningar.",
+    'Administration panel för att hantera kundlistor och inställningar.',
   robots: {
     index: false,
     follow: false,
@@ -25,7 +25,7 @@ export default async function AdminPage() {
 
   // Redirect to login if not authenticated
   if (!session) {
-    redirect("/auth/login");
+    redirect('/auth/login');
   }
 
   return (
