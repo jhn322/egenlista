@@ -32,9 +32,9 @@ export default async function AdminPage() {
     <main className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>Admin Panel</CardTitle>
+          <CardTitle>Adminpanel</CardTitle>
           <CardDescription>
-            Welcome to the admin panel, {session.user?.name}
+            Välkommen till adminpanelen, {session.user?.name}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -42,20 +42,20 @@ export default async function AdminPage() {
             {/* Admin Dashboard Cards */}
             <Card>
               <CardHeader>
-                <CardTitle>Users</CardTitle>
-                <CardDescription>Manage user accounts</CardDescription>
+                <CardTitle>Användare</CardTitle>
+                <CardDescription>Hantera användarkonton</CardDescription>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Settings</CardTitle>
-                <CardDescription>Configure system settings</CardDescription>
+                <CardTitle>Inställningar</CardTitle>
+                <CardDescription>Konfigurera nånting c:</CardDescription>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Analytics</CardTitle>
-                <CardDescription>View system statistics</CardDescription>
+                <CardTitle>Analys saker</CardTitle>
+                <CardDescription>Kolla massa koll statistik</CardDescription>
               </CardHeader>
             </Card>
           </section>
