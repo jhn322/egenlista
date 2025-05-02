@@ -1,53 +1,53 @@
-"use client";
+'use client';
 
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { StarIcon } from "lucide-react";
+} from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { StarIcon } from 'lucide-react';
 
 const testimonials = [
   {
-    name: "Anna Johansson",
-    role: "Småföretagare, Stockholm",
+    name: 'Anna Johansson',
+    role: 'Småföretagare, Stockholm',
     content:
-      "Egen Lista har revolutionerat hur jag håller kontakten med mina kunder. Det är enkelt att använda och sparar mig flera timmar varje vecka.",
-    avatar: "AJ",
+      'Egen Lista har revolutionerat hur jag håller kontakten med mina kunder. Det är enkelt att använda och sparar mig flera timmar varje vecka.',
+    avatar: 'AJ',
   },
   {
-    name: "Erik Lindberg",
-    role: "Konsult, Göteborg",
+    name: 'Erik Lindberg',
+    role: 'Konsult, Göteborg',
     content:
-      "Efter att ha testat flera CRM-system är Egen Lista det enda som verkligen passar mina behov som svensk företagare.",
-    avatar: "EL",
+      'Efter att ha testat flera CRM-system är Egen Lista det enda som verkligen passar mina behov som svensk företagare.',
+    avatar: 'EL',
   },
   {
-    name: "Maria Svensson",
-    role: "Butiksägare, Malmö",
+    name: 'Maria Svensson',
+    role: 'Butiksägare, Malmö',
     content:
-      "Tack vare Egen Listahar jag kunnat öka min försäljning med 30% genom bättre kundrelationer och uppföljning.",
-    avatar: "MS",
+      'Tack vare Egen Listahar jag kunnat öka min försäljning med 30% genom bättre kundrelationer och uppföljning.',
+    avatar: 'MS',
   },
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="w-full px-4 py-24 bg-white">
+    <section className="w-full bg-white px-4 py-24">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
+        <div className="mb-16 space-y-4 text-center">
+          <h2 className="text-3xl font-bold text-blue-900 md:text-4xl">
             Vad våra kunder säger
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-xl text-gray-600">
             Hundratals svenska företagare använder redan Egen-lista för att
             förbättra sina kundrelationer.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {testimonials.map((testimonial, index) => (
             <Card key={index} className="border-gray-200">
               <CardHeader className="pb-2">
@@ -55,7 +55,7 @@ export default function TestimonialsSection() {
                   {[...Array(5)].map((_, i) => (
                     <StarIcon
                       key={i}
-                      className="h-5 w-5 text-yellow-400 fill-yellow-400"
+                      className="h-5 w-5 fill-yellow-400 text-yellow-400"
                     />
                   ))}
                 </div>

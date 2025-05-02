@@ -45,8 +45,8 @@ export const GoogleButton = ({
 
   return (
     <Button
-      variant='outline'
-      className='w-full'
+      variant="outline"
+      className="w-full"
       onClick={handleGoogleSignIn}
       disabled={isLoading}
     >

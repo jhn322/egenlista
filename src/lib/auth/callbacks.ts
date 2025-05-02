@@ -29,10 +29,14 @@ export const configureCallbacks = () => ({
         });
 
         // Om användare finns men detta specifika OAuth-konto inte är länkat
-        if (existingUser && !existingUser.accounts.some(acc =>
-          acc.provider === account.provider &&
-          acc.providerAccountId === account.providerAccountId
-        )) {
+        if (
+          existingUser &&
+          !existingUser.accounts.some(
+            (acc) =>
+              acc.provider === account.provider &&
+              acc.providerAccountId === account.providerAccountId
+          )
+        ) {
           // Länka kontot
           await prisma.account.create({
             data: {
@@ -54,7 +58,7 @@ export const configureCallbacks = () => ({
           // await prisma.user.update({ where: { id: existingUser.id }, data: { name: user.name, image: user.image } });
         }
       } catch (error) {
-        console.error("AUTH: Error linking account in signIn callback:", error);
+        console.error('AUTH: Error linking account in signIn callback:', error);
         // Returnera false eller en felsida vid oväntat fel under länkning?
         // För enkelhetens skull låter vi det gå vidare, men loggar felet.
         // return false;
@@ -70,7 +74,6 @@ export const configureCallbacks = () => ({
   async jwt({
     token,
     user,
-
   }: {
     token: JWT;
     user?: User;
@@ -85,7 +88,9 @@ export const configureCallbacks = () => ({
       } else {
         // Fallback om användaren av någon anledning inte hittas
         token.role = USER_ROLES.USER; // Eller någon annan default/hantering
-        console.error(`AUTH: User with id ${user.id} not found in JWT callback`);
+        console.error(
+          `AUTH: User with id ${user.id} not found in JWT callback`
+        );
       }
     }
     return token;
@@ -102,5 +107,5 @@ export const configureCallbacks = () => ({
       }
     }
     return session;
-  }
-}); 
+  },
+});

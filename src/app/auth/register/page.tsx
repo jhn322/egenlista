@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { AuthCard } from "@/components/auth/AuthCard";
-import { GoogleButton } from "@/components/auth/GoogleButton";
-import { AuthDivider } from "@/components/auth/AuthDivider";
-import { AuthForm } from "@/components/auth/AuthForm";
-import { AuthFooter } from "@/components/auth/AuthFooter";
-import { useAuthForm } from "@/lib/auth/hooks/useAuthForm";
-import { useGoogleAuth } from "@/lib/auth/hooks/useGoogleAuth";
-import { useAuth } from "@/lib/auth/hooks/useAuth";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { AuthCard } from '@/components/auth/AuthCard';
+import { GoogleButton } from '@/components/auth/GoogleButton';
+import { AuthDivider } from '@/components/auth/AuthDivider';
+import { AuthForm } from '@/components/auth/AuthForm';
+import { AuthFooter } from '@/components/auth/AuthFooter';
+import { useAuthForm } from '@/lib/auth/hooks/useAuthForm';
+import { useGoogleAuth } from '@/lib/auth/hooks/useGoogleAuth';
+import { useAuth } from '@/lib/auth/hooks/useAuth';
 
-import { DEFAULT_LOGIN_REDIRECT } from "@/lib/auth/constants/auth";
+import { DEFAULT_LOGIN_REDIRECT } from '@/lib/auth/constants/auth';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function RegisterPage() {
     handleSubmit,
     setError,
   } = useAuthForm({
-    mode: "register",
+    mode: 'register',
   });
 
   const { loading: googleLoading, handleGoogleSignIn } = useGoogleAuth({
@@ -51,7 +51,7 @@ export default function RegisterPage() {
       footer={
         <AuthFooter
           mode="register"
-          onNavigate={() => router.push("/auth/login")}
+          onNavigate={() => router.push('/auth/login')}
         />
       }
     >

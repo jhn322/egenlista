@@ -1,10 +1,10 @@
-import { NextAuthOptions } from "next-auth";
-import { Adapter } from "next-auth/adapters";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import prisma from "@/lib/prisma";
+import { NextAuthOptions } from 'next-auth';
+import { Adapter } from 'next-auth/adapters';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import prisma from '@/lib/prisma';
 // Update import paths to reflect the new location
-import { configureProviders } from "./providers";
-import { configureCallbacks } from "./callbacks";
+import { configureProviders } from './providers';
+import { configureCallbacks } from './callbacks';
 // Assuming constants are in lib/auth/constants/auth.ts
 import { AUTH_ROUTES, USER_ROLES } from '@/lib/auth/constants/auth';
 
@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
 
   // Session-hantering
   session: {
-    strategy: "jwt"
+    strategy: 'jwt',
   },
 
   // Anpassade sidor
@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
      * Detta säkerställer att databasen hålls synkroniserad med Google-profildata
      */
     async signIn({ user, account }) {
-      if (account?.provider === "google") {
+      if (account?.provider === 'google') {
         // Uppdatera eller skapa användare med rätt roll
         await prisma.user.upsert({
           where: { email: user.email! },
@@ -61,5 +61,5 @@ export const authOptions: NextAuthOptions = {
   },
 
   // Aktivera debugging i utvecklingsmiljö
-  debug: process.env.NODE_ENV === "development",
-}; 
+  debug: process.env.NODE_ENV === 'development',
+};

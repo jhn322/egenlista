@@ -68,7 +68,9 @@ export async function createVerificationToken(
     if (!createdToken) {
       console.error(`KRITISKT: Token skapades inte korrekt för ${email}`);
     } else {
-      console.log(`Token bekräftad i databasen för ${email}, utgår: ${createdToken.expires.toISOString()}`);
+      console.log(
+        `Token bekräftad i databasen för ${email}, utgår: ${createdToken.expires.toISOString()}`
+      );
     }
   } catch (error) {
     console.error(`Fel vid skapande av token för ${email}:`, error);
@@ -89,7 +91,9 @@ export async function validateVerificationToken(
   token: string,
   email?: string
 ): Promise<boolean> {
-  console.log(`Validating token for ${email || 'unknown'}: ${token.substring(0, 10)}...`);
+  console.log(
+    `Validating token for ${email || 'unknown'}: ${token.substring(0, 10)}...`
+  );
 
   const whereClause = {
     token,
@@ -116,7 +120,9 @@ export async function validateVerificationToken(
     });
 
     if (expiredToken) {
-      console.log(`Token found but expired. Expired at: ${expiredToken.expires}`);
+      console.log(
+        `Token found but expired. Expired at: ${expiredToken.expires}`
+      );
     } else {
       console.log('No token found with the provided values');
     }
@@ -150,7 +156,9 @@ export async function consumeVerificationToken(
   email?: string
 ): Promise<boolean> {
   try {
-    console.log(`Attempting to consume token for ${email || 'unknown'}: ${token.substring(0, 10)}...`);
+    console.log(
+      `Attempting to consume token for ${email || 'unknown'}: ${token.substring(0, 10)}...`
+    );
 
     // For email verification, we just validate without deleting
     // This prevents issues with email clients pre-fetching URLs
@@ -164,10 +172,12 @@ export async function consumeVerificationToken(
     // We don't delete the token here anymore - it will remain valid until the user
     // is marked as verified in the database, which prevents the pre-fetch issue
 
-    console.log(`Token validated successfully, not consumed to prevent prefetch issues`);
+    console.log(
+      `Token validated successfully, not consumed to prevent prefetch issues`
+    );
     return true;
   } catch (error) {
     console.error('Error consuming verification token:', error);
     return false;
   }
-} 
+}

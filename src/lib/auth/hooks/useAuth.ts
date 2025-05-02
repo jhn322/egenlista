@@ -13,9 +13,7 @@ interface UseAuthProps {
  * Hook för att hämta sessionstatus och ev. hantera rollbaserad omdirigering på klienten.
  * Grundläggande skydd för inloggning/utloggning hanteras av middleware.
  */
-export const useAuth = ({
-  role,
-}: UseAuthProps = {}) => {
+export const useAuth = ({ role }: UseAuthProps = {}) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const loading = status === 'loading';
@@ -37,13 +35,7 @@ export const useAuth = ({
         router.push(AUTH_ROUTES.UNAUTHORIZED);
       }
     }
-  }, [
-    loading,
-    authenticated,
-    role,
-    session?.user?.role,
-    router
-  ]);
+  }, [loading, authenticated, role, session?.user?.role, router]);
 
   return { session, status, loading, authenticated, unauthenticated };
 };

@@ -3,4 +3,4 @@ export interface GoogleButtonProps {
   onSuccess?: () => void;
   onError?: (error: Error) => void;
   isLoading?: boolean;
-} 
+}

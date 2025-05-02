@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/auth/options";
-import { AUTH_ROUTES, UserRole } from "@/lib/auth/constants/auth";
-import { hasRequiredRole } from "./auth";
+import { getServerSession } from 'next-auth/next';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/lib/auth/options';
+import { AUTH_ROUTES, UserRole } from '@/lib/auth/constants/auth';
+import { hasRequiredRole } from './auth';
 
 /**
  * Hämtar aktiv session på serversidan

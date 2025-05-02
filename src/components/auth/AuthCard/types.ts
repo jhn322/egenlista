@@ -5,4 +5,4 @@ export interface AuthCardProps {
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
-} 
+}

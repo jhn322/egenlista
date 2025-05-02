@@ -12,4 +12,4 @@ export interface AuthFormProps {
   onSubmit: (data: AuthFormData) => Promise<void>;
   isLoading?: boolean;
   error?: string | null;
-} 
+}

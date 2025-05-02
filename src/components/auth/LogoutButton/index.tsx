@@ -21,12 +21,12 @@ export const LogoutButton = ({ children, className }: LogoutButtonProps) => {
   return (
     <Button
       onClick={handleLogout}
-      variant='ghost' // Eller annan passande variant
+      variant="ghost" // Eller annan passande variant
       className={`flex items-center gap-2 ${className || ''}`}
     >
       {children || (
         <>
-          <LogOut className='h-4 w-4' />
+          <LogOut className="h-4 w-4" />
           <span>Logga ut</span>
         </>
       )}

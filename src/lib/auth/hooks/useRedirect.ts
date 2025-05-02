@@ -7,7 +7,9 @@ interface UseRedirectProps {
   defaultRedirect?: string;
 }
 
-export const useRedirect = ({ defaultRedirect = DEFAULT_LOGIN_REDIRECT }: UseRedirectProps = {}) => {
+export const useRedirect = ({
+  defaultRedirect = DEFAULT_LOGIN_REDIRECT,
+}: UseRedirectProps = {}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -20,7 +22,8 @@ export const useRedirect = ({ defaultRedirect = DEFAULT_LOGIN_REDIRECT }: UseRed
   };
 
   const redirectToLogin = (additionalParams?: Record<string, string>): void => {
-    const currentPath = typeof window !== 'undefined' ? window.location.href : '';
+    const currentPath =
+      typeof window !== 'undefined' ? window.location.href : '';
     let path = `${AUTH_ROUTES.LOGIN}?callbackUrl=${encodeURIComponent(currentPath)}`;
 
     if (additionalParams) {
@@ -42,6 +45,6 @@ export const useRedirect = ({ defaultRedirect = DEFAULT_LOGIN_REDIRECT }: UseRed
     getCallbackUrl,
     redirectToCallback,
     redirectToLogin,
-    redirectToRegister
+    redirectToRegister,
   };
 };

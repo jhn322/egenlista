@@ -3,9 +3,10 @@ import type { RegisterRequest, RegisterResponse } from '../types/auth';
 /**
  * Registrerar en ny användare via API
  */
-export const registerUser = async (data: RegisterRequest): Promise<RegisterResponse> => {
+export const registerUser = async (
+  data: RegisterRequest
+): Promise<RegisterResponse> => {
   try {
-
     const response = await fetch('/api/auth/register', {
       method: 'POST',
       headers: {
@@ -31,9 +32,10 @@ export const registerUser = async (data: RegisterRequest): Promise<RegisterRespo
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error
-        ? error.message
-        : 'Ett fel uppstod vid registrering',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Ett fel uppstod vid registrering',
     };
   }
 };

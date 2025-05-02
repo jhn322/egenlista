@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 // import * as React from 'react';
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { useSession, signOut } from "next-auth/react";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { useSession, signOut } from 'next-auth/react';
 
 interface NavItem {
   href: string;
@@ -14,17 +14,17 @@ interface NavItem {
 
 // Grundläggande navigationslänkar som alla besökare kan se
 const publicNavItems: NavItem[] = [
-  { href: "/page1", label: "Page 1" },
-  { href: "/page2", label: "Page 2" },
-  { href: "/page3", label: "Page 3" },
-  { href: "/page4", label: "Page 4" },
-  { href: "/page5", label: "Page 5" },
+  { href: '/page1', label: 'Page 1' },
+  { href: '/page2', label: 'Page 2' },
+  { href: '/page3', label: 'Page 3' },
+  { href: '/page4', label: 'Page 4' },
+  { href: '/page5', label: 'Page 5' },
 ];
 
 // Rollspecifika navigationslänkar
 const roleBasedNavItems: Record<string, NavItem[]> = {
   // ADMIN: [{ href: "/dashboard", label: "Dashboard" }],
-  USER: [{ href: "/admin", label: "Admin Panel" }],
+  USER: [{ href: '/admin', label: 'Admin Panel' }],
 };
 
 export function Navbar() {
@@ -34,7 +34,7 @@ export function Navbar() {
   const { data: session, status } = useSession();
 
   // Kontrollera om användaren är inloggad
-  const isAuthenticated = status === "authenticated";
+  const isAuthenticated = status === 'authenticated';
   // Hämta användarens roll om inloggad
   const userRole = session?.user?.role;
 
@@ -58,34 +58,34 @@ export function Navbar() {
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Helper function to determine if a nav item is active
   const isActiveLink = (href: string): boolean => {
-    return pathname === href || (href !== "/" && pathname?.startsWith(href));
+    return pathname === href || (href !== '/' && pathname?.startsWith(href));
   };
 
   return (
     <>
       <div className="h-16" />
       <div className="relative">
-        <nav className="fixed z-50 top-0 left-0 right-0 w-full border-b transition-colors duration-500 bg-background/80 backdrop-blur-sm">
+        <nav className="bg-background/80 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
           <div className="flex h-16 items-center justify-between px-6 md:px-8">
             <div className="flex items-center gap-8">
-              <Link href="/" className="font-semibold text-xl text-black">
+              <Link href="/" className="text-xl font-semibold text-black">
                 Egen Lista
               </Link>
 
               {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center gap-6">
+              <div className="hidden items-center gap-6 md:flex">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-2 py-1 rounded-md transition-colors text-black hover:bg-gray-100 ${
-                      isActiveLink(item.href) && "font-medium"
+                    className={`rounded-md px-2 py-1 text-black transition-colors hover:bg-gray-100 ${
+                      isActiveLink(item.href) && 'font-medium'
                     }`}
                   >
                     {item.label}
@@ -99,8 +99,8 @@ export function Navbar() {
               {isAuthenticated ? (
                 <Button
                   variant="default"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="bg-black text-white hover:bg-black/80 transition-colors"
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="bg-black text-white transition-colors hover:bg-black/80"
                 >
                   Logga ut
                 </Button>
@@ -108,7 +108,7 @@ export function Navbar() {
                 <Link href="/auth/login">
                   <Button
                     variant="default"
-                    className="bg-black text-white hover:bg-black/80 transition-colors"
+                    className="bg-black text-white transition-colors hover:bg-black/80"
                   >
                     Logga in
                   </Button>
@@ -120,30 +120,30 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="relative md:hidden hover:bg-transparent p-0 h-14 w-14"
+              className="relative h-14 w-14 p-0 hover:bg-transparent md:hidden"
               onClick={handleToggleMenu}
               aria-expanded={isOpen}
               aria-label="Toggle menu"
             >
-              <div className="w-6 h-6 relative flex items-center justify-center">
+              <div className="relative flex h-6 w-6 items-center justify-center">
                 {/* Transform transition lines */}
                 <span
-                  className={`absolute h-[2px] rounded-full bg-foreground transition-all duration-300 ease-in-out ${
+                  className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
                     isOpen
-                      ? "w-5 rotate-45 translate-y-0"
-                      : "w-5 -translate-y-1.5"
+                      ? 'w-5 translate-y-0 rotate-45'
+                      : 'w-5 -translate-y-1.5'
                   }`}
                 />
                 <span
-                  className={`absolute h-[2px] rounded-full bg-foreground transition-all duration-300 ease-in-out ${
-                    isOpen ? "w-0 opacity-0" : "w-5 opacity-100"
+                  className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
+                    isOpen ? 'w-0 opacity-0' : 'w-5 opacity-100'
                   }`}
                 />
                 <span
-                  className={`absolute h-[2px] rounded-full bg-foreground transition-all duration-300 ease-in-out ${
+                  className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
                     isOpen
-                      ? "w-5 -rotate-45 translate-y-0"
-                      : "w-5 translate-y-1.5"
+                      ? 'w-5 translate-y-0 -rotate-45'
+                      : 'w-5 translate-y-1.5'
                   }`}
                 />
               </div>
@@ -153,20 +153,20 @@ export function Navbar() {
 
         {/* Mobile Menu Overlay */}
         <div
-          className={`fixed inset-0 z-40 bg-background transition-transform duration-500 ease-in-out md:hidden ${
-            isOpen ? "translate-y-16" : "translate-y-[-100%]"
+          className={`bg-background fixed inset-0 z-40 transition-transform duration-500 ease-in-out md:hidden ${
+            isOpen ? 'translate-y-16' : 'translate-y-[-100%]'
           }`}
         >
-          <div className="px-6 md:px-8 py-8 h-[calc(100vh-4rem)] flex flex-col">
-            <div className="flex flex-col items-center justify-center h-full -mt-20 space-y-6">
+          <div className="flex h-[calc(100vh-4rem)] flex-col px-6 py-8 md:px-8">
+            <div className="-mt-20 flex h-full flex-col items-center justify-center space-y-6">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-3xl transition-colors relative ${
+                  className={`relative text-3xl transition-colors ${
                     isActiveLink(item.href)
-                      ? "text-black font-medium"
-                      : "text-black hover:bg-secondary px-2 py-1 rounded-md"
+                      ? 'font-medium text-black'
+                      : 'hover:bg-secondary rounded-md px-2 py-1 text-black'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -174,27 +174,27 @@ export function Navbar() {
                 </Link>
               ))}
 
-              <div className="w-full max-w-[200px] mt-8">
+              <div className="mt-8 w-full max-w-[200px]">
                 {isAuthenticated ? (
                   <Button
                     variant="default"
                     onClick={() => {
-                      signOut({ callbackUrl: "/" });
+                      signOut({ callbackUrl: '/' });
                       setIsOpen(false);
                     }}
-                    className="w-full text-lg bg-primary text-white transition-colors"
+                    className="bg-primary w-full text-lg text-white transition-colors"
                   >
                     Logga ut
                   </Button>
                 ) : (
                   <Link
                     href="/auth/login"
-                    className="w-full block"
+                    className="block w-full"
                     onClick={() => setIsOpen(false)}
                   >
                     <Button
                       variant="default"
-                      className="w-full text-lg bg-black text-white transition-colors"
+                      className="w-full bg-black text-lg text-white transition-colors"
                     >
                       Logga in
                     </Button>
