@@ -1,135 +1,137 @@
+// * ==========================================================================
+// *                     API ROUTE: USER REGISTRATION (/api/auth/register)
+// * ==========================================================================
+
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import prisma from '@/lib/prisma';
 import { USER_ROLES, AUTH_MESSAGES } from '@/lib/auth/constants/auth';
-import { registerApiSchema } from '@/lib/validations/auth/register'; // Importera nya schemat
-import { ZodIssue } from 'zod'; // Importera ZodIssue
-// import { createVerificationToken } from '@/lib/auth/utils/token';
-// import { sendVerificationEmail } from '@/lib/email';
+import { registerApiSchema } from '@/lib/validations/auth/register';
+import { ZodIssue } from 'zod';
+import { sendVerificationEmail } from '@/lib/email/sendVerificationEmail'; // Import the updated service
+// Removed getEnvVar import as it's handled within sendVerificationEmail now
 
+// ** Helper Functions ** //
+/**
+ * Calculates the expiration date for a verification token (24 hours from now).
+ * @returns Date object representing the expiration time.
+ */
+const getVerificationTokenExpires = (): Date => {
+  const expires = new Date();
+  expires.setHours(expires.getHours() + 24);
+  return expires;
+};
+
+// ** POST Handler ** //
+/**
+ * Handles POST requests to register a new user.
+ * - Validates input data.
+ * - Checks for existing users (email conflicts).
+ * - Hashes the password.
+ * - Creates the new user in the database.
+ * - Generates and stores an email verification token.
+ * - Sends the verification email.
+ * - Returns a success or error response.
+ */
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    //* Validera input med det nya API-schemat
-    const validationResult = registerApiSchema.safeParse(body); // Använd nya schemat
-
+    // * 1. Validate Input Data
+    const validationResult = registerApiSchema.safeParse(body);
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(
-        (e: ZodIssue) => e.message
-      ); // Använd ZodIssue typen
+      const errors = validationResult.error.errors.map((e: ZodIssue) => e.message);
+      console.warn('Registration validation failed:', errors);
       return NextResponse.json(
-        // Använd specifikt fel eller standard om join är tom
         { message: errors.join(', ') || AUTH_MESSAGES.ERROR_MISSING_FIELDS },
         { status: 400 }
       );
     }
-
-    // Nu innehåller validationResult.data bara name, email, password
     const { name, email, password } = validationResult.data;
 
-    //* Kolla om användaren redan finns, inkludera konton
+    // * 2. Check for Existing User (Email Conflict)
     const existingUser = await prisma.user.findUnique({
       where: { email },
-      include: { accounts: true }, // Inkludera länkade konton
+      include: { accounts: true }, // Include accounts to check for OAuth sign-ins
     });
 
     if (existingUser) {
-      //* Kolla om det finns några länkade OAuth-konton
       if (existingUser.accounts && existingUser.accounts.length > 0) {
-        // Användaren finns och har loggat in via OAuth tidigare
+        // User exists and has linked OAuth account(s)
+        console.warn(`Registration conflict (OAuth): ${email}`);
         return NextResponse.json(
-          { message: AUTH_MESSAGES.ERROR_EMAIL_EXISTS_OAUTH }, // Ge specifikt felmeddelande
-          { status: 409 } // Använd 409 Conflict
+          { message: AUTH_MESSAGES.ERROR_EMAIL_EXISTS_OAUTH },
+          { status: 409 } // 409 Conflict
         );
       } else {
-        // Användaren finns men har inga OAuth-konton (troligen skapad med credentials)
+        // User exists, likely registered with credentials before
+        console.warn(`Registration conflict (Credentials): ${email}`);
         return NextResponse.json(
           { message: AUTH_MESSAGES.ERROR_EMAIL_EXISTS },
-          { status: 409 } // Använd 409 Conflict
+          { status: 409 } // 409 Conflict
         );
       }
     }
 
-    //* Hasha lösenordet
+    // * 3. Hash Password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    //* Skapa användaren (om ingen fanns)
+    // * 4. Create User in Database
+    // emailVerified will be null by default based on Prisma schema
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        role: USER_ROLES.USER, // Använd konstant
-        // Observera att emailVerified är null eftersom användaren måste verifiera sin e-post
+        role: USER_ROLES.USER, // Default role
       },
     });
+    console.log(`User created: ${user.email} (ID: ${user.id})`);
 
-    // Ta bort alla befintliga tokens för denna e-post (för säkerhets skull)
-    // await prisma.verificationToken.deleteMany({
-    //   where: {
-    //     identifier: email,
-    //   },
-    // });
+    // * 5. Generate and Store Verification Token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const expires = getVerificationTokenExpires();
 
-    //* Generera verifieringstoken och skicka e-post
-    // let verificationToken = null;
-    // try {
-    //   // Skapa en verifieringstoken
-    //   console.log(`Skapar verifieringstoken för ${email}...`);
-    //   verificationToken = await createVerificationToken(email);
-    //   console.log(`Token skapad: ${verificationToken.substring(0, 10)}...`);
+    await prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token: verificationToken, // Store the raw token (used for lookup)
+        expires,
+      },
+    });
+    console.log(`Verification token created for: ${email}`);
 
-    //   // Dubbelkolla att token verkligen har skapats i databasen
-    //   const tokenInDb = await prisma.verificationToken.findFirst({
-    //     where: {
-    //       identifier: email,
-    //       token: verificationToken
-    //     }
-    //   });
+    // * 6. Send Verification Email using the Service Function
+    try {
+      // Now simply call the service function
+      await sendVerificationEmail(email, verificationToken);
+      // Service function handles logging success/failure of the API call
+    } catch (emailError) {
+      // Log the error here as well, but proceed as registration itself was successful
+      console.error(
+        `Registration succeeded but email dispatch failed for ${email}:`,
+        emailError instanceof Error ? emailError.message : emailError
+      );
+      // Continue to return success to the user, as the account is created.
+      // They might need a "resend verification" feature later.
+    }
 
-    //   if (!tokenInDb) {
-    //     console.error(`VARNING: Token kunde inte verifieras i databasen för ${email}`);
-    //   } else {
-    //     console.log(`Token verifierad i databasen för ${email}`);
-    //   }
-
-    //   // Skicka verifieringsmail
-    //   console.log(`Skickar verifieringsmail till ${email} med token ${verificationToken.substring(0, 10)}...`);
-    //   const emailResult = await sendVerificationEmail(
-    //     email,
-    //     verificationToken,
-    //     name
-    //   );
-
-    //   if (!emailResult.success) {
-    //     console.error('Failed to send verification email:', emailResult.error);
-    //     // Fortsätt ändå, användaren kan begära en ny verifieringslänk senare
-    //   } else {
-    //     console.log(`Verifieringsmail skickat till ${email} med token ${verificationToken.substring(0, 10)}...`);
-    //   }
-    // } catch (emailError) {
-    //   console.error('Error in verification process:', emailError);
-    //   // Vi fortsätter ändå, användaren kan begära en ny verifieringslänk senare
-    // }
-
-    // Ta bort lösenordet från svaret
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...userWithoutPassword } = user;
-
+    // * 7. Return Success Response (excluding sensitive data)
+    // We don't need to return the user object upon registration.
     return NextResponse.json(
       {
-        message: AUTH_MESSAGES.SUCCESS_REGISTRATION,
-        user: userWithoutPassword,
+        message: AUTH_MESSAGES.INFO_VERIFICATION_EMAIL_SENT,
       },
-      { status: 201 }
+      { status: 201 } // HTTP 201 Created
     );
+
   } catch (error) {
-    console.error('Registreringsfel:', error);
-    // Använd mer generellt registreringsfel här
+    // * Handle Unexpected Errors
+    console.error('Unexpected registration error:', error);
     return NextResponse.json(
       { message: AUTH_MESSAGES.ERROR_REGISTRATION_FAILED },
-      { status: 500 }
+      { status: 500 } // HTTP 500 Internal Server Error
     );
   }
 }

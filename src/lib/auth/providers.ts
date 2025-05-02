@@ -1,5 +1,5 @@
 // Assuming utils and constants are in lib/auth/utils and lib/auth/constants
-import { getEnvVar } from '@/lib/auth/utils/auth';
+import { getEnvVar } from '@/lib/utils/env';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
