@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession, signOut } from 'next-auth/react';
+import { OnlineStatusIndicator } from '@/components/ui/online-status-indicator';
 
 interface NavItem {
   href: string;
@@ -97,13 +98,17 @@ export function Navbar() {
             {/* Auth Buttons */}
             <div className="hidden md:block">
               {isAuthenticated ? (
-                <Button
-                  variant="default"
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  className="bg-black text-white transition-colors hover:bg-black/80"
-                >
-                  Logga ut
-                </Button>
+                <div className="flex items-center gap-2">
+                  <OnlineStatusIndicator className="h-2 w-2" />
+                  <span className="text-sm text-green-600">Online</span>
+                  <Button
+                    variant="default"
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="bg-black text-white transition-colors hover:bg-black/80"
+                  >
+                    Logga ut
+                  </Button>
+                </div>
               ) : (
                 <Link href="/auth/login">
                   <Button
