@@ -39,7 +39,7 @@ const publicNavItems: NavItem[] = [
 // Rollspecifika navigationslänkar
 const roleBasedNavItems: Record<string, NavItem[]> = {
   // ADMIN: [{ href: "/dashboard", label: "Dashboard" }],
-  // USER: [{ href: '/admin', label: 'Admin Panel' }], // Moved to dropdown
+  // USER: [{ href: '/admin', label: 'Admin Panel' }], 
 };
 
 export function Navbar() {
