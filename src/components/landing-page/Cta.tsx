@@ -20,7 +20,7 @@ export default function CtaSection() {
             <Input
               type="email"
               placeholder="Din e-postadress"
-              className="border-primary/50 bg-background/70 text-black placeholder:text-black/60 focus-visible:ring-ring"
+              className="border-primary/50 bg-background/70 text-foreground placeholder:text-foreground/60 focus-visible:ring-ring"
             />
             <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
               Kom igång gratis

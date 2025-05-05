@@ -75,7 +75,7 @@ export function Navbar() {
         <nav className="bg-background/80 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
           <div className="flex h-16 items-center justify-between px-6 md:px-8">
             <div className="flex items-center gap-8">
-              <Link href="/" className="text-xl font-semibold text-black">
+              <Link href="/" className="text-xl font-semibold text-foreground">
                 Egen Lista
               </Link>
 
@@ -85,7 +85,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-md px-2 py-1 text-black transition-colors hover:bg-gray-100 ${
+                    className={`rounded-md px-2 py-1 text-foreground transition-colors hover:bg-accent ${
                       isActiveLink(item.href) && 'font-medium'
                     }`}
                   >
@@ -104,7 +104,7 @@ export function Navbar() {
                   <Button
                     variant="default"
                     onClick={() => signOut({ callbackUrl: '/' })}
-                    className="bg-black text-white transition-colors hover:bg-black/80"
+                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/80"
                   >
                     Logga ut
                   </Button>
@@ -113,7 +113,7 @@ export function Navbar() {
                 <Link href="/auth/login">
                   <Button
                     variant="default"
-                    className="bg-black text-white transition-colors hover:bg-black/80"
+                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/80"
                   >
                     Logga in
                   </Button>
@@ -170,8 +170,8 @@ export function Navbar() {
                   href={item.href}
                   className={`relative text-3xl transition-colors ${
                     isActiveLink(item.href)
-                      ? 'font-medium text-black'
-                      : 'hover:bg-secondary rounded-md px-2 py-1 text-black'
+                      ? 'font-medium text-foreground'
+                      : 'hover:bg-secondary rounded-md px-2 py-1 text-foreground'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -187,7 +187,7 @@ export function Navbar() {
                       signOut({ callbackUrl: '/' });
                       setIsOpen(false);
                     }}
-                    className="bg-primary w-full text-lg text-white transition-colors"
+                    className="bg-primary w-full text-lg text-primary-foreground transition-colors"
                   >
                     Logga ut
                   </Button>
@@ -199,7 +199,7 @@ export function Navbar() {
                   >
                     <Button
                       variant="default"
-                      className="w-full bg-black text-lg text-white transition-colors"
+                      className="w-full bg-primary text-lg text-primary-foreground transition-colors"
                     >
                       Logga in
                     </Button>
