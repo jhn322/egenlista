@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession, signOut } from 'next-auth/react';
 import { OnlineStatusIndicator } from '@/components/ui/online-status-indicator';
+import { LogoutIcon } from '@/components/icons/logout-icon';
 
 interface NavItem {
   href: string;
@@ -72,7 +73,7 @@ export function Navbar() {
     <>
       <div className="h-16" />
       <div className="relative">
-        <nav className="bg-background/80 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
+        <nav className="bg-background/90 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
           <div className="flex h-16 items-center justify-between px-6 md:px-8">
             <div className="flex items-center gap-8">
               <Link href="/" className="text-xl font-semibold text-foreground">
@@ -104,8 +105,9 @@ export function Navbar() {
                   <Button
                     variant="default"
                     onClick={() => signOut({ callbackUrl: '/' })}
-                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/80"
+                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/90 flex items-center gap-2"
                   >
+                    <LogoutIcon className="h-4 w-4" />
                     Logga ut
                   </Button>
                 </div>
@@ -113,7 +115,7 @@ export function Navbar() {
                 <Link href="/auth/login">
                   <Button
                     variant="default"
-                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/80"
+                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/90"
                   >
                     Logga in
                   </Button>
@@ -187,8 +189,9 @@ export function Navbar() {
                       signOut({ callbackUrl: '/' });
                       setIsOpen(false);
                     }}
-                    className="bg-primary w-full text-lg text-primary-foreground transition-colors"
+                    className="bg-primary w-full text-lg text-primary-foreground transition-colors flex items-center justify-center gap-2"
                   >
+                    <LogoutIcon className="h-5 w-5" />
                     Logga ut
                   </Button>
                 ) : (

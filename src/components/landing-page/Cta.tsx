@@ -10,7 +10,7 @@ export default function CtaSection() {
         <h2 className="mb-6 text-3xl font-bold md:text-4xl">
           Kom igång med Egen Lista idag
         </h2>
-        <p className="mx-auto mb-10 max-w-2xl text-xl text-primary-foreground/80">
+        <p className="mx-auto mb-10 max-w-2xl text-xl text-primary-foreground/90">
           Anslut dig till hundratals svenska företagare som redan använder Egen
           Lista för att bygga starkare kundrelationer.
         </p>
@@ -26,7 +26,7 @@ export default function CtaSection() {
               Kom igång gratis
             </Button>
           </form>
-          <p className="mt-4 text-sm text-primary-foreground/80">
+          <p className="mt-4 text-sm text-primary-foreground/90">
             Avsluta när du vill.
           </p>
         </div>
