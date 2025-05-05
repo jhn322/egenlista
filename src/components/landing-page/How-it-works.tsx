@@ -29,7 +29,7 @@ export default function HowItWorksSection() {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className="relative order-2 h-[500px] overflow-hidden rounded-lg lg:order-1">
             <Image
-              src="/placeholder.svg?height=500&width=700"
+              src="/how-it-works/how-it-works-1.jpg"
               alt="Egen Lista workflow"
               fill
               className="object-cover"
