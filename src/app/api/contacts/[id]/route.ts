@@ -11,17 +11,16 @@ import {
   deleteContact,
 } from "@/lib/contacts/utils/actions"; // Corrected path
 
-// Removed Params interface as it will be defined inline
-// interface Params {
-//   id: string;
-// }
+interface Params {
+  id: string;
+}
 
 //* GET requests for fetching a single contact
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } } // Use inline type
+  { params }: { params: Promise<Params> }
 ) {
-  const contactId = params.id;
+  const contactId = (await params).id;
 
   try {
     const session = await getServerSession(authOptions);
@@ -61,9 +60,9 @@ export async function GET(
 //* PUT requests for updating a contact
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } } // Use inline type
+  { params }: { params: Promise<Params> } // Use inline type
 ) {
-  const contactId = params.id;
+  const contactId = (await params).id;
   let requestBody: unknown;
 
   try {
@@ -140,9 +139,9 @@ export async function PUT(
 //* DELETE requests for deleting a contact
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } } // Use inline type
+  { params }: { params: Promise<Params> } // Use inline type
 ) {
-  const contactId = params.id;
+  const contactId = (await params).id;
 
   try {
     const session = await getServerSession(authOptions);
