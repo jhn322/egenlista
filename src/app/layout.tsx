@@ -22,6 +22,10 @@ export const metadata: Metadata = {
     'kundhantering',
     'företagsverktyg',
   ],
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
   openGraph: {
     title: 'Egen Lista | Ett enkelt verktyg för svenska företagare',
     description:

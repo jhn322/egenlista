@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function ToolsSection() {
   return (
-    <section className="w-full bg-secondary px-4 py-24">
+    <section className="relative w-full bg-secondary px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 text-center">
           <h2 className="text-3xl font-bold text-primary md:text-4xl">
@@ -29,19 +29,19 @@ export default function ToolsSection() {
             </p>
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-primary"></div>
+                <div className="h-2 w-2 rounded-lg bg-primary"></div>
                 <span className="text-muted-foreground">
                   Kundengagemang och aktivitet
                 </span>
               </li>
               <li className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-primary"></div>
+                <div className="h-2 w-2 rounded-lg bg-primary"></div>
                 <span className="text-muted-foreground">
                   Försäljningstrender och prognoser
                 </span>
               </li>
               <li className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-primary"></div>
+                <div className="h-2 w-2 rounded-lg bg-primary"></div>
                 <span className="text-muted-foreground">
                   Segmentering och målgruppsanalys
                 </span>
@@ -51,9 +51,9 @@ export default function ToolsSection() {
               Utforska analysfunktioner
             </Button>
           </div>
-          <div className="relative h-[500px] overflow-hidden rounded-xl">
+          <div className="relative h-[500px] overflow-hidden rounded-lg">
             <Image
-              src="/placeholder.svg?height=500&width=700"
+              src="/tools/tools-1.jpg"
               alt="Dataanalys i Egen Lista"
               fill
               className="object-cover"
@@ -61,6 +61,7 @@ export default function ToolsSection() {
           </div>
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background z-5"></div>
     </section>
   );
 }

@@ -8,31 +8,31 @@ const useCases = [
     title: 'Småföretagare',
     description:
       'Perfekt för småföretagare som vill hålla koll på sina kunder utan komplicerade system.',
-    image: '/placeholder.svg?height=300&width=400',
+    image: '/use-cases/use-cases-1.jpg',
   },
   {
     title: 'E-handlare',
     description:
       'Hantera dina onlinekunder och förbättra din e-handelsstrategi med kundinsikter.',
-    image: '/placeholder.svg?height=300&width=400',
+    image: '/use-cases/use-cases-2.jpg',
   },
   {
     title: 'Konsulter',
     description:
       'Håll reda på dina klienter och projekt för att leverera bättre tjänster.',
-    image: '/placeholder.svg?height=300&width=400',
+    image: '/use-cases/use-cases-3.jpg',
   },
   {
     title: 'Tjänsteföretag',
     description:
       'Förbättra kundupplevelsen genom att ha all kundinformation lättillgänglig.',
-    image: '/placeholder.svg?height=300&width=400',
+    image: '/use-cases/use-cases-4.jpg',
   },
 ];
 
 export default function UseCasesSection() {
   return (
-    <section className="w-full bg-background px-4 py-24">
+    <section className="relative w-full bg-background px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 text-center">
           <h2 className="text-3xl font-bold text-primary md:text-4xl">
@@ -65,6 +65,7 @@ export default function UseCasesSection() {
           ))}
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-secondary z-5"></div>
     </section>
   );
 }

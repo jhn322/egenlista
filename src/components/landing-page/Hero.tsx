@@ -1,13 +1,28 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { ArrowIcon } from '@/components/icons/arrow-icon';
 
 export default function HeroSection() {
   return (
-    <section className="w-full bg-secondary px-4 py-24 md:py-32 lg:py-40">
-      <div className="container mx-auto max-w-6xl">
+    <section className="relative w-full bg-secondary px-4 py-32 md:py-40 lg:py-48 overflow-hidden">
+      {/* Background Image with Blur Effect */}
+      <div className="absolute inset-0 overflow-hidden">
+        <Image
+          src="/logo-bg.png"
+          alt="Background"
+          fill
+          className="object-none object-center opacity-30 blur-[20px]"
+          style={{ transform: 'scale(1)' }}
+          priority
+        />
+      </div>
+
+      {/* Gradient Overlay */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-background z-5"></div>
+
+      <div className="container relative z-10 mx-auto max-w-6xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className="space-y-6">
             <h1 className="text-5xl font-bold tracking-tight text-primary md:text-6xl">
@@ -25,21 +40,12 @@ export default function HeroSection() {
                 variant="outline"
                 className="border-border text-foreground"
               >
-                Se demo <ArrowRight className="ml-2 h-4 w-4" />
+                Se demo <ArrowIcon className="ml-2" />
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
               Ingen kreditkort krävs. Gratis för små företag.
             </p>
-          </div>
-          <div className="relative h-[500px] overflow-hidden rounded-xl lg:h-[600px]">
-            <Image
-              src="/placeholder.svg?height=600&width=800"
-              alt="Egen Lista adminpanel"
-              fill
-              className="object-cover"
-              priority
-            />
           </div>
         </div>
       </div>

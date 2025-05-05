@@ -35,7 +35,7 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="w-full bg-background px-4 py-24">
+    <section className="relative w-full bg-background px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 space-y-4 text-center">
           <h2 className="text-3xl font-bold text-primary md:text-4xl">
@@ -88,6 +88,7 @@ export default function TestimonialsSection() {
           ))}
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-primary z-5"></div>
     </section>
   );
 }

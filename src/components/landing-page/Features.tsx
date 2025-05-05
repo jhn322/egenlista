@@ -7,36 +7,39 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Users, ListChecks, BarChart3, Mail } from 'lucide-react';
+import { ClientsIcon } from '@/components/icons/clients-icon';
+import { CheckmarklistIcon } from '@/components/icons/checkmarklist-icon';
+import { AnalyticsIcon } from '@/components/icons/analytics-icon';
+import { MailIcon } from '@/components/icons/mail-icon';
 
 const features = [
   {
     title: 'Hantera kundlistor',
     description: 'Skapa och organisera dina kundlistor enkelt och effektivt.',
-    icon: Users,
+    icon: ClientsIcon,
   },
   {
     title: 'Spåra interaktioner',
     description:
       'Håll koll på alla kundkontakter och följ upp vid rätt tidpunkt.',
-    icon: ListChecks,
+    icon: CheckmarklistIcon,
   },
   {
     title: 'Analysera data',
     description:
       'Få insikter om dina kunder och förbättra dina affärsrelationer.',
-    icon: BarChart3,
+    icon: AnalyticsIcon,
   },
   {
     title: 'Automatisera utskick',
     description: 'Skicka personliga meddelanden till dina kunder automatiskt.',
-    icon: Mail,
+    icon: MailIcon,
   },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section className="w-full bg-background px-4 py-24">
+    <section className="relative w-full bg-background px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 space-y-4 text-center">
           <h2 className="text-3xl font-bold text-primary md:text-4xl">

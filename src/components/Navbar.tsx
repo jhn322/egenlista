@@ -106,7 +106,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-md px-2 py-1 text-foreground transition-colors hover:bg-accent ${
+                    className={`rounded-lg px-2 py-1 text-foreground transition-colors hover:bg-accent ${
                       isActiveLink(item.href) && 'font-medium'
                     }`}
                   >
@@ -123,7 +123,7 @@ export function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-2 rounded-md px-2 py-1 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                      className="flex items-center gap-2 rounded-lg px-2 py-1 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                       <UserIcon />
                       <span>
@@ -316,7 +316,7 @@ export function Navbar() {
                   className={`relative text-3xl transition-colors ${
                     isActiveLink(item.href)
                       ? 'font-medium text-foreground'
-                      : 'hover:bg-secondary rounded-md px-2 py-1 text-foreground'
+                      : 'hover:bg-secondary rounded-lg px-2 py-1 text-foreground'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >

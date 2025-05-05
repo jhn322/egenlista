@@ -22,10 +22,12 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="w-full bg-secondary px-4 py-24">
+    <section className="relative w-full bg-secondary px-4 py-24">
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background to-transparent"></div>
+
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="relative order-2 h-[500px] overflow-hidden rounded-xl lg:order-1">
+          <div className="relative order-2 h-[500px] overflow-hidden rounded-lg lg:order-1">
             <Image
               src="/placeholder.svg?height=500&width=700"
               alt="Egen Lista workflow"
@@ -47,7 +49,7 @@ export default function HowItWorksSection() {
             <div className="space-y-6">
               {steps.map((step, index) => (
                 <div key={index} className="flex items-start gap-4">
-                  <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary">
+                  <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-primary">
                     <Check className="h-4 w-4 text-primary-foreground" />
                   </div>
                   <div>
@@ -62,6 +64,7 @@ export default function HowItWorksSection() {
           </div>
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background z-5"></div>
     </section>
   );
 }
