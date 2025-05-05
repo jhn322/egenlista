@@ -1,13 +1,24 @@
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 // ---------- Konfiguration ----------
 const BASE_URL_PLACEHOLDER = '{{baseUrl}}';
-const COLLECTION_NAME = 'App Auth API';
-const ENVIRONMENT_NAME = 'App Auth Environment';
-const OUTPUT_COLLECTION_FILENAME = 'auth-api.postman_collection.json';
-const OUTPUT_ENVIRONMENT_FILENAME = 'auth-api.postman_environment.json';
-// ---------------------------------
+const COLLECTION_NAME = 'EgenLista API';
+const ENVIRONMENT_NAME = 'EgenLista Environment';
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const OUTPUT_DIR = dirname(__filename);
+
+const OUTPUT_COLLECTION_FILENAME = path.join(
+  OUTPUT_DIR,
+  'EgenLista-API.postman_collection.json'
+);
+const OUTPUT_ENVIRONMENT_FILENAME = path.join(
+  OUTPUT_DIR,
+  'EgenLista-API.postman_environment.json'
+);
 
 // API struktur för Auth
 const apiRoutes = [
@@ -93,13 +104,65 @@ const apiRoutes = [
       },
     ],
   },
+  {
+    name: 'Contacts API',
+    description: 'Endpoints for managing user contacts',
+    endpoints: [
+      {
+        name: 'List Contacts',
+        method: 'GET',
+        path: '/api/contacts',
+        description:
+          'Hämtar alla kontakter för den inloggade användaren. Kräver giltig session (cookie).',
+      },
+      {
+        name: 'Create Contact',
+        method: 'POST',
+        path: '/api/contacts',
+        description:
+          'Skapar en ny kontakt för den inloggade användaren. Kräver giltig session (cookie). CSRF-token behövs troligen ej här då det inte är en traditionell formulärpost mot /api/auth, men skadar inte att ha med om servern kräver det för alla POST.',
+        body: {
+          firstName: 'Test',
+          lastName: 'Contactsson',
+          email: 'test.contact@example.com',
+          phone: '123-456789', // Optional
+        },
+      },
+      {
+        name: 'Get Contact by ID',
+        method: 'GET',
+        path: '/api/contacts/{{testContactId}}',
+        description:
+          'Hämtar en specifik kontakt med ID. Kräver giltig session (cookie). Ange ett giltigt kontakt-ID i miljövariabeln `testContactId`.',
+      },
+      {
+        name: 'Update Contact',
+        method: 'PUT',
+        path: '/api/contacts/{{testContactId}}',
+        description:
+          'Uppdaterar en specifik kontakt med ID. Kräver giltig session (cookie). Ange ett giltigt kontakt-ID i `testContactId`. Skickar endast med de fält som ska uppdateras.',
+        body: {
+          // Exempel: Uppdatera endast telefon och typ
+          phone: '987-654321',
+          type: 'CUSTOMER', // LEAD, CUSTOMER, AMBASSADOR
+        },
+      },
+      {
+        name: 'Delete Contact',
+        method: 'DELETE',
+        path: '/api/contacts/{{testContactId}}',
+        description:
+          'Tar bort en specifik kontakt med ID. Kräver giltig session (cookie). Ange ett giltigt kontakt-ID i `testContactId`.',
+      },
+    ],
+  },
 ];
 
 // Skapa Postman collection
 const collection = {
   info: {
     name: COLLECTION_NAME,
-    description: 'Postman collection för appens autentiserings-API',
+    description: 'Postman collection för EgenLista API',
     schema:
       'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
   },
@@ -132,6 +195,12 @@ const environment = {
       key: 'testUserPassword',
       value: 'password123', // Byt till lösenordet för testanvändaren
       type: 'secret',
+      enabled: true,
+    },
+    {
+      key: 'testContactId',
+      value: '', // Fyll i manuellt med ID för en befintlig kontakt för GET/PUT/DELETE tester
+      type: 'default',
       enabled: true,
     },
   ],
@@ -257,23 +326,17 @@ try {
     OUTPUT_COLLECTION_FILENAME,
     JSON.stringify(collection, null, 2) // Indentera för läsbarhet
   );
-  console.log(
-    `✅ Postman collection saved to ${path.resolve(OUTPUT_COLLECTION_FILENAME)}`
-  );
+  console.log(`✅ Postman collection saved to ${OUTPUT_COLLECTION_FILENAME}`);
 
   fs.writeFileSync(
     OUTPUT_ENVIRONMENT_FILENAME,
     JSON.stringify(environment, null, 2) // Indentera för läsbarhet
   );
-  console.log(
-    `✅ Postman environment saved to ${path.resolve(
-      OUTPUT_ENVIRONMENT_FILENAME
-    )}`
-  );
+  console.log(`✅ Postman environment saved to ${OUTPUT_ENVIRONMENT_FILENAME}`);
 
   console.log('\nNästa steg:');
   console.log(
-    `1. Importera ${OUTPUT_COLLECTION_FILENAME} och ${OUTPUT_ENVIRONMENT_FILENAME} i Postman.`
+    `1. Importera ${path.basename(OUTPUT_COLLECTION_FILENAME)} och ${path.basename(OUTPUT_ENVIRONMENT_FILENAME)} i Postman.`
   );
   console.log('2. Välj den importerade miljön (uppe till höger).');
   console.log(

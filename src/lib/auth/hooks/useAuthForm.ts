@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
-import { registerFormSchema } from '@/lib/validations/auth/register';
+import { registerFormSchema } from '@/lib/auth/validation/register';
 import type { AuthFormData } from '@/components/auth/AuthForm/types';
 import { AUTH_MESSAGES, AUTH_ROUTES } from '@/lib/auth/constants/auth';
 import { registerUser } from '@/services/auth/mutations/register';
