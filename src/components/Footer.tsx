@@ -57,7 +57,7 @@ export default function Footer() {
   return (
     <footer className="w-full bg-white">
       <Separator className="mb-4 bg-black/20" />
-      <div className="container px-4 py-8 md:py-12">
+      <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="flex flex-col space-y-8">
           {/* Logo and Brand */}
           <div className="flex items-center">
@@ -195,8 +195,8 @@ export default function Footer() {
           </section>
 
           {/* Footer Bottom */}
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <CardDescription className="text-sm text-black">
+          <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
+            <CardDescription className="text-center text-sm text-black md:text-left">
               © {currentYear} | Egen Lista.
             </CardDescription>
 
