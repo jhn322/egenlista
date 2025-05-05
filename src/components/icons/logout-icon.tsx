@@ -1,8 +1,6 @@
 import * as React from 'react';
 
-interface LogoutIconProps extends React.SVGProps<SVGSVGElement> {}
-
-export const LogoutIcon: React.FC<LogoutIconProps> = (props) => (
+export const LogoutIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +9,7 @@ export const LogoutIcon: React.FC<LogoutIconProps> = (props) => (
     width={24}
     fill="none"
     stroke="currentColor"
-    strokeWidth={1}
+    strokeWidth={1.5}
     strokeLinecap="round"
     strokeLinejoin="round"
     {...props}

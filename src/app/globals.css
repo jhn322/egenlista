@@ -125,3 +125,25 @@
 /* * Component Styles * */
 @layer components {
 }
+
+html body[data-scroll-locked] {
+  --removed-body-scroll-bar-size: 0 !important;
+  margin-right: 0 !important;
+  overflow-y: auto !important;
+}
+
+/* Override pointer-events to enable scrolling */
+.react-remove-scroll-y-auto {
+  position: static !important;
+  overflow-y: auto !important;
+}
+
+/* Prevent modal layer from blocking scroll events */
+div[data-radix-popper-content-wrapper] {
+  pointer-events: auto !important;
+}
+
+/* Reset events capturing for scroll area */
+div[data-state="open"] ~ div.fixed.inset-0 {
+  pointer-events: none !important;
+}
