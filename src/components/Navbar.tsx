@@ -34,7 +34,6 @@ const publicNavItems: NavItem[] = [
   { href: '/page2', label: 'Page 2' },
   { href: '/page3', label: 'Page 3' },
   { href: '/page4', label: 'Page 4' },
-  { href: '/page5', label: 'Page 5' },
 ];
 
 // Rollspecifika navigationslänkar
@@ -126,14 +125,14 @@ export function Navbar() {
                       variant="ghost"
                       className="flex items-center gap-2 rounded-md px-2 py-1 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
-                      <UserIcon className="h-5 w-5" />
+                      <UserIcon />
                       <span>
                         {capitalizeFirstLetter(
                           session?.user?.name || session?.user?.email
                         )}
                       </span>
                       <ChevronIcon
-                        className={`h-4 w-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                        className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
                       />
                     </Button>
                   </DropdownMenuTrigger>
@@ -162,17 +161,17 @@ export function Navbar() {
                     {userRole === 'USER' && (
                       <Link href="/admin">
                         <DropdownMenuItem className="cursor-pointer">
-                          <AdminIcon className="mr-2 h-4 w-4" />
+                          <AdminIcon className="mr-2" />
                           <span>Admin Panel</span>
                         </DropdownMenuItem>
                       </Link>
                     )}
                     <DropdownMenuItem disabled className="cursor-not-allowed">
-                      <SettingsIcon className="mr-2 h-4 w-4" />
+                      <SettingsIcon className="mr-2" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem disabled className="cursor-not-allowed">
-                      <FAQIcon className="mr-2 h-4 w-4" />
+                      <FAQIcon className="mr-2" />
                       <span>FAQ</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -180,12 +179,12 @@ export function Navbar() {
                       onClick={() => signOut({ callbackUrl: '/' })}
                       className="cursor-pointer"
                     >
-                      <LogoutIcon className="mr-2 h-4 w-4" />
+                      <LogoutIcon className="mr-2" />
                       <span>Logga ut</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : (
+              ) : status === 'unauthenticated' ? (
                 <Link href="/auth/login">
                   <Button
                     variant="default"
@@ -194,12 +193,12 @@ export function Navbar() {
                     Logga in
                   </Button>
                 </Link>
-              )}
+              ) : null}
             </div>
             
             {/* User Dropdown (if authenticated) */}
             <div className="flex items-center gap-2 md:hidden">
-              {/* Mobile User Dropdown - Outside the menu */}
+              {/* Mobile User Dropdown */}
               {isAuthenticated && (
                 <DropdownMenu onOpenChange={setIsDropdownOpen}>
                   <DropdownMenuTrigger asChild>
@@ -238,17 +237,17 @@ export function Navbar() {
                     {userRole === 'USER' && (
                       <Link href="/admin" onClick={() => setIsOpen(false)}>
                         <DropdownMenuItem className="cursor-pointer">
-                          <AdminIcon className="mr-2 h-4 w-4" />
+                          <AdminIcon className="mr-2" />
                           <span>Admin Panel</span>
                         </DropdownMenuItem>
                       </Link>
                     )}
                     <DropdownMenuItem disabled className="cursor-not-allowed">
-                      <SettingsIcon className="mr-2 h-4 w-4" />
+                      <SettingsIcon className="mr-2" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem disabled className="cursor-not-allowed">
-                      <FAQIcon className="mr-2 h-4 w-4" />
+                      <FAQIcon className="mr-2" />
                       <span>FAQ</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -259,7 +258,7 @@ export function Navbar() {
                       }}
                       className="cursor-pointer"
                     >
-                      <LogoutIcon className="mr-2 h-4 w-4" />
+                      <LogoutIcon className="mr-2" />
                       <span>Logga ut</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -326,7 +325,7 @@ export function Navbar() {
               ))}
 
               <div className="mt-8 w-full max-w-[200px]">
-                {!isAuthenticated && (
+                {status === 'unauthenticated' && (
                   <Link
                     href="/auth/login"
                     className="block w-full"

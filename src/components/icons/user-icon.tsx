@@ -1,14 +1,23 @@
 import * as React from 'react';
 
-export const UserIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+interface UserIconProps extends React.SVGProps<SVGSVGElement> {
+  color?: string;
+  iconSize?: number;
+}
+
+export const UserIcon: React.FC<UserIconProps> = ({
+  color = 'black',
+  iconSize = 24,
+  ...props
+}) => (
   <svg
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
     id="Single-Neutral--Streamline-Ultimate"
-    height={24}
-    width={24}
+    height={iconSize}
+    width={iconSize}
     fill="none"
-    stroke="currentColor"
+    stroke={color}
     strokeWidth={1.5}
     strokeLinecap="round"
     strokeLinejoin="round"
