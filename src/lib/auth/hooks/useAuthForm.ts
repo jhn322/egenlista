@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { toast } from 'sonner';
 import { registerFormSchema } from '@/lib/validations/auth/register';
 import type { AuthFormData } from '@/components/auth/AuthForm/types';
 import { AUTH_MESSAGES, AUTH_ROUTES } from '@/lib/auth/constants/auth';
@@ -44,9 +45,11 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
           );
         }
 
-        // Visa meddelande och omdirigera till login
-        console.log(AUTH_MESSAGES.INFO_REGISTRATION_REDIRECT); // TODO: Byt ut mot en alert/toast
-        router.push(`${AUTH_ROUTES.LOGIN}?registered=true`);
+        // Show success toast and redirect to verify needed page
+        toast.success(result.message || AUTH_MESSAGES.INFO_VERIFICATION_EMAIL_SENT);
+        router.push(
+          `${AUTH_ROUTES.VERIFY_NEEDED}?email=${encodeURIComponent(validatedData.email)}`
+        );
       } else {
         //* Logga in användare
         const result = await signIn('credentials', {
@@ -59,22 +62,30 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
           // Hantera specifika fel från NextAuth authorize
           if (result.error === 'CredentialsSignin') {
             // NextAuth ger detta generiska fel, men vi kan härleda det från context
-            throw new Error(AUTH_MESSAGES.ERROR_INVALID_CREDENTIALS);
+            setError(AUTH_MESSAGES.ERROR_INVALID_CREDENTIALS);
           } else if (result.error === 'User not found') {
-            throw new Error(AUTH_MESSAGES.ERROR_INVALID_CREDENTIALS);
+            setError(AUTH_MESSAGES.ERROR_INVALID_CREDENTIALS);
           } else if (result.error === 'Incorrect password') {
-            throw new Error(AUTH_MESSAGES.ERROR_INVALID_CREDENTIALS);
+            setError(AUTH_MESSAGES.ERROR_INVALID_CREDENTIALS);
           } else if (result.error === 'EMAIL_NOT_VERIFIED') {
-            throw new Error(AUTH_MESSAGES.ERROR_EMAIL_NOT_VERIFIED);
+            // Redirect to verify needed page instead of setting error
+            toast.error(AUTH_MESSAGES.ERROR_EMAIL_NOT_VERIFIED);
+            router.push(
+              `${AUTH_ROUTES.VERIFY_NEEDED}?email=${encodeURIComponent(data.email)}`
+            );
           } else {
-            throw new Error(result.error || AUTH_MESSAGES.ERROR_LOGIN_FAILED);
+            setError(result.error || AUTH_MESSAGES.ERROR_LOGIN_FAILED);
           }
         } else {
+          // Successful login
+          toast.success(AUTH_MESSAGES.SUCCESS_LOGIN);
           if (onSuccess) {
             onSuccess();
           } else {
-            console.error(
-              'useAuthForm: onSuccess callback saknas efter lyckad inloggning.'
+            // Fallback if onSuccess is not provided
+            router.push(AUTH_ROUTES.LOGIN); // Or maybe DEFAULT_LOGIN_REDIRECT?
+            console.warn(
+              'useAuthForm: onSuccess callback missing after successful login. Redirecting to login page.'
             );
           }
         }
@@ -82,12 +93,18 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
     } catch (error) {
       // Hantera Zod valideringsfel specifikt
       if (error instanceof z.ZodError) {
-        setError(error.errors.map((e) => e.message).join(', '));
+        const errorMessage = error.errors.map((e) => e.message).join(', ');
+        setError(errorMessage);
+        toast.error(errorMessage);
+      } else if (error instanceof Error) {
+        setError(error.message);
+        toast.error(error.message);
       } else {
-        setError(
-          error instanceof Error ? error.message : AUTH_MESSAGES.ERROR_DEFAULT
-        );
+        // Fallback for unknown errors
+        setError(AUTH_MESSAGES.ERROR_DEFAULT);
+        toast.error(AUTH_MESSAGES.ERROR_DEFAULT);
       }
+      console.error('AuthForm Error:', error);
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { AuthCard } from '@/components/auth/AuthCard';
 import { GoogleButton } from '@/components/auth/GoogleButton';
 import { AuthDivider } from '@/components/auth/AuthDivider';
@@ -10,11 +11,15 @@ import { AuthFooter } from '@/components/auth/AuthFooter';
 import { useAuthForm } from '@/lib/auth/hooks/useAuthForm';
 import { useGoogleAuth } from '@/lib/auth/hooks/useGoogleAuth';
 import { useRedirect } from '@/lib/auth/hooks/useRedirect';
-import { DEFAULT_LOGIN_REDIRECT } from '@/lib/auth/constants/auth';
+import {
+  DEFAULT_LOGIN_REDIRECT,
+  AUTH_MESSAGES,
+} from '@/lib/auth/constants/auth';
 import { useAuth } from '@/lib/auth/hooks/useAuth';
 
 function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { redirectToCallback, redirectToRegister } = useRedirect();
 
   const { authenticated, loading: authLoading } = useAuth();
@@ -39,6 +44,20 @@ function LoginContent() {
       router.push(DEFAULT_LOGIN_REDIRECT);
     }
   }, [authenticated, authLoading, router]);
+
+  useEffect(() => {
+    const verified = searchParams?.get('verified');
+    const errorParam = searchParams?.get('error');
+
+    if (verified === 'true') {
+      toast.success(AUTH_MESSAGES.SUCCESS_VERIFICATION);
+    }
+
+    if (errorParam) {
+      const decodedError = decodeURIComponent(errorParam);
+      toast.error(decodedError || AUTH_MESSAGES.ERROR_DEFAULT);
+    }
+  }, [searchParams]);
 
   const isLoading = formLoading || googleLoading || authLoading;
 

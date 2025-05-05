@@ -5,8 +5,8 @@ import { USER_ROLES, UserRole } from '@/lib/auth/constants/auth';
  */
 export const formatRole = (role: UserRole): string => {
   const roleMap: Record<UserRole, string> = {
-    [USER_ROLES.USER]: 'Elev',
-    [USER_ROLES.ADMIN]: 'Administratör',
+    [USER_ROLES.USER]: 'User',
+    [USER_ROLES.ADMIN]: 'Admin',
   };
   return roleMap[role] || role;
 };
@@ -33,17 +33,4 @@ export const hasRequiredRole = (
     const requiredRoleIndex = roleHierarchy.indexOf(requiredRole);
     return requiredRoleIndex !== -1 && userRoleIndex >= requiredRoleIndex;
   }
-};
-
-/**
- * Säkert hämtar värdet av en miljövariabel, med felhantering
- */
-export const getEnvVar = (key: string): string => {
-  const value = process.env[key];
-  if (!value) {
-    // I produktion vill vi använda logger istället för console.error
-    console.error(`Miljövariabel ${key} är inte definierad!`);
-    return '';
-  }
-  return value;
 };

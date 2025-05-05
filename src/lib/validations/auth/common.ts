@@ -8,7 +8,9 @@ import { z } from 'zod';
 export const emailSchema = z
   .string()
   .min(1, { message: 'Email är obligatoriskt' })
-  .email({ message: 'Ogiltig email-format' });
+  .email({ message: 'Ogiltig email-format' })
+  .trim()
+  .toLowerCase();
 
 // Lösenord validering
 export const passwordSchema = z
