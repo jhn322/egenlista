@@ -46,3 +46,16 @@ next-env.d.ts
 # VsCode
 .vscode
 
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Postman generated files
+Postman/EgenLista-API.postman_collection.json
+Postman/EgenLista-API.postman_environment.json
+

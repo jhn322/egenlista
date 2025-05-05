@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 // import crypto from 'crypto'; // No longer needed here
 import prisma from '@/lib/prisma';
 import { USER_ROLES, AUTH_MESSAGES } from '@/lib/auth/constants/auth';
-import { registerApiSchema } from '@/lib/validations/auth/register';
+import { registerApiSchema } from '@/lib/auth/validation/register';
 import { ZodIssue } from 'zod';
 import { sendVerificationEmail } from '@/lib/email/sendVerificationEmail';
 import { generateAndSaveVerificationToken } from '@/lib/auth/utils/token'; // Import the new token function

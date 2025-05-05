@@ -24,6 +24,7 @@ model User {
   role          UserRole   @default(USER)
   accounts      Account[]  // Required for NextAuth
   sessions      Session[]  // Required for NextAuth
+  contacts      Contact[]  
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -66,9 +67,32 @@ model VerificationToken {
 }
 
 
+model Contact {
+  id            String     @id @default(cuid()) @map("_id")
+  userId        String  //Owner(user) of the contact
+  firstName     String
+  lastName      String
+  email         String    
+  phone         String?
+  type          ContactType   @default(LEAD)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, email]) // Only one contact per user per email
+}
+
 enum UserRole {
   USER
   ADMIN
 }
+
+// Define the types/statuses for a Lead/Contact
+enum ContactType {
+  LEAD      // Someone who might buy
+  CUSTOMER  // Someone who has bought
+  AMBASSADOR // Someone who promotes/sells for you
+}
+
 
 
