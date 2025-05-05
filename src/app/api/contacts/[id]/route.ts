@@ -11,15 +11,15 @@ import {
   deleteContact,
 } from "@/lib/contacts/utils/actions"; // Corrected path
 
-// Type for URL parameters
-interface Params {
-  id: string;
-}
+// Removed Params interface as it will be defined inline
+// interface Params {
+//   id: string;
+// }
 
 //* GET requests for fetching a single contact
 export async function GET(
   request: NextRequest,
-  { params }: { params: Params }
+  { params }: { params: { id: string } } // Use inline type
 ) {
   const contactId = params.id;
 
@@ -61,7 +61,7 @@ export async function GET(
 //* PUT requests for updating a contact
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Params }
+  { params }: { params: { id: string } } // Use inline type
 ) {
   const contactId = params.id;
   let requestBody: unknown;
@@ -140,7 +140,7 @@ export async function PUT(
 //* DELETE requests for deleting a contact
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Params }
+  { params }: { params: { id: string } } // Use inline type
 ) {
   const contactId = params.id;
 
