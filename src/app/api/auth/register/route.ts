@@ -4,24 +4,15 @@
 
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
+// import crypto from 'crypto'; // No longer needed here
 import prisma from '@/lib/prisma';
 import { USER_ROLES, AUTH_MESSAGES } from '@/lib/auth/constants/auth';
 import { registerApiSchema } from '@/lib/validations/auth/register';
 import { ZodIssue } from 'zod';
-import { sendVerificationEmail } from '@/lib/email/sendVerificationEmail'; // Import the updated service
-// Removed getEnvVar import as it's handled within sendVerificationEmail now
+import { sendVerificationEmail } from '@/lib/email/sendVerificationEmail';
+import { generateAndSaveVerificationToken } from '@/lib/auth/utils/token'; // Import the new token function
 
-// ** Helper Functions ** //
-/**
- * Calculates the expiration date for a verification token (24 hours from now).
- * @returns Date object representing the expiration time.
- */
-const getVerificationTokenExpires = (): Date => {
-  const expires = new Date();
-  expires.setHours(expires.getHours() + 24);
-  return expires;
-};
+// Removed the local getVerificationTokenExpires helper function
 
 // ** POST Handler ** //
 /**
@@ -89,22 +80,12 @@ export async function POST(req: Request) {
     });
     console.log(`User created: ${user.email} (ID: ${user.id})`);
 
-    // * 5. Generate and Store Verification Token
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    const expires = getVerificationTokenExpires();
-
-    await prisma.verificationToken.create({
-      data: {
-        identifier: email,
-        token: verificationToken, // Store the raw token (used for lookup)
-        expires,
-      },
-    });
-    console.log(`Verification token created for: ${email}`);
+    // * 5. Generate, Save Verification Token (using the utility function)
+    const verificationToken = await generateAndSaveVerificationToken(email);
+    // The utility function now handles logging for token creation/deletion
 
     // * 6. Send Verification Email using the Service Function
     try {
-      // Now simply call the service function
       await sendVerificationEmail(email, verificationToken);
       // Service function handles logging success/failure of the API call
     } catch (emailError) {

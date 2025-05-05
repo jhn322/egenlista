@@ -11,6 +11,7 @@ export const AUTH_ROUTES = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
   VERIFY_EMAIL: '/auth/verify-email',
+  VERIFY_NEEDED: '/auth/verify-needed',
   UNAUTHORIZED: '/unauthorized',
   AUTH_ERROR: '/auth/error',
 };
@@ -23,6 +24,7 @@ export const PUBLIC_ROUTES = [
   AUTH_ROUTES.FORGOT_PASSWORD,
   AUTH_ROUTES.RESET_PASSWORD,
   AUTH_ROUTES.VERIFY_EMAIL,
+  AUTH_ROUTES.VERIFY_NEEDED,
   AUTH_ROUTES.AUTH_ERROR,
   '/',
   '/about',

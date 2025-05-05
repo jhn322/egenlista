@@ -48,12 +48,14 @@ export const authOptions: NextAuthOptions = {
           update: {
             name: user.name,
             image: user.image,
+            emailVerified: new Date(),
           },
           create: {
             email: user.email!,
             name: user.name!,
             image: user.image,
             role: USER_ROLES.USER,
+            emailVerified: new Date(),
           },
         });
       }

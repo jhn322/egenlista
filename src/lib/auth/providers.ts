@@ -34,13 +34,17 @@ export const configureProviders = () => [
         throw new Error(AUTH_MESSAGES.ERROR_MISSING_FIELDS);
       }
 
+      // Convert email to lowercase before database lookup
+      const lowerCaseEmail = credentials.email.toLowerCase();
+
       const user = await prisma.user.findUnique({
-        where: { email: credentials.email },
+        where: { email: lowerCaseEmail }, // Use lowercased email for lookup
       });
 
       if (!user || !user.password) {
-        // Använd ett specifikt internt fel för att indikera att användaren inte hittades
-        throw new Error('User not found');
+        // User not found (or OAuth user trying to login with credentials)
+        console.warn(`Login attempt failed for ${lowerCaseEmail}: User not found or no password set.`);
+        throw new Error('User not found'); // Keep error generic for security
       }
 
       // Validera lösenordet först

@@ -181,3 +181,71 @@ export async function consumeVerificationToken(
     return false;
   }
 }
+
+// ** Constants ** //
+const VERIFICATION_TOKEN_EXPIRES_IN_HOURS = 24;
+
+// ** Helper Functions ** //
+/**
+ * Calculates the expiration date for a verification token.
+ * @returns Date object representing the expiration time.
+ */
+const getVerificationTokenExpires = (): Date => {
+  const expires = new Date();
+  expires.setHours(expires.getHours() + VERIFICATION_TOKEN_EXPIRES_IN_HOURS);
+  return expires;
+};
+
+// ** Function: generateAndSaveVerificationToken ** //
+/**
+ * Generates a unique verification token, deletes any existing tokens for the
+ * specified email, saves the new token to the database, and returns the token.
+ * @param email - The email address (identifier) for which to generate the token.
+ * @returns The generated verification token string.
+ * @throws Will throw an error if database operations fail.
+ */
+export const generateAndSaveVerificationToken = async (
+  email: string
+): Promise<string> => {
+  // * 1. Generate a secure token
+  const token = randomBytes(32).toString('hex');
+  const expires = getVerificationTokenExpires();
+
+  console.log(
+    `Generated verification token for ${email} (expires: ${expires.toISOString()})`
+  );
+
+  try {
+    // * 2. Delete any existing verification tokens for this email
+    // This ensures only the latest verification link is valid.
+    const deleteResult = await prisma.verificationToken.deleteMany({
+      where: { identifier: email },
+    });
+    if (deleteResult.count > 0) {
+      console.log(
+        `Deleted ${deleteResult.count} existing verification token(s) for ${email}`
+      );
+    }
+
+    // * 3. Save the new verification token
+    await prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token: token, // Store the raw token
+        expires,
+      },
+    });
+    console.log(`Successfully saved new verification token for ${email}`);
+
+    // * 4. Return the generated token
+    return token;
+  } catch (error) {
+    console.error(
+      `Failed to save verification token for ${email}:`,
+      error
+    );
+    throw new Error('Could not generate or save verification token.');
+  }
+};
+
+// Potentially add functions for password reset tokens later if needed
