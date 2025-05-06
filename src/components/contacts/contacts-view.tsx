@@ -8,6 +8,7 @@ import { Contact } from '@/generated/prisma';
 
 import { ContactList } from './contact-list';
 import { EditContactFeature } from './edit-contact-feature';
+import { DeleteContactFeature } from './delete-contact-feature';
 // We might also move ContactStats and CreateContactFeature here if needed,
 // but for now, let's keep them separate in the Page component.
 
@@ -24,52 +25,56 @@ export function ContactsView({
   userIsPro,
   userId,
 }: ContactsViewProps) {
-  // State for the contact currently being edited
+  // State for managing the currently selected contact for editing
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
-  // State to control the edit dialog's visibility
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  // Handler function passed to ContactList
+  // State for managing the currently selected contact for deletion
+  const [deletingContact, setDeletingContact] = useState<Pick<
+    Contact,
+    'id' | 'firstName' | 'lastName'
+  > | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // Handler for when the edit button is clicked in the list
   const handleEditClick = (contact: Contact) => {
     setEditingContact(contact); // Set the contact to edit
-    setIsEditDialogOpen(true); // Open the dialog
+    setIsEditDialogOpen(true); // Open the edit dialog
   };
 
-  // Handler for closing/changing the dialog state, passed to EditContactFeature
-  const handleEditDialogChange = (open: boolean) => {
-    setIsEditDialogOpen(open);
-    if (!open) {
-      // Clear the editing contact when the dialog closes
-      setEditingContact(null);
-    }
-  };
-
-  // TODO: Implement delete confirmation and action
-  const handleDeleteClick = (contactId: string) => {
-    console.log('Attempting to delete contact:', contactId);
-    // Confirmation dialog logic would go here
-    // Then call deleteContact server action
+  // Handler for when the delete button is clicked in the list
+  const handleDeleteClick = (
+    contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
+  ) => {
+    console.log('Delete requested for:', contactInfo);
+    setDeletingContact(contactInfo); // Set the contact to delete
+    setIsDeleteDialogOpen(true); // Open the delete confirmation dialog
   };
 
   return (
-    <div className="space-y-6">
-      {/* Pass handleEditClick to ContactList */}
+    <div className="space-y-4">
       <ContactList
-        contacts={initialContacts} // Use the server-fetched contacts initially
-        onEdit={handleEditClick} // Pass the edit handler
-        onDelete={handleDeleteClick} // Pass the delete handler (placeholder)
+        contacts={initialContacts} // Use initialContacts directly
+        onEdit={handleEditClick}
+        onDelete={handleDeleteClick} // Pass the new handler
       />
 
-      {/* Edit Contact Modal (controlled by this component's state) */}
+      {/* Edit Contact Dialog */}
       <EditContactFeature
         contactToEdit={editingContact}
         isOpen={isEditDialogOpen}
-        onOpenChange={handleEditDialogChange}
+        onOpenChange={setIsEditDialogOpen}
         userIsPro={userIsPro}
         userId={userId}
       />
 
-      {/* TODO: Add Delete Confirmation Dialog here */}
+      {/* Delete Contact Confirmation Dialog */}
+      <DeleteContactFeature
+        contactToDelete={deletingContact}
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        userId={userId}
+      />
     </div>
   );
 }

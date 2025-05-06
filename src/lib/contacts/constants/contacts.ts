@@ -6,18 +6,20 @@
 
 // **  Toast Messages  ** //
 export const TOAST_MESSAGES = {
-  CONTACT_CREATED_SUCCESS_TITLE: 'Kontakt skapad!',
-  CONTACT_CREATED_SUCCESS_DESC: (name: string) =>
-    `${name} har lagts till i din lista.`,
-  CONTACT_UPDATED_SUCCESS_TITLE: 'Kontakt uppdaterad!',
-  CONTACT_UPDATED_SUCCESS_DESC: (name: string) => `${name} har uppdaterats.`,
-  CONTACT_DELETED_SUCCESS_TITLE: 'Kontakt borttagen!',
-  CONTACT_DELETED_SUCCESS_DESC: (name: string) => `${name} har tagits bort.`,
+  CONTACT_CREATED_SUCCESS_TITLE: 'Kontakt Skapad',
+  CONTACT_CREATED_SUCCESS_DESC: (contactName: string) =>
+    `Kontakten ${contactName} har lagts till i din lista.`,
+  CONTACT_UPDATED_SUCCESS_TITLE: 'Kontakt Uppdaterad',
+  CONTACT_UPDATED_SUCCESS_DESC: (contactName: string) =>
+    `Ändringarna för ${contactName} har sparats.`,
+  CONTACT_DELETED_SUCCESS_TITLE: 'Kontakt Borttagen',
+  CONTACT_DELETED_SUCCESS_DESC: (contactName: string) =>
+    `Kontakten ${contactName} har tagits bort från din lista.`,
   NO_CHANGES_TO_SAVE: 'Inga ändringar att spara.',
   CREATE_ERROR_TITLE: 'Kunde inte skapa kontakt',
   UPDATE_ERROR_TITLE: 'Kunde inte uppdatera kontakt',
   DELETE_ERROR_TITLE: 'Kunde inte ta bort kontakt',
-  UNKNOWN_ERROR_DESC: 'Ett oväntat fel inträffade. Försök igen.',
+  UNKNOWN_ERROR_DESC: 'Ett okänt fel inträffade. Försök igen senare.',
 };
 
 // **  Dialog Texts  ** //
@@ -32,12 +34,17 @@ export const DIALOG_TEXTS = {
     'Uppgradera till PRO för att skapa kontakter',
   CREATE_CONTACT_UPGRADE_PROMPT_DESCRIPTION:
     'Med ett PRO-medlemskap kan du manuellt lägga till kontakter direkt här.',
-  EDIT_CONTACT_PRO_DESCRIPTION: 'Ändra kontaktuppgifterna nedan.',
+  EDIT_CONTACT_PRO_DESCRIPTION:
+    'Ändra kontaktinformationen nedan. Alla fält utom typ är tillgängliga för PRO-användare.',
   EDIT_CONTACT_NON_PRO_DESCRIPTION:
-    'Som FREE-användare kan du endast ändra kontakttypen.',
-  // Add more specific dialog texts if needed, e.g., for delete confirmation
-  // DELETE_CONFIRM_TITLE: 'Bekräfta borttagning',
-  // DELETE_CONFIRM_DESC: (name: string) => `Är du säker på att du vill ta bort ${name}? Åtgärden kan inte ångras.`,
+    'Som GRATIS-användare kan du endast ändra kontaktens typ. Uppgradera till PRO för att redigera alla fält.',
+  // Delete Contact Dialog
+  DELETE_CONTACT_TITLE: 'Bekräfta borttagning',
+  DELETE_CONTACT_DESCRIPTION: (contactName: string) =>
+    `Är du säker på att du vill ta bort ${contactName}? Denna åtgärd kan inte ångras.`,
+  DELETE_CONTACT_CANCEL_BUTTON: 'Avbryt',
+  DELETE_CONTACT_CONFIRM_BUTTON: 'Ta bort',
+  DELETE_CONTACT_PENDING_BUTTON: 'Tar bort...',
 };
 
 // ** Server Action Error Messages (User-facing or for consistent internal handling) ** //

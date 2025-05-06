@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Contact, ContactType } from '@/generated/prisma';
-import { Edit3, Trash2, MoreVertical } from 'lucide-react'; // Icons
+import { Trash2, MoreVertical, Pencil } from 'lucide-react'; // Icons
 import { CONTACT_LIST_EMPTY_STATE } from '@/lib/contacts/constants/contacts'; // Import constants
 
 import {
@@ -28,7 +28,9 @@ import {
 interface ContactListProps {
   contacts: Contact[];
   onEdit: (contact: Contact) => void;
-  onDelete: (contactId: string) => void;
+  onDelete: (
+    contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
+  ) => void;
 }
 
 // **  Helper function to format ContactType  ** //
@@ -113,16 +115,25 @@ export function ContactList({ contacts, onEdit, onDelete }: ContactListProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(contact)}>
-                      <Edit3 className="mr-2 h-4 w-4" />
-                      Redigera
+                    <DropdownMenuItem
+                      onClick={() => onEdit(contact)}
+                      className="cursor-pointer"
+                    >
+                      <Pencil className="mr-2 h-4 w-4" />
+                      <span>Redigera</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => onDelete(contact.id)}
-                      className="text-red-600 focus:bg-red-50 focus:text-red-600 dark:focus:bg-red-900/50"
+                      onClick={() =>
+                        onDelete({
+                          id: contact.id,
+                          firstName: contact.firstName,
+                          lastName: contact.lastName,
+                        })
+                      }
+                      className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Ta bort
+                      <span>Ta bort</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
