@@ -11,6 +11,7 @@ import { registerApiSchema } from '@/lib/auth/validation/register';
 import { ZodIssue } from 'zod';
 import { sendVerificationEmail } from '@/lib/email/sendVerificationEmail';
 import { generateAndSaveVerificationToken } from '@/lib/auth/utils/token'; // Import the new token function
+import { API_AUTH_PATHS } from '@/lib/constants/routes'; // Import API_AUTH_PATHS
 
 // Removed the local getVerificationTokenExpires helper function
 
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
     const validationResult = registerApiSchema.safeParse(body);
     if (!validationResult.success) {
       const errors = validationResult.error.errors.map((e: ZodIssue) => e.message);
-      console.warn('Registration validation failed:', errors);
+      console.warn(`POST ${API_AUTH_PATHS.REGISTER}: Registration validation failed:`, errors);
       return NextResponse.json(
         { message: errors.join(', ') || AUTH_MESSAGES.ERROR_MISSING_FIELDS },
         { status: 400 }
@@ -50,14 +51,14 @@ export async function POST(req: Request) {
     if (existingUser) {
       if (existingUser.accounts && existingUser.accounts.length > 0) {
         // User exists and has linked OAuth account(s)
-        console.warn(`Registration conflict (OAuth): ${email}`);
+        console.warn(`POST ${API_AUTH_PATHS.REGISTER}: Registration conflict (OAuth): ${email}`);
         return NextResponse.json(
           { message: AUTH_MESSAGES.ERROR_EMAIL_EXISTS_OAUTH },
           { status: 409 } // 409 Conflict
         );
       } else {
         // User exists, likely registered with credentials before
-        console.warn(`Registration conflict (Credentials): ${email}`);
+        console.warn(`POST ${API_AUTH_PATHS.REGISTER}: Registration conflict (Credentials): ${email}`);
         return NextResponse.json(
           { message: AUTH_MESSAGES.ERROR_EMAIL_EXISTS },
           { status: 409 } // 409 Conflict
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
         role: USER_ROLES.USER, // Default role
       },
     });
-    console.log(`User created: ${user.email} (ID: ${user.id})`);
+    console.log(`POST ${API_AUTH_PATHS.REGISTER}: User created: ${user.email} (ID: ${user.id})`);
 
     // * 5. Generate, Save Verification Token (using the utility function)
     const verificationToken = await generateAndSaveVerificationToken(email);
@@ -91,7 +92,7 @@ export async function POST(req: Request) {
     } catch (emailError) {
       // Log the error here as well, but proceed as registration itself was successful
       console.error(
-        `Registration succeeded but email dispatch failed for ${email}:`,
+        `POST ${API_AUTH_PATHS.REGISTER}: Registration succeeded for ${email} but email dispatch failed:`,
         emailError instanceof Error ? emailError.message : emailError
       );
       // Continue to return success to the user, as the account is created.
@@ -109,7 +110,7 @@ export async function POST(req: Request) {
 
   } catch (error) {
     // * Handle Unexpected Errors
-    console.error('Unexpected registration error:', error);
+    console.error(`POST ${API_AUTH_PATHS.REGISTER}: Unexpected registration error:`, error);
     return NextResponse.json(
       { message: AUTH_MESSAGES.ERROR_REGISTRATION_FAILED },
       { status: 500 } // HTTP 500 Internal Server Error

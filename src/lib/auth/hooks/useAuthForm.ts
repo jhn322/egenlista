@@ -4,7 +4,8 @@ import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 import { registerFormSchema } from '@/lib/auth/validation/register';
 import type { AuthFormData } from '@/components/auth/AuthForm/types';
-import { AUTH_MESSAGES, AUTH_ROUTES } from '@/lib/auth/constants/auth';
+import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
+import { AUTH_PATHS, DEFAULT_LOGIN_REDIRECT_PATH } from '@/lib/constants/routes';
 import { registerUser } from '@/services/auth/mutations/register';
 import { z } from 'zod';
 
@@ -48,7 +49,7 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
         // Show success toast and redirect to verify needed page
         toast.success(result.message || AUTH_MESSAGES.INFO_VERIFICATION_EMAIL_SENT);
         router.push(
-          `${AUTH_ROUTES.VERIFY_NEEDED}?email=${encodeURIComponent(validatedData.email)}`
+          `${AUTH_PATHS.VERIFY_EMAIL_INFO_PAGE}?email=${encodeURIComponent(validatedData.email)}`
         );
       } else {
         //* Logga in användare
@@ -71,7 +72,7 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
             // Redirect to verify needed page instead of setting error
             toast.error(AUTH_MESSAGES.ERROR_EMAIL_NOT_VERIFIED);
             router.push(
-              `${AUTH_ROUTES.VERIFY_NEEDED}?email=${encodeURIComponent(data.email)}`
+              `${AUTH_PATHS.VERIFY_EMAIL_INFO_PAGE}?email=${encodeURIComponent(data.email)}`
             );
           } else {
             setError(result.error || AUTH_MESSAGES.ERROR_LOGIN_FAILED);
@@ -83,9 +84,9 @@ export const useAuthForm = ({ mode, onSuccess }: UseAuthFormProps) => {
             onSuccess();
           } else {
             // Fallback if onSuccess is not provided
-            router.push(AUTH_ROUTES.LOGIN); // Or maybe DEFAULT_LOGIN_REDIRECT?
+            router.push(DEFAULT_LOGIN_REDIRECT_PATH);
             console.warn(
-              'useAuthForm: onSuccess callback missing after successful login. Redirecting to login page.'
+              'useAuthForm: onSuccess callback missing after successful login. Redirecting to default login redirect path.'
             );
           }
         }

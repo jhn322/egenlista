@@ -3,7 +3,8 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { AUTH_ROUTES, UserRole } from '@/lib/auth/constants/auth';
+import { UserRole } from '@/lib/auth/constants/auth';
+import { AUTH_PATHS } from '@/lib/constants/routes';
 
 interface UseAuthProps {
   role?: UserRole | UserRole[];
@@ -32,7 +33,7 @@ export const useAuth = ({ role }: UseAuthProps = {}) => {
 
       if (!hasAccess) {
         // Om användaren är inloggad men har fel roll, skicka till obehörig-sidan
-        router.push(AUTH_ROUTES.UNAUTHORIZED);
+        router.push(AUTH_PATHS.UNAUTHORIZED);
       }
     }
   }, [loading, authenticated, role, session?.user?.role, router]);

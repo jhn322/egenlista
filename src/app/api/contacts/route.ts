@@ -9,6 +9,7 @@ import {
   getAllContactsForUser,
   createContact,
 } from '@/lib/contacts/utils/actions';
+import { API_APP_PATHS } from "@/lib/constants/routes";
 
 // CORS headers for all responses
 const corsHeaders = {
@@ -21,7 +22,7 @@ const corsHeaders = {
  * Handle OPTIONS requests for CORS preflight
  */
 export async function OPTIONS() {
-  console.log('OPTIONS /api/contacts: Handling CORS preflight request.');
+  console.log(`OPTIONS ${API_APP_PATHS.CONTACTS_BASE}: Handling CORS preflight request.`);
   return new NextResponse(null, {
     status: 204, // No Content
     headers: corsHeaders,
@@ -35,7 +36,7 @@ export async function GET() {
 
   // If no session found or user ID is missing, return Unauthorized
   if (!session?.user?.id) {
-    console.error("GET /api/contacts: Unauthorized access attempt.");
+    console.error(`GET ${API_APP_PATHS.CONTACTS_BASE}: Unauthorized access attempt.`);
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,11 +46,11 @@ export async function GET() {
     // Use the utility function to fetch contacts
     const contacts = await getAllContactsForUser(userId);
 
-    console.log(`GET /api/contacts: Successfully fetched ${contacts.length} contacts for user ${userId}.`);
+    console.log(`GET ${API_APP_PATHS.CONTACTS_BASE}: Successfully fetched ${contacts.length} contacts for user ${userId}.`);
     // Return the fetched contacts wrapped in an object
     return NextResponse.json({ contacts }, { headers: corsHeaders });
   } catch (error) {
-    console.error(`GET /api/contacts: Error fetching contacts for user ${userId}:`, error);
+    console.error(`GET ${API_APP_PATHS.CONTACTS_BASE}: Error fetching contacts for user ${userId}:`, error);
     // Return an error response if something goes wrong
     const errorMessage = error instanceof Error ? error.message : 'Failed to fetch contacts';
     return NextResponse.json(
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    console.error('POST /api/contacts: Unauthorized attempt to create contact.');
+    console.error(`POST ${API_APP_PATHS.CONTACTS_BASE}: Unauthorized attempt to create contact.`);
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     if (!validationResult.success) {
       console.warn(
-        `POST /api/contacts: Validation failed for user ${userId}:`,
+        `POST ${API_APP_PATHS.CONTACTS_BASE}: Validation failed for user ${userId}:`,
         validationResult.error.flatten()
       );
       return NextResponse.json(
@@ -94,13 +95,13 @@ export async function POST(request: NextRequest) {
     // Data is valid, proceed to create the contact using the utility function
     const validatedData = validationResult.data;
     console.log(
-      `POST /api/contacts: Attempting contact creation for user ${userId}.`
+      `POST ${API_APP_PATHS.CONTACTS_BASE}: Attempting contact creation for user ${userId}.`
     );
 
     const newContact = await createContact(validatedData, userId);
 
     console.log(
-      `POST /api/contacts: Successfully created contact ${newContact.id} for user ${userId}.`
+      `POST ${API_APP_PATHS.CONTACTS_BASE}: Successfully created contact ${newContact.id} for user ${userId}.`
     );
     // Return the newly created contact
     return NextResponse.json(
@@ -114,20 +115,20 @@ export async function POST(request: NextRequest) {
       requestBody !== null &&
       'email' in requestBody) ? String(requestBody.email) : '[email not available]';
 
-    console.error(`POST /api/contacts: Error creating contact ${logContext}:`, error);
+    console.error(`POST ${API_APP_PATHS.CONTACTS_BASE}: Error creating contact ${logContext}:`, error);
 
     // Handle errors thrown from createContact utility or other unexpected errors
     if (error instanceof Error) {
       // Check for specific known error messages from createContact
       if (error.message.includes('already exists')) {
-        console.warn(`POST /api/contacts: Duplicate contact detected for user ${userId}, email: ${emailFromReq}.`);
+        console.warn(`POST ${API_APP_PATHS.CONTACTS_BASE}: Duplicate contact detected for user ${userId}, email: ${emailFromReq}.`);
         return NextResponse.json(
           { message: error.message }, // Use the specific error message
           { status: 409, headers: corsHeaders } // 409 Conflict
         );
       }
       if (error.message.includes('conflict')) {
-        console.warn(`POST /api/contacts: Conflict error for user ${userId}, email: ${emailFromReq}.`);
+        console.warn(`POST ${API_APP_PATHS.CONTACTS_BASE}: Conflict error for user ${userId}, email: ${emailFromReq}.`);
         return NextResponse.json(
           { message: error.message },
           { status: 409, headers: corsHeaders } // 409 Conflict

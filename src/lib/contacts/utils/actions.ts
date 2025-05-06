@@ -49,8 +49,8 @@ export async function createContact(data: ContactCreateInput, userId: string) {
       },
     });
 
-    // Revalidate the contacts page path to show the new contact
-    revalidatePath('/admin/contacts');
+    // Updated path
+    revalidatePath('/mina-sidor/kontaktvy');
 
     return newContact;
   } catch (error) {
@@ -150,8 +150,8 @@ export async function updateContact(
       data: data, // Pass the validated update data
     });
 
-    // Revalidate the path after successful update
-    revalidatePath('/admin/contacts');
+    // Updated path
+    revalidatePath('/mina-sidor/kontaktvy');
 
     return updatedContact;
   } catch (error) {
@@ -198,8 +198,8 @@ export async function deleteContact(contactId: string, userId: string): Promise<
     });
 
     if (deleteResult.count > 0) {
-      // Revalidate the path only if a contact was actually deleted
-      revalidatePath('/admin/contacts');
+      // Updated path
+      revalidatePath('/mina-sidor/kontaktvy');
     }
 
     // deleteResult contains { count: number } (0 or 1)

@@ -11,7 +11,7 @@ import { useAuthForm } from '@/lib/auth/hooks/useAuthForm';
 import { useGoogleAuth } from '@/lib/auth/hooks/useGoogleAuth';
 import { useAuth } from '@/lib/auth/hooks/useAuth';
 
-import { DEFAULT_LOGIN_REDIRECT } from '@/lib/auth/constants/auth';
+import { DEFAULT_LOGIN_REDIRECT_PATH } from '@/lib/constants/routes';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,13 +28,13 @@ export default function RegisterPage() {
   });
 
   const { loading: googleLoading, handleGoogleSignIn } = useGoogleAuth({
-    onSuccess: () => router.push(DEFAULT_LOGIN_REDIRECT),
+    onSuccess: () => router.push(DEFAULT_LOGIN_REDIRECT_PATH),
     onError: (error) => setError(error.message),
   });
 
   useEffect(() => {
     if (!authLoading && authenticated) {
-      router.push(DEFAULT_LOGIN_REDIRECT);
+      router.push(DEFAULT_LOGIN_REDIRECT_PATH);
     }
   }, [authenticated, authLoading, router]);
 

@@ -2,6 +2,7 @@
 // *                 SERVICE: SEND VERIFICATION EMAIL (HTTP API)
 // * ==========================================================================
 import { getEnvVar } from '@/lib/utils/env'; // Updated import path
+import { API_AUTH_PATHS } from '@/lib/constants/routes'; // Import API_AUTH_PATHS
 
 // ** Function: sendVerificationEmail ** //
 /**
@@ -26,7 +27,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   }
 
   // * 3. Construct Verification URL and Payload
-  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
+  const verificationUrl = `${baseUrl}${API_AUTH_PATHS.VERIFY_EMAIL}?token=${token}`;
   const payload = {
     sender: { name: senderName, email: senderEmail },
     to: [{ email: email }],

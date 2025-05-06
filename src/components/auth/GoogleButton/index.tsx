@@ -4,10 +4,8 @@ import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { GoogleIcon } from './GoogleIcon';
 import type { GoogleButtonProps } from './types';
-import {
-  AUTH_MESSAGES,
-  DEFAULT_LOGIN_REDIRECT,
-} from '@/lib/auth/constants/auth';
+import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
+import { DEFAULT_LOGIN_REDIRECT_PATH } from '@/lib/constants/routes';
 
 export const GoogleButton = ({
   mode = 'login',
@@ -18,7 +16,7 @@ export const GoogleButton = ({
   const handleGoogleSignIn = async () => {
     try {
       const result = await signIn('google', {
-        callbackUrl: DEFAULT_LOGIN_REDIRECT,
+        callbackUrl: DEFAULT_LOGIN_REDIRECT_PATH,
         redirect: false,
       });
 

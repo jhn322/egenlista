@@ -8,6 +8,7 @@ import prisma from '@/lib/prisma';
 import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
 import { sendVerificationEmail } from '@/lib/email/sendVerificationEmail';
 import { generateAndSaveVerificationToken } from '@/lib/auth/utils/token';
+import { API_AUTH_PATHS } from '@/lib/constants/routes';
 
 // ** POST Handler ** //
 /**
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     // Convert to lowercase after validation
     const email = originalEmail.trim().toLowerCase();
 
-    console.log(`Resend verification request received for: ${email} (Original: ${originalEmail})`);
+    console.log(`POST ${API_AUTH_PATHS.RESEND_VERIFICATION_EMAIL}: Resend verification request received for: ${email} (Original: ${originalEmail})`);
 
     // * 2. Find User (using lowercase email)
     const user = await prisma.user.findUnique({
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
     if (!user) {
       // Don't reveal if the user exists or not for security
       console.warn(
-        `Resend verification requested for non-existent user: ${email}`
+        `POST ${API_AUTH_PATHS.RESEND_VERIFICATION_EMAIL}: Resend verification requested for non-existent user: ${email}`
       );
       return NextResponse.json({
         message: AUTH_MESSAGES.INFO_VERIFICATION_EMAIL_SENT,
@@ -54,7 +55,7 @@ export async function POST(req: Request) {
 
     // * 3. Check if Already Verified
     if (user.emailVerified) {
-      console.log(`User ${email} is already verified.`);
+      console.log(`POST ${API_AUTH_PATHS.RESEND_VERIFICATION_EMAIL}: User ${email} is already verified.`);
       return NextResponse.json(
         { message: AUTH_MESSAGES.ERROR_ALREADY_VERIFIED },
         { status: 400 }
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
     }
 
     // * 4. Generate New Token and Send Email (using lowercase email)
-    console.log(`Generating new token and resending email to ${email}...`);
+    console.log(`POST ${API_AUTH_PATHS.RESEND_VERIFICATION_EMAIL}: Generating new token and resending email to ${email}...`);
     // Pass the lowercase email to the token and email functions
     const verificationToken = await generateAndSaveVerificationToken(email);
     await sendVerificationEmail(email, verificationToken);
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
 
   } catch (error) {
     // * Handle Unexpected Errors
-    console.error('Resend verification email error:', error);
+    console.error(`POST ${API_AUTH_PATHS.RESEND_VERIFICATION_EMAIL}: Resend verification email error:`, error);
     // Check if it's an error thrown by our token/email functions or something else
     const errorMessage =
       error instanceof Error ? error.message : AUTH_MESSAGES.ERROR_DEFAULT;

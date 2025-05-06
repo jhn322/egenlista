@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { AUTH_PATHS } from '@/lib/constants/routes';
 
 // ** Preview Images for Carousel ** //
 const previewImages = [
@@ -58,7 +59,7 @@ export default function HeroSection() {
             </p>
             {/* Button and Sub-text Container */}
             <div className="flex flex-col items-center gap-4 pt-4 lg:items-start">
-              <Link href="/auth/login" className="w-full sm:w-auto">
+              <Link href={AUTH_PATHS.LOGIN} className="w-full sm:w-auto">
                 <Button
                   className="bg-primary text-primary-foreground hover:bg-primary/90 text-md w-full"
                   aria-label="Kom igång gratis med Egen Lista"

@@ -1,5 +1,5 @@
 // * ==========================================================================
-// *                         CONTACTS MANAGEMENT PAGE
+// *                        KONTAKTVY MANAGEMENT PAGE
 // * ==========================================================================
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
@@ -9,6 +9,7 @@ import { authOptions } from '@/lib/auth/options';
 import { getAllContactsForUser } from '@/lib/contacts/utils/actions';
 import { isUserPro } from '@/lib/subscriptions/utils/actions'; // Importera den nya funktionen
 import { Contact } from '@/generated/prisma'; // Assuming Contact type is exported
+import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 
 import {
   Card,
@@ -23,22 +24,24 @@ import { ContactsView } from '@/components/contacts/contacts-view'; // Import th
 
 // **  Page Metadata  ** //
 export const metadata: Metadata = {
-  title: 'Hantera Kontakter | Egen Lista',
+  title: 'Kontaktvy | Egen Lista',
   description: 'Se och hantera dina insamlade kontakter.',
   robots: {
-    index: false, // Dölj från sökmotorer tills vidare
+    index: false,
     follow: false,
   },
 };
 
-// **  Contacts Page Component  ** //
-export default async function ContactsPage() {
+// **  Kontakter Page Component  ** //
+export default async function KontakterPage() {
   const session = await getServerSession(authOptions);
 
   // * Redirect to login if not authenticated
   if (!session || !session.user || !session.user.id) {
-    redirect('/auth/login?callbackUrl=/admin/contacts');
-    return null; // Nödvändigt för att Next.js ska förstå omdirigeringen
+    redirect(
+      `${AUTH_PATHS.LOGIN}?callbackUrl=${PROTECTED_PATHS.MINA_SIDOR_KONTAKTVY}`
+    );
+    return null;
   }
 
   const userId = session.user.id;
@@ -61,7 +64,7 @@ export default async function ContactsPage() {
   return (
     <main className="container mx-auto py-10">
       <div className="space-y-6">
-        {/* Section för Översikt och Skapa Ny */}
+        {/* Section for Overview and Create New */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div className="space-y-1.5">
@@ -74,12 +77,12 @@ export default async function ContactsPage() {
             <CreateContactFeature userIsPro={userIsPro} userId={userId} />
           </CardHeader>
           <CardContent className="pt-4">
-            {/* ContactStats Komponent */}
+            {/* ContactStats Component */}
             <ContactStats contacts={contacts} />
           </CardContent>
         </Card>
 
-        {/* Section för Kontaktlistan */}
+        {/* Section for Contact List */}
         <Card>
           <CardHeader>
             <CardTitle>Kontaktlista</CardTitle>

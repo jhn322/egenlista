@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { AuthCard } from '@/components/auth/AuthCard';
-import { AUTH_ROUTES, AUTH_MESSAGES } from '@/lib/auth/constants/auth';
+import { AUTH_PATHS, API_AUTH_PATHS } from '@/lib/constants/routes';
+import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
 
 // ** Component to handle displaying content and resend logic ** //
 function VerifyNeededContent() {
@@ -22,7 +23,7 @@ function VerifyNeededContent() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/resend-verification', {
+      const response = await fetch(API_AUTH_PATHS.RESEND_VERIFICATION_EMAIL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +68,7 @@ function VerifyNeededContent() {
         </Button>
         <div className="pt-4 text-sm">
           <Link
-            href={AUTH_ROUTES.LOGIN}
+            href={AUTH_PATHS.LOGIN}
             className="font-medium text-indigo-600 hover:text-indigo-500"
           >
             Tillbaka till inloggning

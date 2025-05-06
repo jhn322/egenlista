@@ -5,8 +5,9 @@ import prisma from '@/lib/prisma';
 // Update import paths to reflect the new location
 import { configureProviders } from './providers';
 import { configureCallbacks } from './callbacks';
-// Assuming constants are in lib/auth/constants/auth.ts
-import { AUTH_ROUTES, USER_ROLES } from '@/lib/auth/constants/auth';
+// Import USER_ROLES from auth constants and AUTH_PATHS from the new routes constants
+import { USER_ROLES } from '@/lib/auth/constants/auth';
+import { AUTH_PATHS } from '@/lib/constants/routes';
 
 /**
  * Huvudkonfiguration för NextAuth
@@ -25,8 +26,11 @@ export const authOptions: NextAuthOptions = {
 
   // Anpassade sidor
   pages: {
-    signIn: AUTH_ROUTES.LOGIN,
-    error: AUTH_ROUTES.AUTH_ERROR,
+    signIn: AUTH_PATHS.LOGIN,
+    error: AUTH_PATHS.AUTH_ERROR,
+    // signOut: AUTH_PATHS.LOGOUT, // Optional: if you have a custom signout page
+    // verifyRequest: AUTH_PATHS.VERIFY_EMAIL_REQUEST, // Optional: for email verification request page
+    // newUser: AUTH_PATHS.REGISTER, // Optional: if you want to redirect new users to register or a welcome page
   },
 
   // Callbacks för att anpassa JWT och session
