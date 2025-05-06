@@ -3,10 +3,26 @@
 // import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession, signOut } from 'next-auth/react';
 import { OnlineStatusIndicator } from '@/components/ui/online-status-indicator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { AdminIcon } from '@/components/icons/admin-icon';
+import { ChevronIcon } from '@/components/icons/chevron-icon';
+import { FAQIcon } from '@/components/icons/faq-icon';
+import { LogoutIcon } from '@/components/icons/logout-icon';
+import { SettingsIcon } from '@/components/icons/settings-icon';
+import { UserIcon } from '@/components/icons/user-icon';
 
 interface NavItem {
   href: string;
@@ -19,17 +35,17 @@ const publicNavItems: NavItem[] = [
   { href: '/page2', label: 'Page 2' },
   { href: '/page3', label: 'Page 3' },
   { href: '/page4', label: 'Page 4' },
-  { href: '/page5', label: 'Page 5' },
 ];
 
 // Rollspecifika navigationslänkar
 const roleBasedNavItems: Record<string, NavItem[]> = {
   // ADMIN: [{ href: "/dashboard", label: "Dashboard" }],
-  USER: [{ href: '/admin', label: 'Admin Panel' }],
+  // USER: [{ href: '/admin', label: 'Admin Panel' }],
 };
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
   // Hämta aktuell session från NextAuth
   const { data: session, status } = useSession();
@@ -63,6 +79,12 @@ export function Navbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Capitalize the first letter of a string
+  const capitalizeFirstLetter = (string: string | null | undefined): string => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   // Helper function to determine if a nav item is active
   const isActiveLink = (href: string): boolean => {
     return pathname === href || (href !== '/' && pathname?.startsWith(href));
@@ -72,10 +94,21 @@ export function Navbar() {
     <>
       <div className="h-16" />
       <div className="relative">
-        <nav className="bg-background/80 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
+        <nav className="bg-background/90 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
           <div className="flex h-16 items-center justify-between px-6 md:px-8">
             <div className="flex items-center gap-8">
-              <Link href="/" className="text-xl font-semibold text-black">
+              <Link
+                href="/"
+                className="text-foreground flex items-center text-xl font-semibold"
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Egen Lista logo"
+                  width={32}
+                  height={32}
+                  className="mr-2 h-8 w-8"
+                  priority
+                />
                 Egen Lista
               </Link>
 
@@ -85,7 +118,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-md px-2 py-1 text-black transition-colors hover:bg-gray-100 ${
+                    className={`text-foreground hover:bg-accent rounded-lg px-2 py-1 transition-colors ${
                       isActiveLink(item.href) && 'font-medium'
                     }`}
                   >
@@ -95,64 +128,192 @@ export function Navbar() {
               </div>
             </div>
 
-            {/* Auth Buttons */}
+            {/* Auth Buttons & User Dropdown */}
             <div className="hidden md:block">
               {isAuthenticated ? (
-                <div className="flex items-center gap-2">
-                  <OnlineStatusIndicator className="h-2 w-2" />
-                  <span className="text-sm text-green-600">Online</span>
-                  <Button
-                    variant="default"
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="bg-black text-white transition-colors hover:bg-black/80"
-                  >
-                    Logga ut
-                  </Button>
-                </div>
-              ) : (
+                <DropdownMenu onOpenChange={setIsDropdownOpen}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-lg px-2 py-1 transition-colors"
+                    >
+                      <UserIcon />
+                      <span>
+                        {capitalizeFirstLetter(
+                          session?.user?.name || session?.user?.email
+                        )}
+                      </span>
+                      <ChevronIcon
+                        className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                      />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-9 w-9">
+                            <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
+                              {session?.user?.email?.charAt(0).toUpperCase() ||
+                                'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm leading-none font-medium">
+                              {capitalizeFirstLetter(session?.user?.name) ||
+                                'Användare'}
+                            </p>
+                            <p className="text-muted-foreground text-xs leading-none">
+                              {session?.user?.email}
+                            </p>
+                          </div>
+                        </div>
+                        <OnlineStatusIndicator className="ml-2 h-2.5 w-2.5" />
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {userRole === 'USER' && (
+                      <Link href="/admin">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <AdminIcon className="mr-2" />
+                          <span>Mina Sidor</span>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+                    <DropdownMenuItem disabled className="cursor-not-allowed">
+                      <SettingsIcon className="mr-2" />
+                      <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled className="cursor-not-allowed">
+                      <FAQIcon className="mr-2" />
+                      <span>FAQ</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => signOut({ callbackUrl: '/' })}
+                      className="cursor-pointer"
+                    >
+                      <LogoutIcon className="mr-2" />
+                      <span>Logga ut</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : status === 'unauthenticated' ? (
                 <Link href="/auth/login">
                   <Button
                     variant="default"
-                    className="bg-black text-white transition-colors hover:bg-black/80"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                   >
                     Logga in
                   </Button>
                 </Link>
-              )}
+              ) : null}
             </div>
 
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative h-14 w-14 p-0 hover:bg-transparent md:hidden"
-              onClick={handleToggleMenu}
-              aria-expanded={isOpen}
-              aria-label="Toggle menu"
-            >
-              <div className="relative flex h-6 w-6 items-center justify-center">
-                {/* Transform transition lines */}
-                <span
-                  className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
-                    isOpen
-                      ? 'w-5 translate-y-0 rotate-45'
-                      : 'w-5 -translate-y-1.5'
-                  }`}
-                />
-                <span
-                  className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
-                    isOpen ? 'w-0 opacity-0' : 'w-5 opacity-100'
-                  }`}
-                />
-                <span
-                  className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
-                    isOpen
-                      ? 'w-5 translate-y-0 -rotate-45'
-                      : 'w-5 translate-y-1.5'
-                  }`}
-                />
-              </div>
-            </Button>
+            {/* User Dropdown (if authenticated) */}
+            <div className="flex items-center gap-2 md:hidden">
+              {/* Mobile User Dropdown */}
+              {isAuthenticated && (
+                <DropdownMenu onOpenChange={setIsDropdownOpen}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="text-foreground hover:bg-accent hover:text-accent-foreground relative h-10 w-10 p-1"
+                      aria-label="User menu"
+                    >
+                      <div className="flex items-center gap-1">
+                        <UserIcon className="h-5 w-5" />
+                        <ChevronIcon
+                          className={`h-3 w-3 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                        />
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-9 w-9">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
+                            {session?.user?.email?.charAt(0).toUpperCase() ||
+                              'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm leading-none font-medium">
+                            {capitalizeFirstLetter(session?.user?.name) ||
+                              'Användare'}
+                          </p>
+                          <p className="text-muted-foreground text-xs leading-none">
+                            {session?.user?.email}
+                          </p>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {userRole === 'USER' && (
+                      <Link href="/admin" onClick={() => setIsOpen(false)}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <AdminIcon className="mr-2" />
+                          <span>Mina Sidor</span>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+                    <DropdownMenuItem disabled className="cursor-not-allowed">
+                      <SettingsIcon className="mr-2" />
+                      <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled className="cursor-not-allowed">
+                      <FAQIcon className="mr-2" />
+                      <span>FAQ</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        signOut({ callbackUrl: '/' });
+                        setIsOpen(false);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <LogoutIcon className="mr-2" />
+                      <span>Logga ut</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative h-14 w-14 p-0 hover:bg-transparent md:hidden"
+                onClick={handleToggleMenu}
+                aria-expanded={isOpen}
+                aria-label="Toggle menu"
+              >
+                <div className="relative flex h-6 w-6 items-center justify-center">
+                  {/* Transform transition lines */}
+                  <span
+                    className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
+                      isOpen
+                        ? 'w-5 translate-y-0 rotate-45'
+                        : 'w-5 -translate-y-1.5'
+                    }`}
+                  />
+                  <span
+                    className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
+                      isOpen ? 'w-0 opacity-0' : 'w-5 opacity-100'
+                    }`}
+                  />
+                  <span
+                    className={`bg-foreground absolute h-[2px] rounded-full transition-all duration-300 ease-in-out ${
+                      isOpen
+                        ? 'w-5 translate-y-0 -rotate-45'
+                        : 'w-5 translate-y-1.5'
+                    }`}
+                  />
+                </div>
+              </Button>
+            </div>
           </div>
         </nav>
 
@@ -170,8 +331,8 @@ export function Navbar() {
                   href={item.href}
                   className={`relative text-3xl transition-colors ${
                     isActiveLink(item.href)
-                      ? 'font-medium text-black'
-                      : 'hover:bg-secondary rounded-md px-2 py-1 text-black'
+                      ? 'text-foreground font-medium'
+                      : 'hover:bg-secondary text-foreground rounded-lg px-2 py-1'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -180,18 +341,7 @@ export function Navbar() {
               ))}
 
               <div className="mt-8 w-full max-w-[200px]">
-                {isAuthenticated ? (
-                  <Button
-                    variant="default"
-                    onClick={() => {
-                      signOut({ callbackUrl: '/' });
-                      setIsOpen(false);
-                    }}
-                    className="bg-primary w-full text-lg text-white transition-colors"
-                  >
-                    Logga ut
-                  </Button>
-                ) : (
+                {status === 'unauthenticated' && (
                   <Link
                     href="/auth/login"
                     className="block w-full"
@@ -199,7 +349,7 @@ export function Navbar() {
                   >
                     <Button
                       variant="default"
-                      className="w-full bg-black text-lg text-white transition-colors"
+                      className="bg-primary text-primary-foreground w-full text-lg transition-colors"
                     >
                       Logga in
                     </Button>

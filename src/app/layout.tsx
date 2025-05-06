@@ -1,18 +1,13 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Providers } from '../app/providers';
 import { Toaster } from 'sonner';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const inter = Inter({
+  variable: '--font-sans',
   subsets: ['latin'],
 });
 
@@ -27,6 +22,10 @@ export const metadata: Metadata = {
     'kundhantering',
     'företagsverktyg',
   ],
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
   openGraph: {
     title: 'Egen Lista | Ett enkelt verktyg för svenska företagare',
     description:
@@ -42,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="sv" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="sv" className={inter.variable}>
       <body className="antialiased">
         <Providers>
           <header>

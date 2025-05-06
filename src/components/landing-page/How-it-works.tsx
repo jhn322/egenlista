@@ -22,12 +22,14 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="w-full bg-gray-50 px-4 py-24">
+    <section className="bg-secondary relative w-full px-4 py-24">
+      <div className="from-background absolute inset-x-0 top-0 h-32 bg-gradient-to-b to-transparent"></div>
+
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="relative order-2 h-[500px] overflow-hidden rounded-xl lg:order-1">
+          <div className="relative order-2 h-[500px] overflow-hidden rounded-lg lg:order-1">
             <Image
-              src="/placeholder.svg?height=500&width=700"
+              src="/how-it-works/how-it-works-1.webp"
               alt="Egen Lista workflow"
               fill
               className="object-cover"
@@ -35,10 +37,10 @@ export default function HowItWorksSection() {
           </div>
 
           <div className="order-1 space-y-8 lg:order-2">
-            <h2 className="text-3xl font-bold text-blue-900 md:text-4xl">
+            <h2 className="text-primary text-3xl font-bold md:text-4xl">
               Ditt arbetsflöde. Ditt sätt.
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-muted-foreground text-lg">
               Egen Lista anpassar sig efter dina behov, inte tvärtom. Vårt
               verktyg är utformat för att göra kundhantering så enkel som
               möjligt.
@@ -47,14 +49,16 @@ export default function HowItWorksSection() {
             <div className="space-y-6">
               {steps.map((step, index) => (
                 <div key={index} className="flex items-start gap-4">
-                  <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-900">
-                    <Check className="h-4 w-4 text-white" />
+                  <div className="bg-primary mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg">
+                    <Check className="text-primary-foreground h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-medium text-blue-900">
+                    <h3 className="text-primary text-xl font-medium">
                       {step.title}
                     </h3>
-                    <p className="mt-1 text-gray-600">{step.description}</p>
+                    <p className="text-muted-foreground mt-1">
+                      {step.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -62,6 +66,7 @@ export default function HowItWorksSection() {
           </div>
         </div>
       </div>
+      <div className="to-background absolute right-0 bottom-0 left-0 z-5 h-32 bg-gradient-to-b from-transparent"></div>
     </section>
   );
 }

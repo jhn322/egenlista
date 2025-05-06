@@ -4,62 +4,70 @@ import Image from 'next/image';
 
 export default function BenefitsSection() {
   return (
-    <section className="w-full bg-white px-4 py-24">
-      <div className="container mx-auto max-w-6xl">
+    <section className="bg-background relative w-full px-4 py-32">
+      <div className="absolute inset-0 flex items-center justify-center overflow-visible">
+        <div className="relative h-full max-h-[900px] w-full max-w-[1200px]">
+          <Image
+            src="/logo-bg.png"
+            alt="Background"
+            fill
+            sizes="(max-width: 1200px) 100vw, 1200px"
+            className="pointer-events-none opacity-30 select-none"
+            style={{
+              objectFit: 'contain',
+              filter: 'blur(20px)',
+            }}
+            priority
+          />
+        </div>
+      </div>
+
+      <div className="relative z-10 container mx-auto max-w-6xl">
         <div className="mb-16 text-center">
-          <h2 className="text-3xl font-bold text-blue-900 md:text-4xl">
+          <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Hitta allt. Direkt.
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-xl text-gray-600">
+          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl">
             Sluta leta efter information om dina kunder. Med Egen Lista har du
             allt på ett ställe.
           </p>
         </div>
 
-        <div className="relative mb-12 h-[600px] overflow-hidden rounded-xl">
-          <Image
-            src="/placeholder.svg?height=600&width=1200"
-            alt="Egen Lista dashboard overview"
-            fill
-            className="object-cover"
-          />
-        </div>
-
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="space-y-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-              <span className="font-bold text-blue-900">1</span>
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <span className="text-primary font-bold">1</span>
             </div>
-            <h3 className="text-xl font-bold text-blue-900">Snabb sökning</h3>
-            <p className="text-gray-600">
+            <h3 className="text-primary text-xl font-bold">Snabb sökning</h3>
+            <p className="text-muted-foreground">
               Hitta exakt den information du behöver med vår kraftfulla
               sökfunktion.
             </p>
           </div>
           <div className="space-y-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-              <span className="font-bold text-blue-900">2</span>
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <span className="text-primary font-bold">2</span>
             </div>
-            <h3 className="text-xl font-bold text-blue-900">
-              Smart filtrering
-            </h3>
-            <p className="text-gray-600">
+            <h3 className="text-primary text-xl font-bold">Smart filtrering</h3>
+            <p className="text-muted-foreground">
               Filtrera dina kundlistor baserat på olika kriterier för att hitta
               rätt målgrupp.
             </p>
           </div>
           <div className="space-y-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-              <span className="font-bold text-blue-900">3</span>
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+              <span className="text-primary font-bold">3</span>
             </div>
-            <h3 className="text-xl font-bold text-blue-900">Anpassade vyer</h3>
-            <p className="text-gray-600">
+            <h3 className="text-primary text-xl font-bold">Anpassade vyer</h3>
+            <p className="text-muted-foreground">
               Skapa anpassade vyer för att se exakt den information du behöver
               för olika situationer.
             </p>
           </div>
         </div>
       </div>
+
+      <div className="to-secondary absolute right-0 bottom-0 left-0 z-5 h-32 bg-gradient-to-b from-transparent"></div>
     </section>
   );
 }
