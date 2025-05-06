@@ -4,6 +4,7 @@
 // *                      EDIT CONTACT FEATURE COMPONENT
 // * ==========================================================================
 import { useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -80,6 +81,7 @@ export function EditContactFeature({
   userId,
 }: EditContactFeatureProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<ContactUpdateInput>({
     resolver: zodResolver(ContactUpdateSchema),
@@ -147,6 +149,7 @@ export function EditContactFeature({
           ),
         });
         onOpenChange(false);
+        router.refresh();
       } catch (error) {
         let errorMessage = TOAST_MESSAGES.UNKNOWN_ERROR_DESC;
         if (error instanceof Error) {

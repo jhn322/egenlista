@@ -4,6 +4,7 @@
 // *                     CREATE CONTACT FEATURE COMPONENT
 // * ==========================================================================
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -54,6 +55,7 @@ export function CreateContactFeature({
 }: CreateContactFeatureProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<ContactCreateInput>({
     resolver: zodResolver(ContactCreateSchema),
@@ -76,6 +78,7 @@ export function CreateContactFeature({
         });
         form.reset(); // Reset form fields
         setIsOpen(false); // Close dialog
+        router.refresh(); // Refresh data on the page
       } catch (error) {
         let errorMessage = TOAST_MESSAGES.UNKNOWN_ERROR_DESC;
         if (error instanceof Error) {

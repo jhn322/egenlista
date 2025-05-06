@@ -7,10 +7,10 @@ import { Metadata } from 'next';
 
 import { authOptions } from '@/lib/auth/options';
 import { getAllContactsForUser } from '@/lib/contacts/utils/actions';
-import { isUserPro } from '@/lib/subscriptions/utils/actions'; // Importera den nya funktionen
-import { Contact } from '@/generated/prisma'; // Assuming Contact type is exported
+import { isUserPro } from '@/lib/subscriptions/utils/actions';
+import { Contact } from '@/generated/prisma';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
-import { APP_NAME } from '@/lib/constants/site'; // Import APP_NAME
+import { APP_NAME } from '@/lib/constants/site';
 
 import {
   Card,
@@ -19,9 +19,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ContactStats } from '@/components/contacts/contact-stats'; // Importera ContactStats
-import { CreateContactFeature } from '@/components/contacts/create-contact-feature'; // Import CreateContactFeature
-import { ContactsView } from '@/components/contacts/contacts-view'; // Import the new wrapper component
+import { ContactStats } from '@/components/contacts/contact-stats';
+import { ContactsView } from '@/components/contacts/contacts-view';
 
 // **  Page Metadata  ** //
 export const metadata: Metadata = {
@@ -74,30 +73,17 @@ export default async function KontakterPage() {
                 Statistik och möjlighet att skapa nya kontakter.
               </CardDescription>
             </div>
-            {/* CreateContactFeature Component */}
-            <CreateContactFeature userIsPro={userIsPro} userId={userId} />
           </CardHeader>
           <CardContent className="pt-4">
-            {/* ContactStats Component */}
             <ContactStats contacts={contacts} />
           </CardContent>
         </Card>
 
-        {/* Section for Contact List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Kontaktlista</CardTitle>
-            <CardDescription>Alla dina kontakter visas nedan.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* ContactsView Component (Client Component Wrapper) */}
-            <ContactsView
-              initialContacts={contacts} // Pass initial data
-              userIsPro={userIsPro} // Pass user status
-              userId={userId} // Pass user ID
-            />
-          </CardContent>
-        </Card>
+        <ContactsView
+          initialContacts={contacts}
+          userIsPro={userIsPro}
+          userId={userId}
+        />
       </div>
     </main>
   );
