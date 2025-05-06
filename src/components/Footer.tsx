@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { CardContent, CardTitle, CardDescription } from '@/components/ui/card';
+import { APP_NAME } from '@/lib/constants/site';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -25,7 +26,7 @@ export default function Footer() {
               />
             </div>
             <h1 className="text-primary -ml-8 text-3xl font-bold tracking-tight">
-              Egen Lista
+              {APP_NAME}
             </h1>
           </div>
 
@@ -129,7 +130,7 @@ export default function Footer() {
           {/* Footer Bottom */}
           <div className="flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
             <CardDescription className="text-foreground text-center text-sm md:text-left">
-              © {currentYear} | Egen Lista.
+              © {currentYear} | {APP_NAME}.
             </CardDescription>
 
             <div className="flex gap-4 text-sm">

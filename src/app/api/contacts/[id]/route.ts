@@ -10,6 +10,7 @@ import {
   updateContact,
   deleteContact,
 } from "@/lib/contacts/utils/actions"; // Corrected path
+import { API_APP_PATHS } from "@/lib/constants/routes"; // Import API_APP_PATHS
 
 interface Params {
   id: string;
@@ -25,7 +26,7 @@ export async function GET(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      console.error(`GET /api/contacts/${contactId}: Unauthorized access attempt.`);
+      console.error(`GET ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Unauthorized access attempt.`);
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
@@ -37,17 +38,17 @@ export async function GET(
     // getContactById returns null if not found or not owned by user
     if (!contact) {
       console.warn(
-        `GET /api/contacts/${contactId}: Contact not found or access denied for user ${userId}.`
+        `GET ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Contact not found or access denied for user ${userId}.`
       );
       return NextResponse.json({ message: 'Contact not found' }, { status: 404 });
     }
 
     console.log(
-      `GET /api/contacts/${contactId}: Successfully fetched contact for user ${userId}.`
+      `GET ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Successfully fetched contact for user ${userId}.`
     );
     return NextResponse.json({ contact }); // Return the fetched contact
   } catch (error) {
-    console.error(`GET /api/contacts/${contactId}: Error fetching contact:`, error);
+    console.error(`GET ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Error fetching contact:`, error);
     const errorMessage =
       error instanceof Error ? error.message : 'Failed to fetch contact';
     return NextResponse.json(
@@ -68,7 +69,7 @@ export async function PUT(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      console.error(`PUT /api/contacts/${contactId}: Unauthorized access attempt.`);
+      console.error(`PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Unauthorized access attempt.`);
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
@@ -80,7 +81,7 @@ export async function PUT(
 
     if (!validationResult.success) {
       console.warn(
-        `PUT /api/contacts/${contactId}: Validation failed for user ${userId}:`,
+        `PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Validation failed for user ${userId}:`,
         validationResult.error.flatten()
       );
       return NextResponse.json(
@@ -96,7 +97,7 @@ export async function PUT(
     const validatedData = validationResult.data;
     if (Object.keys(validatedData).length === 0) {
       console.warn(
-        `PUT /api/contacts/${contactId}: No valid update data provided for user ${userId}.`
+        `PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: No valid update data provided for user ${userId}.`
       );
       return NextResponse.json(
         { message: 'No fields provided for update' },
@@ -106,14 +107,14 @@ export async function PUT(
 
     // --- Update Contact using the utility function --- 
     console.log(
-      `PUT /api/contacts/${contactId}: Attempting update for user ${userId}.`
+      `PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Attempting update for user ${userId}.`
     );
     const updatedContact = await updateContact(contactId, userId, validatedData);
 
     // updateContact returns null if not found/owned
     if (!updatedContact) {
       console.warn(
-        `PUT /api/contacts/${contactId}: Contact not found or access denied for user ${userId} during update attempt.`
+        `PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Contact not found or access denied for user ${userId} during update attempt.`
       );
       return NextResponse.json(
         { message: 'Contact not found or update failed' },
@@ -122,11 +123,11 @@ export async function PUT(
     }
 
     console.log(
-      `PUT /api/contacts/${contactId}: Successfully updated contact for user ${userId}.`
+      `PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Successfully updated contact for user ${userId}.`
     );
     return NextResponse.json({ contact: updatedContact });
   } catch (error) {
-    console.error(`PUT /api/contacts/${contactId}: Error updating contact:`, error);
+    console.error(`PUT ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Error updating contact:`, error);
     const errorMessage =
       error instanceof Error ? error.message : 'Failed to update contact';
     return NextResponse.json(
@@ -146,7 +147,7 @@ export async function DELETE(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      console.error(`DELETE /api/contacts/${contactId}: Unauthorized access attempt.`);
+      console.error(`DELETE ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Unauthorized access attempt.`);
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
@@ -157,7 +158,7 @@ export async function DELETE(
 
     if (!contactToDelete) {
       console.warn(
-        `DELETE /api/contacts/${contactId}: Contact not found or access denied for user ${userId}.`
+        `DELETE ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Contact not found or access denied for user ${userId}.`
       );
       return NextResponse.json(
         { message: 'Contact not found or access denied' },
@@ -167,7 +168,7 @@ export async function DELETE(
 
     // --- Delete Contact using the utility function --- 
     console.log(
-      `DELETE /api/contacts/${contactId}: Attempting deletion for user ${userId}.`
+      `DELETE ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Attempting deletion for user ${userId}.`
     );
     const deleteResult = await deleteContact(contactId, userId);
 
@@ -179,7 +180,7 @@ export async function DELETE(
       // This case should ideally not be reached if getContactById succeeded,
       // but acts as a safeguard.
       console.error(
-        `DELETE /api/contacts/${contactId}: Deletion failed unexpectedly after contact was found for user ${userId}.`
+        `DELETE ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Deletion failed unexpectedly after contact was found for user ${userId}.`
       );
       return NextResponse.json(
         { message: 'Deletion failed unexpectedly' },
@@ -188,7 +189,7 @@ export async function DELETE(
     }
 
     console.log(
-      `DELETE /api/contacts/${contactId}: Successfully deleted contact for user ${userId}.`
+      `DELETE ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Successfully deleted contact for user ${userId}.`
     );
     // Return 200 OK with the data of the deleted contact
     return NextResponse.json({
@@ -196,7 +197,7 @@ export async function DELETE(
       deletedContact: contactToDelete // Return the fetched data
     }, { status: 200 });
   } catch (error) {
-    console.error(`DELETE /api/contacts/${contactId}: Error deleting contact:`, error);
+    console.error(`DELETE ${API_APP_PATHS.CONTACTS_BASE}/${contactId}: Error deleting contact:`, error);
     const errorMessage =
       error instanceof Error ? error.message : 'Failed to delete contact';
     return NextResponse.json(

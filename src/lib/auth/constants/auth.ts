@@ -1,3 +1,7 @@
+// * ==========================================================================
+// *                      AUTHENTICATION CONSTANTS
+// * ==========================================================================
+
 export const USER_ROLES = {
   USER: 'USER',
   ADMIN: 'ADMIN',
@@ -5,33 +9,7 @@ export const USER_ROLES = {
 
 export type UserRole = keyof typeof USER_ROLES;
 
-export const AUTH_ROUTES = {
-  LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
-  FORGOT_PASSWORD: '/auth/forgot-password',
-  RESET_PASSWORD: '/auth/reset-password',
-  VERIFY_EMAIL: '/auth/verify-email',
-  VERIFY_NEEDED: '/auth/verify-needed',
-  UNAUTHORIZED: '/unauthorized',
-  AUTH_ERROR: '/auth/error',
-};
-
-export const DEFAULT_LOGIN_REDIRECT = '/admin';
-
-export const PUBLIC_ROUTES = [
-  AUTH_ROUTES.LOGIN,
-  AUTH_ROUTES.REGISTER,
-  AUTH_ROUTES.FORGOT_PASSWORD,
-  AUTH_ROUTES.RESET_PASSWORD,
-  AUTH_ROUTES.VERIFY_EMAIL,
-  AUTH_ROUTES.VERIFY_NEEDED,
-  AUTH_ROUTES.AUTH_ERROR,
-  '/',
-  '/about',
-  '/contact',
-  '/terms',
-  '/privacy',
-];
+// AUTH_ROUTES, DEFAULT_LOGIN_REDIRECT, and PUBLIC_ROUTES have been moved to @/lib/constants/routes.ts
 
 export const AUTH_MESSAGES = {
   // Felmeddelanden

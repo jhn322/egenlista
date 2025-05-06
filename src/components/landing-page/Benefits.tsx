@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { APP_NAME } from '@/lib/constants/site';
 
 export default function BenefitsSection() {
   return (
@@ -11,12 +12,9 @@ export default function BenefitsSection() {
             src="/logo-bg.png"
             alt="Background"
             fill
-            sizes="(max-width: 1200px) 100vw, 1200px"
-            className="pointer-events-none opacity-30 select-none"
-            style={{
-              objectFit: 'contain',
-              filter: 'blur(20px)',
-            }}
+            sizes="(max-width: 2600px) 100vw, 2200px"
+            className="object-none opacity-30 blur-[20px]"
+            style={{ transform: 'scale(1)', objectPosition: 'center' }}
             loading="lazy"
             fetchPriority="low"
           />
@@ -28,8 +26,8 @@ export default function BenefitsSection() {
           <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Hitta allt. Direkt.
           </h2>
-          <p className="text-foreground/90 mx-auto mt-4 max-w-2xl text-xl">
-            Sluta leta efter information om dina kunder. Med Egen Lista har du
+          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl">
+            Sluta leta efter information om dina kunder. Med {APP_NAME} har du
             allt på ett ställe.
           </p>
         </div>

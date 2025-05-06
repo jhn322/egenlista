@@ -14,6 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ** User model ** //
 model User {
   id            String     @id @default(cuid()) @map("_id")
   name          String?
@@ -24,12 +25,13 @@ model User {
   role          UserRole   @default(USER)
   accounts      Account[]  // Required for NextAuth
   sessions      Session[]  // Required for NextAuth
-  contacts      Contact[]  
+  contacts      Contact[]
+  subscription  Subscription? // User has one subscription (or none)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
 
-// NextAuth required models
+// ** NextAuth required models ** //
 model Account {
   id                String  @id @default(cuid()) @map("_id")
   userId            String
@@ -49,14 +51,16 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+
 model Session {
-  id           String   @id @default(cuid()) @map("_id")  
+  id           String   @id @default(cuid()) @map("_id")
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// ** VerificationToken model ** //
 model VerificationToken {
   id         String   @id @default(cuid()) @map("_id")
   identifier String
@@ -66,13 +70,13 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-
+// ** Contact model ** //
 model Contact {
   id            String     @id @default(cuid()) @map("_id")
-  userId        String  //Owner(user) of the contact
+  userId        String  // Owner(user) of the contact
   firstName     String
   lastName      String
-  email         String    
+  email         String
   phone         String?
   type          ContactType   @default(LEAD)
   createdAt     DateTime   @default(now())
@@ -82,17 +86,50 @@ model Contact {
   @@unique([userId, email]) // Only one contact per user per email
 }
 
+// ** UserRole enum ** //
 enum UserRole {
   USER
   ADMIN
 }
 
-// Define the types/statuses for a Lead/Contact
+// ** ContactType enum ** //
 enum ContactType {
   LEAD      // Someone who might buy
   CUSTOMER  // Someone who has bought
   AMBASSADOR // Someone who promotes/sells for you
 }
 
+// ** Subscription model ** //
+model Subscription {
+  id                 String    @id @default(cuid()) @map("_id")
+  userId             String    @unique // Each user has a unique subscription
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan               SubscriptionPlanType @default(FREE)
+  status             SubscriptionStatus @default(ACTIVE)
+
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean   @default(false)
+  canceledAt         DateTime?
+  trialStart         DateTime?
+  trialEnd           DateTime?
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+enum SubscriptionPlanType {
+  FREE
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  INCOMPLETE
+  TRIALING
+}
 
 

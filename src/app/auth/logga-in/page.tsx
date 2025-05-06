@@ -11,10 +11,8 @@ import { AuthFooter } from '@/components/auth/AuthFooter';
 import { useAuthForm } from '@/lib/auth/hooks/useAuthForm';
 import { useGoogleAuth } from '@/lib/auth/hooks/useGoogleAuth';
 import { useRedirect } from '@/lib/auth/hooks/useRedirect';
-import {
-  DEFAULT_LOGIN_REDIRECT,
-  AUTH_MESSAGES,
-} from '@/lib/auth/constants/auth';
+import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
+import { DEFAULT_LOGIN_REDIRECT_PATH } from '@/lib/constants/routes';
 import { useAuth } from '@/lib/auth/hooks/useAuth';
 
 function LoginContent() {
@@ -41,7 +39,7 @@ function LoginContent() {
 
   useEffect(() => {
     if (!authLoading && authenticated) {
-      router.push(DEFAULT_LOGIN_REDIRECT);
+      router.push(DEFAULT_LOGIN_REDIRECT_PATH);
     }
   }, [authenticated, authLoading, router]);
 

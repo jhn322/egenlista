@@ -1,11 +1,21 @@
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+// Assuming your constants file is correctly located relative to this script
+// Adjust the import path as necessary if this script is moved or the constants file is elsewhere.
+// For this example, I'm assuming a relative path. If your project setup allows for aliases like '@/',
+// that would be preferable, but direct relative paths are more common in standalone scripts.
+// This path assumes 'Postman' directory is at the root, and 'src' is also at the root.
+import { API_AUTH_PATHS, API_APP_PATHS } from '../src/lib/constants/routes.js';
+import { APP_NAME } from '../src/lib/constants/site.js'; // Import APP_NAME
 
 // ---------- Konfiguration ----------
 const BASE_URL_PLACEHOLDER = '{{baseUrl}}';
-const COLLECTION_NAME = 'EgenLista API';
-const ENVIRONMENT_NAME = 'EgenLista Environment';
+// Sanitize APP_NAME for filenames (e.g., remove spaces)
+const APP_NAME_SANITIZED = APP_NAME.replace(/\s+/g, '');
+
+const COLLECTION_NAME = `${APP_NAME} API`; // Use APP_NAME
+const ENVIRONMENT_NAME = `${APP_NAME} Environment`; // Use APP_NAME
 
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -13,11 +23,11 @@ const OUTPUT_DIR = dirname(__filename);
 
 const OUTPUT_COLLECTION_FILENAME = path.join(
   OUTPUT_DIR,
-  'EgenLista-API.postman_collection.json'
+  `${APP_NAME_SANITIZED}-API.postman_collection.json` // Use sanitized name
 );
 const OUTPUT_ENVIRONMENT_FILENAME = path.join(
   OUTPUT_DIR,
-  'EgenLista-API.postman_environment.json'
+  `${APP_NAME_SANITIZED}-API.postman_environment.json` // Use sanitized name
 );
 
 // API struktur för Auth
@@ -80,7 +90,7 @@ const apiRoutes = [
       {
         name: 'Register User',
         method: 'POST',
-        path: '/api/auth/register',
+        path: API_AUTH_PATHS.REGISTER,
         description:
           'Registrerar en ny användare via din anpassade `/api/auth/register` slutpunkt. Kräver troligen `csrfToken`.',
         body: {
@@ -94,7 +104,7 @@ const apiRoutes = [
       {
         name: 'Verify User',
         method: 'POST', // Eller GET? Anpassa efter din implementation
-        path: '/api/auth/verify',
+        path: API_AUTH_PATHS.VERIFY_EMAIL,
         description:
           'Verifierar en användare via din anpassade `/api/auth/verify` slutpunkt. Anpassa body och metod efter behov. Kräver troligen `csrfToken`.',
         body: {
@@ -111,14 +121,14 @@ const apiRoutes = [
       {
         name: 'List Contacts',
         method: 'GET',
-        path: '/api/contacts',
+        path: API_APP_PATHS.CONTACTS_BASE,
         description:
           'Hämtar alla kontakter för den inloggade användaren. Kräver giltig session (cookie).',
       },
       {
         name: 'Create Contact',
         method: 'POST',
-        path: '/api/contacts',
+        path: API_APP_PATHS.CONTACTS_BASE,
         description:
           'Skapar en ny kontakt för den inloggade användaren. Kräver giltig session (cookie). CSRF-token behövs troligen ej här då det inte är en traditionell formulärpost mot /api/auth, men skadar inte att ha med om servern kräver det för alla POST.',
         body: {
@@ -131,14 +141,14 @@ const apiRoutes = [
       {
         name: 'Get Contact by ID',
         method: 'GET',
-        path: '/api/contacts/{{testContactId}}',
+        path: `${API_APP_PATHS.CONTACTS_BASE}/{{testContactId}}`,
         description:
           'Hämtar en specifik kontakt med ID. Kräver giltig session (cookie). Ange ett giltigt kontakt-ID i miljövariabeln `testContactId`.',
       },
       {
         name: 'Update Contact',
         method: 'PUT',
-        path: '/api/contacts/{{testContactId}}',
+        path: `${API_APP_PATHS.CONTACTS_BASE}/{{testContactId}}`,
         description:
           'Uppdaterar en specifik kontakt med ID. Kräver giltig session (cookie). Ange ett giltigt kontakt-ID i `testContactId`. Skickar endast med de fält som ska uppdateras.',
         body: {
@@ -150,7 +160,7 @@ const apiRoutes = [
       {
         name: 'Delete Contact',
         method: 'DELETE',
-        path: '/api/contacts/{{testContactId}}',
+        path: `${API_APP_PATHS.CONTACTS_BASE}/{{testContactId}}`,
         description:
           'Tar bort en specifik kontakt med ID. Kräver giltig session (cookie). Ange ett giltigt kontakt-ID i `testContactId`.',
       },
@@ -162,7 +172,7 @@ const apiRoutes = [
 const collection = {
   info: {
     name: COLLECTION_NAME,
-    description: 'Postman collection för EgenLista API',
+    description: `Postman collection för ${APP_NAME} API`, // Use APP_NAME
     schema:
       'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
   },
@@ -326,13 +336,17 @@ try {
     OUTPUT_COLLECTION_FILENAME,
     JSON.stringify(collection, null, 2) // Indentera för läsbarhet
   );
-  console.log(`✅ Postman collection saved to ${OUTPUT_COLLECTION_FILENAME}`);
+  console.log(
+    `✅ Postman collection saved to ${path.basename(OUTPUT_COLLECTION_FILENAME)}`
+  ); // Use dynamic filename
 
   fs.writeFileSync(
     OUTPUT_ENVIRONMENT_FILENAME,
     JSON.stringify(environment, null, 2) // Indentera för läsbarhet
   );
-  console.log(`✅ Postman environment saved to ${OUTPUT_ENVIRONMENT_FILENAME}`);
+  console.log(
+    `✅ Postman environment saved to ${path.basename(OUTPUT_ENVIRONMENT_FILENAME)}`
+  ); // Use dynamic filename
 
   console.log('\nNästa steg:');
   console.log(

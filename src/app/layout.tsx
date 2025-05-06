@@ -5,6 +5,7 @@ import { Navbar } from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Providers } from '../app/providers';
 import { Toaster } from 'sonner';
+import { APP_NAME } from '@/lib/constants/site';
 
 const inter = Inter({
   variable: '--font-sans',
@@ -12,9 +13,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Egen Lista | Ett enkelt verktyg för svenska företagare',
-  description:
-    'Egen Lista hjälper svenska företagare att enkelt bygga och hantera sina egna kundlistor för bättre kundrelationer och ökad försäljning.',
+  title: `${APP_NAME} | Ett enkelt verktyg för svenska företagare`,
+  description: `${APP_NAME} hjälper svenska företagare att enkelt bygga och hantera sina egna kundlistor för bättre kundrelationer och ökad försäljning.`,
   keywords: [
     'kundlista',
     'svenska företagare',
@@ -27,9 +27,8 @@ export const metadata: Metadata = {
     apple: '/favicon.ico',
   },
   openGraph: {
-    title: 'Egen Lista | Ett enkelt verktyg för svenska företagare',
-    description:
-      'Egen Lista hjälper svenska företagare att enkelt bygga och hantera sina egna kundlistor för bättre kundrelationer och ökad försäljning.',
+    title: `${APP_NAME} | Ett enkelt verktyg för svenska företagare`,
+    description: `${APP_NAME} hjälper svenska företagare att enkelt bygga och hantera sina egna kundlistor för bättre kundrelationer och ökad försäljning.`,
     type: 'website',
     locale: 'sv_SE',
   },

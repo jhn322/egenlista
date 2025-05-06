@@ -2,6 +2,8 @@
 // *                 SERVICE: SEND VERIFICATION EMAIL (HTTP API)
 // * ==========================================================================
 import { getEnvVar } from '@/lib/utils/env'; // Updated import path
+import { API_AUTH_PATHS } from '@/lib/constants/routes'; // Import API_AUTH_PATHS
+import { APP_NAME } from '@/lib/constants/site'; // Import APP_NAME
 
 // ** Function: sendVerificationEmail ** //
 /**
@@ -26,22 +28,22 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   }
 
   // * 3. Construct Verification URL and Payload
-  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
+  const verificationUrl = `${baseUrl}${API_AUTH_PATHS.VERIFY_EMAIL}?token=${token}`;
   const payload = {
     sender: { name: senderName, email: senderEmail },
     to: [{ email: email }],
-    subject: 'Verify your email address for EgenLista',
+    subject: `Verify your email address for ${APP_NAME}`,
     // TODO: Replace with a more robust HTML template solution (e.g., React Email)
     htmlContent: `
       <h1>Verify your email address</h1>
-      <p>Thank you for registering with EgenLista!</p>
+      <p>Thank you for registering with ${APP_NAME}!</p>
       <p>Please click the link below to verify your email address:</p>
       <a href="${verificationUrl}" target="_blank">Verify my email</a>
       <p>This link is valid for 24 hours.</p>
       <p>If you did not register, please ignore this email.</p>
       <br>
       <p>Best regards,</p>
-      <p>The EgenLista Team</p>
+      <p>The ${APP_NAME} Team</p>
     `,
   };
 

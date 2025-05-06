@@ -8,27 +8,25 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StarIcon } from 'lucide-react';
+import { APP_NAME } from '@/lib/constants/site';
 
 const testimonials = [
   {
     name: 'Anna Johansson',
     role: 'Småföretagare, Stockholm',
-    content:
-      'Egen Lista har revolutionerat hur jag håller kontakten med mina kunder. Det är enkelt att använda och sparar mig flera timmar varje vecka.',
+    content: `${APP_NAME} har revolutionerat hur jag håller kontakten med mina kunder. Det är enkelt att använda och sparar mig flera timmar varje vecka.`,
     avatar: 'AJ',
   },
   {
     name: 'Erik Lindberg',
     role: 'Konsult, Göteborg',
-    content:
-      'Efter att ha testat flera CRM-system är Egen Lista det enda som verkligen passar mina behov som svensk företagare.',
+    content: `Efter att ha testat flera CRM-system är ${APP_NAME} det enda som verkligen passar mina behov som svensk företagare.`,
     avatar: 'EL',
   },
   {
     name: 'Maria Svensson',
     role: 'Butiksägare, Malmö',
-    content:
-      'Tack vare Egen Listahar jag kunnat öka min försäljning med 30% genom bättre kundrelationer och uppföljning.',
+    content: `Tack vare ${APP_NAME} har jag kunnat öka min försäljning med 30% genom bättre kundrelationer och uppföljning.`,
     avatar: 'MS',
   },
 ];
@@ -42,7 +40,7 @@ export default function TestimonialsSection() {
             Vad våra kunder säger
           </h2>
           <p className="text-foreground/90 mx-auto max-w-2xl text-xl">
-            Hundratals svenska företagare använder redan Egen-lista för att
+            Hundratals svenska företagare använder redan {APP_NAME} för att
             förbättra sina kundrelationer.
           </p>
         </div>
@@ -80,7 +78,7 @@ export default function TestimonialsSection() {
                     <p className="text-primary font-medium">
                       {testimonial.name}
                     </p>
-                    <p className="text-foreground/90 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {testimonial.role}
                     </p>
                   </div>

@@ -1,9 +1,13 @@
+'use server'; // Mark this file as Server Actions
+
 import prisma from '@/lib/prisma';
 import {
   type ContactCreateInput,
   type ContactUpdateInput, // Add update input type
 } from '@/lib/contacts/validation/schema';
 import { Prisma } from '@/generated/prisma'; // Import Prisma for error types
+import { revalidatePath } from 'next/cache'; // Import for revalidation
+import { SERVER_ACTION_ERRORS } from '../constants/contacts'; // Import constants
 
 // * ==========================================================================
 // *                            CONTACT UTILITY ACTIONS
@@ -12,8 +16,7 @@ import { Prisma } from '@/generated/prisma'; // Import Prisma for error types
 // ** FETCH ALL contacts for a specific user ** //
 export async function getAllContactsForUser(userId: string) {
   if (!userId) {
-    // Basic guard clause
-    throw new Error('User ID is required to fetch contacts.');
+    throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
   try {
     const contacts = await prisma.contact.findMany({
@@ -25,16 +28,14 @@ export async function getAllContactsForUser(userId: string) {
     return contacts;
   } catch (error) {
     console.error(`Error fetching contacts for user ${userId}:`, error);
-    // Re-throw or handle more specifically depending on where it's called
-    throw new Error('Could not fetch contacts.');
+    throw new Error(SERVER_ACTION_ERRORS.COULD_NOT_FETCH_CONTACTS_INTERNAL);
   }
 }
 
 // ** CREATE a new contact for a specific user ** //
 export async function createContact(data: ContactCreateInput, userId: string) {
   if (!userId) {
-    // Basic guard clause
-    throw new Error('User ID is required to create a contact.');
+    throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
 
   // Data should already be validated by Zod before calling this function
@@ -47,6 +48,10 @@ export async function createContact(data: ContactCreateInput, userId: string) {
         // 'type' will use the default defined in schema.prisma (LEAD)
       },
     });
+
+    // Updated path
+    revalidatePath('/mina-sidor/kontaktvy');
+
     return newContact;
   } catch (error) {
     console.error(`Error creating contact for user ${userId}:`, error);
@@ -58,24 +63,24 @@ export async function createContact(data: ContactCreateInput, userId: string) {
         // Check the specific constraint if necessary (using error.meta.target)
         const target = error.meta?.target as string[] | undefined;
         if (target?.includes('email') && target?.includes('userId')) {
-          throw new Error('A contact with this email already exists for this account.');
+          throw new Error(SERVER_ACTION_ERRORS.CONTACT_EXISTS);
         }
         // Throw a more generic duplicate error if target isn't specific
-        throw new Error('Failed to create contact due to a conflict.');
+        throw new Error(SERVER_ACTION_ERRORS.CREATE_CONFLICT_INTERNAL);
       }
     }
     // Re-throw a generic error for other issues
-    throw new Error('Could not create contact.');
+    throw new Error(SERVER_ACTION_ERRORS.GENERIC_CREATE_FAILURE);
   }
 }
 
 // ** GET A SINGLE contact by ID, ensuring user ownership ** //
 export async function getContactById(contactId: string, userId: string) {
   if (!userId) {
-    throw new Error('User ID is required to fetch a contact.');
+    throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
   if (!contactId) {
-    throw new Error('Contact ID is required.');
+    throw new Error(SERVER_ACTION_ERRORS.CONTACT_ID_REQUIRED);
   }
 
   try {
@@ -92,7 +97,7 @@ export async function getContactById(contactId: string, userId: string) {
       `Error fetching contact ${contactId} for user ${userId}:`,
       error
     );
-    throw new Error('Could not fetch contact.');
+    throw new Error(SERVER_ACTION_ERRORS.COULD_NOT_FETCH_CONTACT_INTERNAL);
   }
 }
 
@@ -103,38 +108,51 @@ export async function updateContact(
   data: ContactUpdateInput
 ) {
   if (!userId) {
-    throw new Error('User ID is required to update a contact.');
+    throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
   if (!contactId) {
-    throw new Error('Contact ID is required.');
+    throw new Error(SERVER_ACTION_ERRORS.CONTACT_ID_REQUIRED);
   }
   if (Object.keys(data).length === 0) {
-    throw new Error('No data provided for update.');
+    // Prevent unnecessary updates if no data is actually sent
+    // Although Zod partial might allow empty objects, it's good practice.
+    // Alternatively, return the existing contact without hitting the DB.
+    console.warn(SERVER_ACTION_ERRORS.UPDATE_WITH_EMPTY_DATA_WARN);
+    // Let's fetch and return the current contact to avoid errors downstream
+    const currentContact = await getContactById(contactId, userId);
+    if (!currentContact) {
+      throw new Error(SERVER_ACTION_ERRORS.NOT_FOUND_OR_AUTHORIZED_USER_FACING);
+    }
+    return currentContact; // Return current state if no changes provided
+    // Or simply: throw new Error('No data provided for update.');
   }
 
   // Data should already be validated by Zod before calling this function
 
   try {
-    // First, verify the contact exists and belongs to the user
+    // First, verify the contact exists and belongs to the user (redundant check if getContactById is reliable, but safe)
     const existingContact = await prisma.contact.findUnique({
       where: { id: contactId, userId: userId },
       select: { id: true }, // Only need to select id to confirm existence
     });
 
     if (!existingContact) {
-      // Return null or throw an error if not found/authorized
-      // Returning null allows the API route to handle the 404 response
-      return null; // Explicitly return null
+      // Throw a specific error if not found/authorized during the update attempt
+      throw new Error(SERVER_ACTION_ERRORS.NOT_FOUND_OR_AUTHORIZED_USER_FACING);
     }
 
     // Proceed with the update
     const updatedContact = await prisma.contact.update({
       where: {
         id: contactId,
-        // No need for userId here again as we confirmed ownership above
+        // userId: userId // Can add for extra safety, but verified above
       },
       data: data, // Pass the validated update data
     });
+
+    // Updated path
+    revalidatePath('/mina-sidor/kontaktvy');
+
     return updatedContact;
   } catch (error) {
     console.error(
@@ -142,44 +160,48 @@ export async function updateContact(
       error
     );
 
-    // Handle specific Prisma errors, e.g., unique constraints
+    // Handle specific Prisma errors, e.g., unique constraints on email update
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         const target = error.meta?.target as string[] | undefined;
         if (target?.includes('email')) {
-          throw new Error('A contact with this email already exists for this account.');
+          throw new Error(SERVER_ACTION_ERRORS.CONTACT_EXISTS);
         }
-        throw new Error('Failed to update contact due to a conflict.');
+        throw new Error(SERVER_ACTION_ERRORS.UPDATE_CONFLICT_INTERNAL);
       }
-      // P2025: Record to update not found (covered by our initial check, but good practice)
+      // P2025: Record to update not found (covered by our initial check)
       if (error.code === 'P2025') {
-        console.warn(`Update failed: Contact ${contactId} not found.`);
-        return null; // Treat as not found
+        throw new Error(SERVER_ACTION_ERRORS.UPDATE_NOT_FOUND_INTERNAL);
       }
     }
     // Re-throw a generic error for other issues
-    throw new Error('Could not update contact.');
+    throw new Error(SERVER_ACTION_ERRORS.GENERIC_UPDATE_FAILURE);
   }
 }
 
 // ** DELETE a contact by ID, ensuring user ownership ** //
-export async function deleteContact(contactId: string, userId: string): Promise<Prisma.BatchPayload> {
+export async function deleteContact(contactId: string, userId: string): Promise<{ count: number }> {
   if (!userId) {
-    throw new Error('User ID is required to delete a contact.');
+    throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
   if (!contactId) {
-    throw new Error('Contact ID is required.');
+    throw new Error(SERVER_ACTION_ERRORS.CONTACT_ID_REQUIRED);
   }
 
   try {
     // Use deleteMany to ensure we only delete if the userId matches
-    // This prevents deleting if the ID exists but belongs to another user
     const deleteResult = await prisma.contact.deleteMany({
       where: {
         id: contactId,
         userId: userId,
       }
     });
+
+    if (deleteResult.count > 0) {
+      // Updated path
+      revalidatePath('/mina-sidor/kontaktvy');
+    }
+
     // deleteResult contains { count: number } (0 or 1)
     return deleteResult;
   } catch (error) {
@@ -187,6 +209,6 @@ export async function deleteContact(contactId: string, userId: string): Promise<
       `Error deleting contact ${contactId} for user ${userId}:`,
       error
     );
-    throw new Error('Could not delete contact.');
+    throw new Error(SERVER_ACTION_ERRORS.GENERIC_DELETE_FAILURE);
   }
 } 

@@ -1,7 +1,8 @@
 import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth/options';
-import { AUTH_ROUTES, UserRole } from '@/lib/auth/constants/auth';
+import { UserRole } from '@/lib/auth/constants/auth';
+import { AUTH_PATHS } from '@/lib/constants/routes';
 import { hasRequiredRole } from './auth';
 
 /**
@@ -18,7 +19,7 @@ export const getSession = async () => {
  */
 export const requireRole = async (
   requiredRole: UserRole | UserRole[],
-  unauthorizedUrl = AUTH_ROUTES.UNAUTHORIZED
+  unauthorizedUrl = AUTH_PATHS.UNAUTHORIZED
 ) => {
   const session = await getSession(); // Hämta session direkt
 
@@ -26,7 +27,7 @@ export const requireRole = async (
   // eller om användaren saknar roll
   if (!session?.user?.role) {
     console.error('requireRole: Användare saknar session eller roll.');
-    redirect(AUTH_ROUTES.LOGIN); // Skicka till login om något är fel
+    redirect(AUTH_PATHS.LOGIN); // Use AUTH_PATHS
     return null; // Returnera null för att undvika TS-fel nedan
   }
 

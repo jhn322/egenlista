@@ -23,6 +23,8 @@ import { FAQIcon } from '@/components/icons/faq-icon';
 import { LogoutIcon } from '@/components/icons/logout-icon';
 import { SettingsIcon } from '@/components/icons/settings-icon';
 import { UserIcon } from '@/components/icons/user-icon';
+import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
+import { APP_NAME } from '@/lib/constants/site';
 
 interface NavItem {
   href: string;
@@ -40,7 +42,7 @@ const publicNavItems: NavItem[] = [
 // Rollspecifika navigationslänkar
 const roleBasedNavItems: Record<string, NavItem[]> = {
   // ADMIN: [{ href: "/dashboard", label: "Dashboard" }],
-  // USER: [{ href: '/admin', label: 'Admin Panel' }],
+  USER: [{ href: PROTECTED_PATHS.MINA_SIDOR_BASE, label: 'Mina Sidor' }],
 };
 
 export function Navbar() {
@@ -103,14 +105,14 @@ export function Navbar() {
               >
                 <Image
                   src="/logo.png"
-                  alt="Egen Lista logo"
+                  alt={`${APP_NAME} logo`}
                   width={32}
                   height={32}
                   className="mr-2 h-8 w-8"
                   priority
                   fetchPriority="high"
                 />
-                Egen Lista
+                {APP_NAME}
               </Link>
 
               {/* Desktop Navigation */}
@@ -174,7 +176,7 @@ export function Navbar() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {userRole === 'USER' && (
-                      <Link href="/admin">
+                      <Link href={PROTECTED_PATHS.MINA_SIDOR_BASE}>
                         <DropdownMenuItem className="cursor-pointer">
                           <AdminIcon className="mr-2" />
                           <span>Mina Sidor</span>
@@ -200,7 +202,7 @@ export function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : status === 'unauthenticated' ? (
-                <Link href="/auth/login">
+                <Link href={AUTH_PATHS.LOGIN}>
                   <Button
                     variant="default"
                     className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -252,7 +254,10 @@ export function Navbar() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {userRole === 'USER' && (
-                      <Link href="/admin" onClick={() => setIsOpen(false)}>
+                      <Link
+                        href={PROTECTED_PATHS.MINA_SIDOR_BASE}
+                        onClick={() => setIsOpen(false)}
+                      >
                         <DropdownMenuItem className="cursor-pointer">
                           <AdminIcon className="mr-2" />
                           <span>Mina Sidor</span>
@@ -344,7 +349,7 @@ export function Navbar() {
               <div className="mt-8 w-full max-w-[200px]">
                 {status === 'unauthenticated' && (
                   <Link
-                    href="/auth/login"
+                    href={AUTH_PATHS.LOGIN}
                     className="block w-full"
                     onClick={() => setIsOpen(false)}
                   >

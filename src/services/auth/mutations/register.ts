@@ -1,4 +1,5 @@
 import type { RegisterRequest, RegisterResponse } from '../types/auth';
+import { API_AUTH_PATHS } from '@/lib/constants/routes';
 
 /**
  * Registrerar en ny användare via API
@@ -7,7 +8,7 @@ export const registerUser = async (
   data: RegisterRequest
 ): Promise<RegisterResponse> => {
   try {
-    const response = await fetch('/api/auth/register', {
+    const response = await fetch(API_AUTH_PATHS.REGISTER, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

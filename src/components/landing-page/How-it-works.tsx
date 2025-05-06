@@ -2,6 +2,7 @@
 
 import { Check } from 'lucide-react';
 import Image from 'next/image';
+import { APP_NAME } from '@/lib/constants/site';
 
 const steps = [
   {
@@ -30,7 +31,7 @@ export default function HowItWorksSection() {
           <div className="relative order-2 h-[500px] overflow-hidden rounded-lg lg:order-1">
             <Image
               src="/how-it-works/how-it-works-1.webp"
-              alt="Egen Lista workflow"
+              alt={`${APP_NAME} workflow`}
               fill
               className="object-cover"
             />
@@ -41,7 +42,7 @@ export default function HowItWorksSection() {
               Ditt arbetsflöde. Ditt sätt.
             </h2>
             <p className="text-foreground/90 text-lg">
-              Egen Lista anpassar sig efter dina behov, inte tvärtom. Vårt
+              {APP_NAME} anpassar sig efter dina behov, inte tvärtom. Vårt
               verktyg är utformat för att göra kundhantering så enkel som
               möjligt.
             </p>

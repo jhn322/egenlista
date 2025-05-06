@@ -4,6 +4,7 @@ import { SmallBusinessIcon } from '@/components/icons/small-business-icon';
 import { EcommerceIcon } from '@/components/icons/ecommerce-icon';
 import { FreelanceIcon } from '@/components/icons/freelance-icon';
 import { ServiceCompanyIcon } from '@/components/icons/service-company-icon';
+import { APP_NAME } from '@/lib/constants/site';
 
 // ** Use Case Data ** //
 const useCases = [
@@ -45,7 +46,7 @@ export default function UseCasesSection() {
           </h2>
           <p className="text-foreground/90 mx-auto mt-4 max-w-2xl text-lg md:text-xl">
             Oavsett om du driver en webbshop, en konsultfirma eller en lokal
-            butik, hjälper Egen Lista dig att växa din kundbas.
+            butik, hjälper {APP_NAME} dig att växa din kundbas.
           </p>
         </div>
 
