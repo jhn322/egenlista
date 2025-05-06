@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { AUTH_PATHS } from '@/lib/constants/routes';
+import { APP_NAME } from '@/lib/constants/site';
 
 // ** Preview Images for Carousel ** //
 const previewImages = [
@@ -51,7 +52,7 @@ export default function HeroSection() {
           {/* Text and Button Column */}
           <div className="space-y-6 text-center lg:text-left">
             <h1 className="text-primary text-5xl font-bold tracking-tight md:text-6xl">
-              Egen Lista
+              {APP_NAME}
             </h1>
             <p className="text-muted-foreground mx-auto max-w-md text-xl md:text-2xl lg:mx-0">
               Ett enkelt verktyg för svenska företagare att bygga sin egen
@@ -62,7 +63,7 @@ export default function HeroSection() {
               <Link href={AUTH_PATHS.LOGIN} className="w-full sm:w-auto">
                 <Button
                   className="bg-primary text-primary-foreground hover:bg-primary/90 text-md w-full"
-                  aria-label="Kom igång gratis med Egen Lista"
+                  aria-label={`Kom igång gratis med ${APP_NAME}`}
                 >
                   Kom igång gratis
                 </Button>

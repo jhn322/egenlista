@@ -7,11 +7,15 @@ import { fileURLToPath } from 'url';
 // that would be preferable, but direct relative paths are more common in standalone scripts.
 // This path assumes 'Postman' directory is at the root, and 'src' is also at the root.
 import { API_AUTH_PATHS, API_APP_PATHS } from '../src/lib/constants/routes.js';
+import { APP_NAME } from '../src/lib/constants/site.js'; // Import APP_NAME
 
 // ---------- Konfiguration ----------
 const BASE_URL_PLACEHOLDER = '{{baseUrl}}';
-const COLLECTION_NAME = 'EgenLista API';
-const ENVIRONMENT_NAME = 'EgenLista Environment';
+// Sanitize APP_NAME for filenames (e.g., remove spaces)
+const APP_NAME_SANITIZED = APP_NAME.replace(/\s+/g, '');
+
+const COLLECTION_NAME = `${APP_NAME} API`; // Use APP_NAME
+const ENVIRONMENT_NAME = `${APP_NAME} Environment`; // Use APP_NAME
 
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -19,11 +23,11 @@ const OUTPUT_DIR = dirname(__filename);
 
 const OUTPUT_COLLECTION_FILENAME = path.join(
   OUTPUT_DIR,
-  'EgenLista-API.postman_collection.json'
+  `${APP_NAME_SANITIZED}-API.postman_collection.json` // Use sanitized name
 );
 const OUTPUT_ENVIRONMENT_FILENAME = path.join(
   OUTPUT_DIR,
-  'EgenLista-API.postman_environment.json'
+  `${APP_NAME_SANITIZED}-API.postman_environment.json` // Use sanitized name
 );
 
 // API struktur för Auth
@@ -168,7 +172,7 @@ const apiRoutes = [
 const collection = {
   info: {
     name: COLLECTION_NAME,
-    description: 'Postman collection för EgenLista API',
+    description: `Postman collection för ${APP_NAME} API`, // Use APP_NAME
     schema:
       'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
   },
@@ -332,13 +336,17 @@ try {
     OUTPUT_COLLECTION_FILENAME,
     JSON.stringify(collection, null, 2) // Indentera för läsbarhet
   );
-  console.log(`✅ Postman collection saved to ${OUTPUT_COLLECTION_FILENAME}`);
+  console.log(
+    `✅ Postman collection saved to ${path.basename(OUTPUT_COLLECTION_FILENAME)}`
+  ); // Use dynamic filename
 
   fs.writeFileSync(
     OUTPUT_ENVIRONMENT_FILENAME,
     JSON.stringify(environment, null, 2) // Indentera för läsbarhet
   );
-  console.log(`✅ Postman environment saved to ${OUTPUT_ENVIRONMENT_FILENAME}`);
+  console.log(
+    `✅ Postman environment saved to ${path.basename(OUTPUT_ENVIRONMENT_FILENAME)}`
+  ); // Use dynamic filename
 
   console.log('\nNästa steg:');
   console.log(

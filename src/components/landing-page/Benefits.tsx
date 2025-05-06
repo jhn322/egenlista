@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { APP_NAME } from '@/lib/constants/site';
 
 export default function BenefitsSection() {
   return (
@@ -28,7 +29,7 @@ export default function BenefitsSection() {
             Hitta allt. Direkt.
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl">
-            Sluta leta efter information om dina kunder. Med Egen Lista har du
+            Sluta leta efter information om dina kunder. Med {APP_NAME} har du
             allt på ett ställe.
           </p>
         </div>

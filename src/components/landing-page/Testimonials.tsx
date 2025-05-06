@@ -8,41 +8,39 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { StarIcon } from 'lucide-react';
+import { APP_NAME } from '@/lib/constants/site';
 
 const testimonials = [
   {
     name: 'Anna Johansson',
     role: 'Småföretagare, Stockholm',
-    content:
-      'Egen Lista har revolutionerat hur jag håller kontakten med mina kunder. Det är enkelt att använda och sparar mig flera timmar varje vecka.',
+    content: `${APP_NAME} har revolutionerat hur jag håller kontakten med mina kunder. Det är enkelt att använda och sparar mig flera timmar varje vecka.`,
     avatar: 'AJ',
   },
   {
     name: 'Erik Lindberg',
     role: 'Konsult, Göteborg',
-    content:
-      'Efter att ha testat flera CRM-system är Egen Lista det enda som verkligen passar mina behov som svensk företagare.',
+    content: `Efter att ha testat flera CRM-system är ${APP_NAME} det enda som verkligen passar mina behov som svensk företagare.`,
     avatar: 'EL',
   },
   {
     name: 'Maria Svensson',
     role: 'Butiksägare, Malmö',
-    content:
-      'Tack vare Egen Listahar jag kunnat öka min försäljning med 30% genom bättre kundrelationer och uppföljning.',
+    content: `Tack vare ${APP_NAME} har jag kunnat öka min försäljning med 30% genom bättre kundrelationer och uppföljning.`,
     avatar: 'MS',
   },
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="relative w-full bg-background px-4 py-24">
+    <section className="bg-background relative w-full px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 space-y-4 text-center">
-          <h2 className="text-3xl font-bold text-primary md:text-4xl">
+          <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Vad våra kunder säger
           </h2>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
-            Hundratals svenska företagare använder redan Egen-lista för att
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
+            Hundratals svenska företagare använder redan {APP_NAME} för att
             förbättra sina kundrelationer.
           </p>
         </div>
@@ -77,10 +75,12 @@ export default function TestimonialsSection() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-primary">
+                    <p className="text-primary font-medium">
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {testimonial.role}
+                    </p>
                   </div>
                 </div>
               </CardFooter>
@@ -88,7 +88,7 @@ export default function TestimonialsSection() {
           ))}
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-primary z-5"></div>
+      <div className="to-primary absolute right-0 bottom-0 left-0 z-5 h-32 bg-gradient-to-b from-transparent"></div>
     </section>
   );
 }

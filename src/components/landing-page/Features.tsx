@@ -11,6 +11,7 @@ import { ClientsIcon } from '@/components/icons/clients-icon';
 import { CheckmarklistIcon } from '@/components/icons/checkmarklist-icon';
 import { AnalyticsIcon } from '@/components/icons/analytics-icon';
 import { MailIcon } from '@/components/icons/mail-icon';
+import { APP_NAME } from '@/lib/constants/site';
 
 const features = [
   {
@@ -46,7 +47,7 @@ export default function FeaturesSection() {
             Bygg perfekta kundlistor. Tillsammans.
           </h2>
           <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
-            Egen Lista ger dig alla verktyg du behöver för att hantera dina
+            {APP_NAME} ger dig alla verktyg du behöver för att hantera dina
             kundrelationer på ett enkelt sätt.
           </p>
         </div>

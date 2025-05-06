@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowIcon } from '@/components/icons/arrow-icon';
 import { SendIcon } from '@/components/icons/send-icon';
+import { APP_NAME } from '@/lib/constants/site';
 
 export default function CtaSection() {
   return (
@@ -26,11 +27,11 @@ export default function CtaSection() {
         <div className="relative z-10 grid gap-12 lg:grid-cols-2 lg:items-center">
           <div className="text-center lg:text-left">
             <h2 className="text-primary mb-4 text-3xl font-bold md:text-4xl">
-              Kom igång med Egen Lista idag
+              Kom igång med {APP_NAME} idag
             </h2>
             <p className="text-muted-foreground mb-8 text-lg md:mb-0">
               Anslut dig till hundratals svenska företagare som redan använder
-              Egen Lista för att bygga starkare kundrelationer.
+              {APP_NAME} för att bygga starkare kundrelationer.
             </p>
           </div>
 

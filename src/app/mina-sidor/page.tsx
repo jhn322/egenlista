@@ -6,9 +6,10 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
+import { APP_NAME } from '@/lib/constants/site';
 
 export const metadata: Metadata = {
-  title: 'Mina Sidor | Egen Lista',
+  title: `Mina Sidor | ${APP_NAME}`,
   description: 'Hantera dina kontakter, inställningar och prenumeration.',
   robots: {
     index: false,

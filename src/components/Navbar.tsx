@@ -24,6 +24,7 @@ import { LogoutIcon } from '@/components/icons/logout-icon';
 import { SettingsIcon } from '@/components/icons/settings-icon';
 import { UserIcon } from '@/components/icons/user-icon';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
+import { APP_NAME } from '@/lib/constants/site';
 
 interface NavItem {
   href: string;
@@ -104,13 +105,13 @@ export function Navbar() {
               >
                 <Image
                   src="/logo.png"
-                  alt="Egen Lista logo"
+                  alt={`${APP_NAME} logo`}
                   width={32}
                   height={32}
                   className="mr-2 h-8 w-8"
                   priority
                 />
-                Egen Lista
+                {APP_NAME}
               </Link>
 
               {/* Desktop Navigation */}

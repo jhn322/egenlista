@@ -52,12 +52,17 @@ This file provides guidelines for the AI assistant to generate relevant and cons
 - **NextAuth.js:** Use the provided hooks and functions for authentication checks and session management.
 - **Validation (Zod):** Use Zod (`zod`) as the primary library for schema definition and validation on both frontend (e.g., with React Hook Form) and backend (e.g., API route inputs). Define reusable schemas in `src/lib/validations/` where possible.
 - **Brevo:** Used as the SMTP service for sending transactional emails (e.g., email verification, password reset).
+- **Constants:**
+  - **Global Site Constants:** Use `src/lib/constants/site.ts` for application-wide constants like `APP_NAME`.
+  - **Route Constants:** Use `src/lib/constants/routes.ts` for all internal page links, API routes, and redirects. Define paths structued by area (e.g., `SITE_PATHS`, `AUTH_PATHS`, `PROTECTED_PATHS`, `API_AUTH_PATHS`, `API_APP_PATHS`).
+  - **Feature-Specific Constants:** For constants related to a specific feature (e.g., auth, contacts), create dedicated files like `src/lib/[feature]/constants/[feature].ts` (e.g., `src/lib/contacts/constants/contacts.ts`). Use these for UI messages (toasts, errors, dialog text, empty states), server action/API error strings, or other recurring text specific to that feature.
 
 ## 6. Things to Avoid
 
 - **Don't ignore ESLint/Prettier:** Ensure code adheres to the configured rules.
 - **Avoid large Client Components:** Keep Client Components small and push logic to Server Components or utility functions where possible.
 - **Check for existing utilities:** Before writing new helper functions, check `src/lib/` or `src/utils/` (if it exists).
+- **Filter sensitive data from responses:** Ensure that sensitive data is not exposed in responses.
 
 ## 7. Maintaining These Rules
 
@@ -116,7 +121,6 @@ This file provides guidelines for the AI assistant to generate relevant and cons
   - Hash passwords.
   - Validate authorization/ownership.
   - Filter sensitive data from responses.
-- **Konstanter:** Use defined constants from `src/lib/.../constants/` for recurring strings like messages or roles.
 
 *This is an initial draft based on project configuration files. It should be reviewed and updated as the project evolves.*
 

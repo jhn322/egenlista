@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { APP_NAME } from '@/lib/constants/site';
 
 // ** Preview Images for Carousel ** //
 const previewImages = [
@@ -35,7 +36,7 @@ export default function ToolsSection() {
             Kraftfulla verktyg för ditt företag
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl">
-            Egen Lista ger dig allt du behöver för att hantera dina
+            {APP_NAME} ger dig allt du behöver för att hantera dina
             kundrelationer på ett professionellt sätt.
           </p>
         </div>

@@ -10,6 +10,7 @@ import { getAllContactsForUser } from '@/lib/contacts/utils/actions';
 import { isUserPro } from '@/lib/subscriptions/utils/actions'; // Importera den nya funktionen
 import { Contact } from '@/generated/prisma'; // Assuming Contact type is exported
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
+import { APP_NAME } from '@/lib/constants/site'; // Import APP_NAME
 
 import {
   Card,
@@ -24,7 +25,7 @@ import { ContactsView } from '@/components/contacts/contacts-view'; // Import th
 
 // **  Page Metadata  ** //
 export const metadata: Metadata = {
-  title: 'Kontaktvy | Egen Lista',
+  title: `Kontaktvy | ${APP_NAME}`,
   description: 'Se och hantera dina insamlade kontakter.',
   robots: {
     index: false,
