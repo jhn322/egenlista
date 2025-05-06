@@ -19,7 +19,8 @@ export default function CtaSection() {
             fill
             className="object-none object-right opacity-30 blur-[20px]"
             style={{ transform: 'scale(1)' }}
-            priority={false}
+            loading="lazy"
+            fetchPriority="low"
           />
         </div>
 
@@ -28,7 +29,7 @@ export default function CtaSection() {
             <h2 className="text-primary mb-4 text-3xl font-bold md:text-4xl">
               Kom igång med Egen Lista idag
             </h2>
-            <p className="text-muted-foreground mb-8 text-lg md:mb-0">
+            <p className="text-foreground/90 mb-8 text-lg md:mb-0">
               Anslut dig till hundratals svenska företagare som redan använder
               Egen Lista för att bygga starkare kundrelationer.
             </p>
@@ -43,7 +44,7 @@ export default function CtaSection() {
               <Input
                 type="email"
                 placeholder="Din e-postadress"
-                className="text-foreground placeholder:text-muted-foreground flex-1 border-none bg-transparent px-4 py-2 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:placeholder:text-base"
+                className="text-foreground placeholder:text-foreground/90 flex-1 border-none bg-transparent px-4 py-2 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:placeholder:text-base"
                 aria-label="E-postadress för uppdateringar"
               />
               <Button

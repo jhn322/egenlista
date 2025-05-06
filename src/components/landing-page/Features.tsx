@@ -45,7 +45,7 @@ export default function FeaturesSection() {
           <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Bygg perfekta kundlistor. Tillsammans.
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
+          <p className="text-foreground/90 mx-auto max-w-2xl text-xl">
             Egen Lista ger dig alla verktyg du behöver för att hantera dina
             kundrelationer på ett enkelt sätt.
           </p>
@@ -61,7 +61,7 @@ export default function FeaturesSection() {
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-muted-foreground">
+                <CardDescription className="text-foreground/90">
                   {feature.description}
                 </CardDescription>
               </CardContent>

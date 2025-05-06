@@ -34,7 +34,7 @@ export default function ToolsSection() {
           <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Kraftfulla verktyg för ditt företag
           </h2>
-          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl">
+          <p className="text-foreground/90 mx-auto mt-4 max-w-2xl text-xl">
             Egen Lista ger dig allt du behöver för att hantera dina
             kundrelationer på ett professionellt sätt.
           </p>
@@ -45,7 +45,7 @@ export default function ToolsSection() {
             <h3 className="text-primary text-2xl font-bold">
               Avancerad dataanalys
             </h3>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-foreground/90 text-lg">
               Få djupgående insikter om dina kunder och deras beteenden. Använd
               dessa insikter för att förbättra dina affärsstrategier och öka din
               försäljning.
@@ -53,19 +53,19 @@ export default function ToolsSection() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
                 <div className="bg-primary h-2 w-2 rounded-lg"></div>
-                <span className="text-muted-foreground">
+                <span className="text-foreground/90">
                   Kundengagemang och aktivitet
                 </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary h-2 w-2 rounded-lg"></div>
-                <span className="text-muted-foreground">
+                <span className="text-foreground/90">
                   Försäljningstrender och prognoser
                 </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary h-2 w-2 rounded-lg"></div>
-                <span className="text-muted-foreground">
+                <span className="text-foreground/90">
                   Segmentering och målgruppsanalys
                 </span>
               </li>

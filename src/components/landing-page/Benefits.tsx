@@ -17,7 +17,8 @@ export default function BenefitsSection() {
               objectFit: 'contain',
               filter: 'blur(20px)',
             }}
-            priority
+            loading="lazy"
+            fetchPriority="low"
           />
         </div>
       </div>
@@ -27,7 +28,7 @@ export default function BenefitsSection() {
           <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Hitta allt. Direkt.
           </h2>
-          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl">
+          <p className="text-foreground/90 mx-auto mt-4 max-w-2xl text-xl">
             Sluta leta efter information om dina kunder. Med Egen Lista har du
             allt på ett ställe.
           </p>
@@ -39,7 +40,7 @@ export default function BenefitsSection() {
               <span className="text-primary font-bold">1</span>
             </div>
             <h3 className="text-primary text-xl font-bold">Snabb sökning</h3>
-            <p className="text-muted-foreground">
+            <p className="text-foreground/90">
               Hitta exakt den information du behöver med vår kraftfulla
               sökfunktion.
             </p>
@@ -49,7 +50,7 @@ export default function BenefitsSection() {
               <span className="text-primary font-bold">2</span>
             </div>
             <h3 className="text-primary text-xl font-bold">Smart filtrering</h3>
-            <p className="text-muted-foreground">
+            <p className="text-foreground/90">
               Filtrera dina kundlistor baserat på olika kriterier för att hitta
               rätt målgrupp.
             </p>
@@ -59,7 +60,7 @@ export default function BenefitsSection() {
               <span className="text-primary font-bold">3</span>
             </div>
             <h3 className="text-primary text-xl font-bold">Anpassade vyer</h3>
-            <p className="text-muted-foreground">
+            <p className="text-foreground/90">
               Skapa anpassade vyer för att se exakt den information du behöver
               för olika situationer.
             </p>

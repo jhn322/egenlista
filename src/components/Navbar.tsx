@@ -108,6 +108,7 @@ export function Navbar() {
                   height={32}
                   className="mr-2 h-8 w-8"
                   priority
+                  fetchPriority="high"
                 />
                 Egen Lista
               </Link>
@@ -163,7 +164,7 @@ export function Navbar() {
                               {capitalizeFirstLetter(session?.user?.name) ||
                                 'Användare'}
                             </p>
-                            <p className="text-muted-foreground text-xs leading-none">
+                            <p className="text-foreground/90 text-xs leading-none">
                               {session?.user?.email}
                             </p>
                           </div>
@@ -243,7 +244,7 @@ export function Navbar() {
                             {capitalizeFirstLetter(session?.user?.name) ||
                               'Användare'}
                           </p>
-                          <p className="text-muted-foreground text-xs leading-none">
+                          <p className="text-foreground/90 text-xs leading-none">
                             {session?.user?.email}
                           </p>
                         </div>
