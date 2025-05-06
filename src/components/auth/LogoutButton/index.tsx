@@ -2,7 +2,7 @@
 
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { AUTH_ROUTES } from '@/lib/auth/constants/auth';
+import { DEFAULT_LOGOUT_REDIRECT_PATH } from '@/lib/constants/routes';
 import { LogOut } from 'lucide-react'; // Importera ikon
 
 interface LogoutButtonProps {
@@ -12,10 +12,7 @@ interface LogoutButtonProps {
 
 export const LogoutButton = ({ children, className }: LogoutButtonProps) => {
   const handleLogout = () => {
-    signOut({
-      callbackUrl: AUTH_ROUTES.LOGIN, // Omdirigera till login-sidan efter utloggning
-      redirect: true, // Se till att omdirigering sker
-    });
+    signOut({ callbackUrl: DEFAULT_LOGOUT_REDIRECT_PATH });
   };
 
   return (
