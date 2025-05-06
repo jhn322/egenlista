@@ -20,7 +20,7 @@ export default function Footer() {
                 alt="Logo"
                 width={128}
                 height={64}
-                priority
+                loading="lazy"
                 sizes="128px"
                 className="h-full w-full object-contain"
               />

@@ -44,7 +44,7 @@ export default function UseCasesSection() {
           <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Anpassat för din verksamhet
           </h2>
-          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg md:text-xl">
+          <p className="text-foreground/90 mx-auto mt-4 max-w-2xl text-lg md:text-xl">
             Oavsett om du driver en webbshop, en konsultfirma eller en lokal
             butik, hjälper {APP_NAME} dig att växa din kundbas.
           </p>
@@ -65,9 +65,7 @@ export default function UseCasesSection() {
                 <h3 className="text-foreground text-lg font-semibold">
                   {useCase.title}
                 </h3>
-                <p className="text-muted-foreground mt-1">
-                  {useCase.description}
-                </p>
+                <p className="text-foreground/90 mt-1">{useCase.description}</p>
               </div>
             );
           })}

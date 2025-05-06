@@ -40,7 +40,8 @@ export default function HeroSection() {
           fill
           className="object-none object-left opacity-30 blur-[20px]"
           style={{ transform: 'scale(1)' }}
-          priority
+          loading="lazy"
+          fetchPriority="low"
         />
       </div>
 
@@ -54,7 +55,7 @@ export default function HeroSection() {
             <h1 className="text-primary text-5xl font-bold tracking-tight md:text-6xl">
               {APP_NAME}
             </h1>
-            <p className="text-muted-foreground mx-auto max-w-md text-xl md:text-2xl lg:mx-0">
+            <p className="text-foreground/90 mx-auto max-w-md text-xl md:text-2xl lg:mx-0">
               Ett enkelt verktyg för svenska företagare att bygga sin egen
               kundlista.
             </p>
@@ -68,7 +69,7 @@ export default function HeroSection() {
                   Kom igång gratis
                 </Button>
               </Link>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-foreground/90 text-sm">
                 Ingen kreditkort krävs. Gratis för små företag.
               </p>
             </div>
@@ -117,6 +118,7 @@ export default function HeroSection() {
                   fill
                   className="object-cover"
                   priority={currentImageIndex === 0}
+                  fetchPriority={currentImageIndex === 0 ? 'high' : 'low'}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
                 />
               </div>

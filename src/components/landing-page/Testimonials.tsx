@@ -39,7 +39,7 @@ export default function TestimonialsSection() {
           <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Vad våra kunder säger
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
+          <p className="text-foreground/90 mx-auto max-w-2xl text-xl">
             Hundratals svenska företagare använder redan {APP_NAME} för att
             förbättra sina kundrelationer.
           </p>

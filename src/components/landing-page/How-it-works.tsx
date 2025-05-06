@@ -41,7 +41,7 @@ export default function HowItWorksSection() {
             <h2 className="text-primary text-3xl font-bold md:text-4xl">
               Ditt arbetsflöde. Ditt sätt.
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-foreground/90 text-lg">
               {APP_NAME} anpassar sig efter dina behov, inte tvärtom. Vårt
               verktyg är utformat för att göra kundhantering så enkel som
               möjligt.
@@ -57,7 +57,7 @@ export default function HowItWorksSection() {
                     <h3 className="text-primary text-xl font-medium">
                       {step.title}
                     </h3>
-                    <p className="text-muted-foreground mt-1">
+                    <p className="text-foreground/90 mt-1">
                       {step.description}
                     </p>
                   </div>
