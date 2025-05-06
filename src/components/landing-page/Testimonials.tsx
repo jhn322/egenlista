@@ -35,13 +35,13 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="w-full bg-white px-4 py-24">
+    <section className="relative w-full bg-background px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 space-y-4 text-center">
-          <h2 className="text-3xl font-bold text-blue-900 md:text-4xl">
+          <h2 className="text-3xl font-bold text-primary md:text-4xl">
             Vad våra kunder säger
           </h2>
-          <p className="mx-auto max-w-2xl text-xl text-gray-600">
+          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
             Hundratals svenska företagare använder redan Egen-lista för att
             förbättra sina kundrelationer.
           </p>
@@ -49,7 +49,7 @@ export default function TestimonialsSection() {
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="border-gray-200">
+            <Card key={index} className="border-border">
               <CardHeader className="pb-2">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -61,7 +61,7 @@ export default function TestimonialsSection() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700">
+                <p className="text-foreground">
                   &quot;{testimonial.content}&quot;
                 </p>
               </CardContent>
@@ -72,15 +72,15 @@ export default function TestimonialsSection() {
                       src="/placeholder.svg"
                       alt={testimonial.name}
                     />
-                    <AvatarFallback className="bg-gray-200 text-gray-700">
+                    <AvatarFallback className="bg-muted text-foreground">
                       {testimonial.avatar}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-blue-900">
+                    <p className="font-medium text-primary">
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-gray-600">{testimonial.role}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                   </div>
                 </div>
               </CardFooter>
@@ -88,6 +88,7 @@ export default function TestimonialsSection() {
           ))}
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-primary z-5"></div>
     </section>
   );
 }
