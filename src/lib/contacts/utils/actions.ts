@@ -6,7 +6,7 @@ import {
   type ContactUpdateInput, // Add update input type
 } from '@/lib/contacts/validation/schema';
 import { Prisma } from '@/generated/prisma'; // Import Prisma for error types
-import { revalidatePath } from 'next/cache'; // Import for revalidation
+// import { revalidatePath } from 'next/cache'; // Import for revalidation -> No longer needed
 import { SERVER_ACTION_ERRORS } from '../constants/contacts'; // Import constants
 
 // * ==========================================================================
@@ -48,9 +48,6 @@ export async function createContact(data: ContactCreateInput, userId: string) {
         // 'type' will use the default defined in schema.prisma (LEAD)
       },
     });
-
-    // Updated path
-    revalidatePath('/mina-sidor/kontaktvy');
 
     return newContact;
   } catch (error) {
@@ -150,9 +147,6 @@ export async function updateContact(
       data: data, // Pass the validated update data
     });
 
-    // Updated path
-    revalidatePath('/mina-sidor/kontaktvy');
-
     return updatedContact;
   } catch (error) {
     console.error(
@@ -197,10 +191,10 @@ export async function deleteContact(contactId: string, userId: string): Promise<
       }
     });
 
-    if (deleteResult.count > 0) {
-      // Updated path
-      revalidatePath('/mina-sidor/kontaktvy');
-    }
+    // if (deleteResult.count > 0) {
+    // Updated path
+    // revalidatePath('/mina-sidor/kontaktvy'); Removed
+    // }
 
     // deleteResult contains { count: number } (0 or 1)
     return deleteResult;
