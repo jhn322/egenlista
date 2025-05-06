@@ -97,7 +97,9 @@ export function ContactList({ contacts, onEdit, onDelete }: ContactListProps) {
                   variant={
                     contact.type === ContactType.CUSTOMER
                       ? 'default'
-                      : 'secondary'
+                      : contact.type === ContactType.AMBASSADOR
+                        ? 'outline'
+                        : 'secondary'
                   }
                 >
                   {formatContactType(contact.type)}
