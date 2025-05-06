@@ -38,8 +38,8 @@ export default function HeroSection() {
           src="/logo-bg.png"
           alt="Background"
           fill
-          className="object-none object-left opacity-30 blur-[20px]"
-          style={{ transform: 'scale(1)' }}
+          className="object-none opacity-30 blur-[20px]"
+          style={{ transform: 'scale(1)', objectPosition: '25% center' }}
           loading="lazy"
           fetchPriority="low"
         />
