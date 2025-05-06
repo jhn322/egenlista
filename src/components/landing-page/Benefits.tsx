@@ -12,12 +12,9 @@ export default function BenefitsSection() {
             src="/logo-bg.png"
             alt="Background"
             fill
-            sizes="(max-width: 1200px) 100vw, 1200px"
-            className="pointer-events-none opacity-30 select-none"
-            style={{
-              objectFit: 'contain',
-              filter: 'blur(20px)',
-            }}
+            sizes="(max-width: 2600px) 100vw, 2200px"
+            className="object-none opacity-30 blur-[20px]"
+            style={{ transform: 'scale(1)', objectPosition: 'center' }}
             loading="lazy"
             fetchPriority="low"
           />
