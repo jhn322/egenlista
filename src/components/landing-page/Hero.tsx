@@ -8,10 +8,10 @@ import { useEffect, useState } from 'react';
 
 // ** Preview Images for Carousel ** //
 const previewImages = [
-  '/hero/preview-1.png',
-  '/hero/preview-2.png',
-  '/hero/preview-3.png',
-  '/hero/preview-4.png',
+  '/hero/hero-preview-1.webp',
+  '/hero/hero-preview-2.webp',
+  '/hero/hero-preview-3.webp',
+  '/hero/hero-preview-4.webp',
 ];
 
 export default function HeroSection() {
@@ -36,7 +36,7 @@ export default function HeroSection() {
           src="/logo-bg.png"
           alt="Background"
           fill
-          className="object-none object-center opacity-30 blur-[20px]"
+          className="object-none object-left opacity-30 blur-[20px]"
           style={{ transform: 'scale(1)' }}
           priority
         />
@@ -58,7 +58,7 @@ export default function HeroSection() {
             </p>
             {/* Button and Sub-text Container */}
             <div className="flex flex-col items-center gap-4 pt-4 lg:items-start">
-              <Link href="/auth/login" className="w-full max-w-xs sm:w-auto">
+              <Link href="/auth/login" className="w-full sm:w-auto">
                 <Button
                   className="bg-primary text-primary-foreground hover:bg-primary/90 text-md w-full"
                   aria-label="Kom igång gratis med Egen Lista"
@@ -76,7 +76,7 @@ export default function HeroSection() {
           <div className="hidden lg:flex lg:justify-center">
             <Image
               src="/hero/hero-illustration.svg"
-              alt="App Preview Graphic"
+              alt="Man reading list illustration"
               width={400}
               height={400}
               className="h-auto w-96 xl:w-120"
@@ -84,12 +84,12 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Graphic & Preview Window (Mobile ) */}
+        {/* Graphic & Preview Window (Mobile) */}
         <div className="-space-y-4 lg:space-y-2">
           <div className="flex justify-center lg:hidden">
             <Image
-              src="/app-preview/app-preview.svg"
-              alt="App Preview Graphic"
+              src="/hero/hero-illustration.svg"
+              alt="Man reading list illustration"
               width={300}
               height={300}
               className="h-auto w-80 md:w-96"
@@ -111,7 +111,7 @@ export default function HeroSection() {
                 <Image
                   key={currentImageIndex}
                   src={previewImages[currentImageIndex]}
-                  alt={`App Preview ${currentImageIndex + 1}`}
+                  alt={`App Preview Images ${currentImageIndex + 1}`}
                   fill
                   className="object-cover"
                   priority={currentImageIndex === 0}
