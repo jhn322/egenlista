@@ -43,7 +43,7 @@ export default function CtaSection() {
               <Input
                 type="email"
                 placeholder="Din e-postadress"
-                className="text-foreground placeholder:text-muted-foreground flex-1 border-none bg-transparent px-4 py-2 focus-visible:ring-0 focus-visible:ring-offset-0 sm:placeholder:text-base"
+                className="text-foreground placeholder:text-muted-foreground flex-1 border-none bg-transparent px-4 py-2 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:placeholder:text-base"
                 aria-label="E-postadress för uppdateringar"
               />
               <Button
@@ -52,7 +52,7 @@ export default function CtaSection() {
                 aria-label="Skicka e-postadress"
               >
                 <SendIcon className="h-5 w-5 sm:mr-2" />
-                <span className="hidden sm:inline">Kom igång gratis</span>
+                <span className="hidden sm:inline">Kom igång</span>
               </Button>
             </form>
           </div>

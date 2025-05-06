@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react';
 
 // ** Preview Images for Carousel ** //
 const previewImages = [
-  '/placeholders/app-preview-1.png',
-  '/placeholders/app-preview-2.png',
-  '/placeholders/app-preview-3.png',
+  '/hero/preview-1.png',
+  '/hero/preview-2.png',
+  '/hero/preview-3.png',
+  '/hero/preview-4.png',
 ];
 
 export default function HeroSection() {
@@ -74,7 +75,7 @@ export default function HeroSection() {
           {/* App Preview Graphic (Desktop) */}
           <div className="hidden lg:flex lg:justify-center">
             <Image
-              src="/app-preview/app-preview.svg"
+              src="/hero/hero-illustration.svg"
               alt="App Preview Graphic"
               width={400}
               height={400}
@@ -96,16 +97,16 @@ export default function HeroSection() {
           </div>
 
           {/* Preview Window */}
-          <Card className="mx-auto max-w-6xl overflow-hidden shadow-sm dark:shadow-slate-700/[.3]">
+          <Card className="relative mx-auto max-w-6xl overflow-hidden shadow-sm dark:shadow-slate-700/[.3]">
             {/* Header */}
-            <div className="bg-muted/60 flex h-8 items-center gap-1.5 px-3">
+            <div className="bg-muted/60 absolute top-0 right-0 left-0 z-10 flex h-8 items-center gap-1.5 px-3">
               <span className="h-3 w-3 rounded-full bg-red-500"></span>
               <span className="h-3 w-3 rounded-full bg-yellow-500"></span>
               <span className="h-3 w-3 rounded-full bg-green-500"></span>
             </div>
 
             {/* Image Content */}
-            <CardContent className="aspect-video h-full w-full p-0">
+            <CardContent className="aspect-video h-full w-full p-0 pt-8">
               <div className="relative h-full w-full">
                 <Image
                   key={currentImageIndex}

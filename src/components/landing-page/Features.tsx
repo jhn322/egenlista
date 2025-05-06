@@ -39,13 +39,13 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="relative w-full bg-background px-4 py-24">
+    <section className="bg-background relative w-full px-4 py-24">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-16 space-y-4 text-center">
-          <h2 className="text-3xl font-bold text-primary md:text-4xl">
+          <h2 className="text-primary text-3xl font-bold md:text-4xl">
             Bygg perfekta kundlistor. Tillsammans.
           </h2>
-          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
+          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
             Egen Lista ger dig alla verktyg du behöver för att hantera dina
             kundrelationer på ett enkelt sätt.
           </p>
@@ -55,8 +55,8 @@ export default function FeaturesSection() {
           {features.map((feature, index) => (
             <Card key={index} className="border-border">
               <CardHeader>
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-                  <feature.icon className="h-6 w-6 text-foreground" />
+                <div className="bg-primary/10 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+                  <feature.icon className="text-foreground h-6 w-6" />
                 </div>
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
               </CardHeader>

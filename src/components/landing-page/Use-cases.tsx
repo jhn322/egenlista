@@ -1,34 +1,32 @@
 'use client';
 
-import { Building, Computer, Handshake, ShoppingCart } from 'lucide-react';
-
-// * ==========================================================================
-// *                        USE CASES SECTION
-// * ==========================================================================
-// Defines the use cases for the application with icons and descriptions.
+import { SmallBusinessIcon } from '@/components/icons/small-business-icon';
+import { EcommerceIcon } from '@/components/icons/ecommerce-icon';
+import { FreelanceIcon } from '@/components/icons/freelance-icon';
+import { ServiceCompanyIcon } from '@/components/icons/service-company-icon';
 
 // ** Use Case Data ** //
 const useCases = [
   {
-    icon: Building,
+    icon: SmallBusinessIcon,
     title: 'Småföretagare',
     description:
       'Perfekt för lokala butiker, hantverkare eller andra småföretagare som vill hålla koll på sina kunder utan krångliga system.',
   },
   {
-    icon: ShoppingCart,
+    icon: EcommerceIcon,
     title: 'E-handlare',
     description:
       'Samla leads, hantera dina onlinekunder och förbättra din marknadsföring med värdefulla kundinsikter.',
   },
   {
-    icon: Handshake,
+    icon: FreelanceIcon,
     title: 'Konsulter & Frilansare',
     description:
       'Håll ordning på dina klienter och projekt för att enkelt kunna skicka ut nyhetsbrev eller erbjudanden.',
   },
   {
-    icon: Computer, // Assuming 'Tjänsteföretag' might involve tech/digital services
+    icon: ServiceCompanyIcon,
     title: 'Tjänsteföretag',
     description:
       'Förbättra kundrelationer och service genom att ha all relevant kundinformation samlad och lättillgänglig.',

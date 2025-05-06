@@ -6,24 +6,26 @@ interface ClientsIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const ClientsIcon: React.FC<ClientsIconProps> = ({
-  color = 'black',
+  color = '#004794',
   iconSize = 24,
   ...props
 }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    fill="none" 
-    viewBox="0 0 24 24" 
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
     id="Multiple-Neutral-1--Streamline-Ultimate"
-    height={iconSize} 
+    height={iconSize}
     width={iconSize}
     stroke={color}
-    strokeWidth={1.5} 
+    strokeWidth={1.5}
     strokeLinecap="round"
     strokeLinejoin="round"
     {...props}
   >
-    <desc>{"Multiple Neutral 1 Streamline Icon: https://streamlinehq.com"}</desc>
+    <desc>
+      {'Multiple Neutral 1 Streamline Icon: https://streamlinehq.com'}
+    </desc>
     <g>
       <path d="M3.25 7.75a4.25 4.25 0 1 0 8.5 0 4.25 4.25 0 1 0 -8.5 0" />
       <path d="M0.5 20.5a7 7 0 0 1 14 0Z" />
@@ -33,4 +35,4 @@ export const ClientsIcon: React.FC<ClientsIconProps> = ({
       </g>
     </g>
   </svg>
-); 
+);

@@ -3,6 +3,7 @@
 // import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useSession, signOut } from 'next-auth/react';
@@ -96,7 +97,18 @@ export function Navbar() {
         <nav className="bg-background/90 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
           <div className="flex h-16 items-center justify-between px-6 md:px-8">
             <div className="flex items-center gap-8">
-              <Link href="/" className="text-foreground text-xl font-semibold">
+              <Link
+                href="/"
+                className="text-foreground flex items-center text-xl font-semibold"
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Egen Lista logo"
+                  width={32}
+                  height={32}
+                  className="mr-2 h-8 w-8"
+                  priority
+                />
                 Egen Lista
               </Link>
 
