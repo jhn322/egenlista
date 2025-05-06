@@ -39,7 +39,7 @@ const publicNavItems: NavItem[] = [
 // Rollspecifika navigationslänkar
 const roleBasedNavItems: Record<string, NavItem[]> = {
   // ADMIN: [{ href: "/dashboard", label: "Dashboard" }],
-  // USER: [{ href: '/admin', label: 'Admin Panel' }], 
+  // USER: [{ href: '/admin', label: 'Admin Panel' }],
 };
 
 export function Navbar() {
@@ -96,7 +96,7 @@ export function Navbar() {
         <nav className="bg-background/90 fixed top-0 right-0 left-0 z-50 w-full border-b backdrop-blur-sm transition-colors duration-500">
           <div className="flex h-16 items-center justify-between px-6 md:px-8">
             <div className="flex items-center gap-8">
-              <Link href="/" className="text-xl font-semibold text-foreground">
+              <Link href="/" className="text-foreground text-xl font-semibold">
                 Egen Lista
               </Link>
 
@@ -106,7 +106,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`rounded-lg px-2 py-1 text-foreground transition-colors hover:bg-accent ${
+                    className={`text-foreground hover:bg-accent rounded-lg px-2 py-1 transition-colors ${
                       isActiveLink(item.href) && 'font-medium'
                     }`}
                   >
@@ -123,7 +123,7 @@ export function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-2 rounded-lg px-2 py-1 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                      className="text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-lg px-2 py-1 transition-colors"
                     >
                       <UserIcon />
                       <span>
@@ -142,12 +142,14 @@ export function Navbar() {
                         <div className="flex items-center gap-3">
                           <Avatar className="h-9 w-9">
                             <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                              {session?.user?.email?.charAt(0).toUpperCase() || 'U'}
+                              {session?.user?.email?.charAt(0).toUpperCase() ||
+                                'U'}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col space-y-1">
-                            <p className="text-sm font-medium leading-none">
-                              {capitalizeFirstLetter(session?.user?.name) || 'Användare'}
+                            <p className="text-sm leading-none font-medium">
+                              {capitalizeFirstLetter(session?.user?.name) ||
+                                'Användare'}
                             </p>
                             <p className="text-muted-foreground text-xs leading-none">
                               {session?.user?.email}
@@ -162,7 +164,7 @@ export function Navbar() {
                       <Link href="/admin">
                         <DropdownMenuItem className="cursor-pointer">
                           <AdminIcon className="mr-2" />
-                          <span>Admin Panel</span>
+                          <span>Mina Sidor</span>
                         </DropdownMenuItem>
                       </Link>
                     )}
@@ -188,14 +190,14 @@ export function Navbar() {
                 <Link href="/auth/login">
                   <Button
                     variant="default"
-                    className="bg-primary text-primary-foreground transition-colors hover:bg-primary/90"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                   >
                     Logga in
                   </Button>
                 </Link>
               ) : null}
             </div>
-            
+
             {/* User Dropdown (if authenticated) */}
             <div className="flex items-center gap-2 md:hidden">
               {/* Mobile User Dropdown */}
@@ -204,7 +206,7 @@ export function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
-                      className="relative h-10 w-10 p-1 text-foreground hover:bg-accent hover:text-accent-foreground"
+                      className="text-foreground hover:bg-accent hover:text-accent-foreground relative h-10 w-10 p-1"
                       aria-label="User menu"
                     >
                       <div className="flex items-center gap-1">
@@ -220,12 +222,14 @@ export function Navbar() {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9">
                           <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                            {session?.user?.email?.charAt(0).toUpperCase() || 'U'}
+                            {session?.user?.email?.charAt(0).toUpperCase() ||
+                              'U'}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">
-                            {capitalizeFirstLetter(session?.user?.name) || 'Användare'}
+                          <p className="text-sm leading-none font-medium">
+                            {capitalizeFirstLetter(session?.user?.name) ||
+                              'Användare'}
                           </p>
                           <p className="text-muted-foreground text-xs leading-none">
                             {session?.user?.email}
@@ -238,7 +242,7 @@ export function Navbar() {
                       <Link href="/admin" onClick={() => setIsOpen(false)}>
                         <DropdownMenuItem className="cursor-pointer">
                           <AdminIcon className="mr-2" />
-                          <span>Admin Panel</span>
+                          <span>Mina Sidor</span>
                         </DropdownMenuItem>
                       </Link>
                     )}
@@ -315,8 +319,8 @@ export function Navbar() {
                   href={item.href}
                   className={`relative text-3xl transition-colors ${
                     isActiveLink(item.href)
-                      ? 'font-medium text-foreground'
-                      : 'hover:bg-secondary rounded-lg px-2 py-1 text-foreground'
+                      ? 'text-foreground font-medium'
+                      : 'hover:bg-secondary text-foreground rounded-lg px-2 py-1'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -333,7 +337,7 @@ export function Navbar() {
                   >
                     <Button
                       variant="default"
-                      className="w-full bg-primary text-lg text-primary-foreground transition-colors"
+                      className="bg-primary text-primary-foreground w-full text-lg transition-colors"
                     >
                       Logga in
                     </Button>
