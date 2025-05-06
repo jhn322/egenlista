@@ -6,16 +6,16 @@ interface AnalyticsIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const AnalyticsIcon: React.FC<AnalyticsIconProps> = ({
-  color = 'black',
+  color = '#004794',
   iconSize = 24,
   ...props
 }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    fill="none" 
-    viewBox="0 0 24 24" 
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
     id="Analytics-Graph-Bar--Streamline-Ultimate"
-    height={iconSize} 
+    height={iconSize}
     width={iconSize}
     stroke={color}
     strokeWidth={1.5}
@@ -23,7 +23,9 @@ export const AnalyticsIcon: React.FC<AnalyticsIconProps> = ({
     strokeLinejoin="round"
     {...props}
   >
-    <desc>{"Analytics Graph Bar Streamline Icon: https://streamlinehq.com"}</desc>
+    <desc>
+      {'Analytics Graph Bar Streamline Icon: https://streamlinehq.com'}
+    </desc>
     <path d="m0.504 23.5 23 0" />
     <path d="M4.5 19a0.5 0.5 0 0 0 -0.5 -0.5H2a0.5 0.5 0 0 0 -0.5 0.5v4.5h3Z" />
     <path d="M10.5 14a0.5 0.5 0 0 0 -0.5 -0.5H8a0.5 0.5 0 0 0 -0.5 0.5v9.5h3Z" />
@@ -37,4 +39,4 @@ export const AnalyticsIcon: React.FC<AnalyticsIconProps> = ({
     <path d="m10.427 6.974 3.154 1.051" />
     <path d="m19.804 2.9 -3.759 4.385" />
   </svg>
-); 
+);

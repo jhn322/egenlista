@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     'företagsverktyg',
   ],
   icons: {
-    icon: '/favicon.png',
-    apple: '/favicon.png',
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   openGraph: {
     title: 'Egen Lista | Ett enkelt verktyg för svenska företagare',
