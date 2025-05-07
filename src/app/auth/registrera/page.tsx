@@ -52,7 +52,7 @@ export default function RegisterPage() {
       footer={
         <AuthFooter
           mode="register"
-          onNavigate={() => router.push('/auth/login')}
+          onNavigate={() => router.push('/auth/logga-in')}
         />
       }
     >
