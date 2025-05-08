@@ -3,8 +3,8 @@
 // * ==========================================================================
 // Contains constants related to general site information, branding, etc.
 
-export const APP_NAME = 'Egen Lista';
+export const APP_NAME = 'EgenLista';
 
 // Other site-wide constants can be added here in the future, for example:
 // export const COMPANY_NAME = 'Your Company Inc.';
-// export const CONTACT_EMAIL = 'support@egenlista.se'; 
+// export const CONTACT_EMAIL = 'support@egenlista.se';
