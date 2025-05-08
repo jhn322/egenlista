@@ -81,7 +81,8 @@ model Contact {
   type          ContactType   @default(LEAD)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
-
+  note          String?    
+  noteUpdatedAt DateTime?  
   user User @relation(fields: [userId], references: [id])
   @@unique([userId, email]) // Only one contact per user per email
 }

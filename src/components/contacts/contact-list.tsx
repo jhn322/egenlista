@@ -14,7 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Contact, ContactType } from '@/generated/prisma';
-import { Trash2, MoreVertical, Pencil } from 'lucide-react'; // Icons
+import { Trash2, MoreVertical, Pencil, StickyNote } from 'lucide-react'; // Icons
 import { CONTACT_LIST_EMPTY_STATE } from '@/lib/contacts/constants/contacts'; // Import constants
 
 import {
@@ -31,6 +31,7 @@ interface ContactListProps {
   onDelete: (
     contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
   ) => void;
+  onNote: (contact: Contact) => void;
 }
 
 // **  Helper function to format ContactType  ** //
@@ -48,7 +49,12 @@ function formatContactType(type: ContactType): string {
 }
 
 // **  ContactList Component  ** //
-export function ContactList({ contacts, onEdit, onDelete }: ContactListProps) {
+export function ContactList({
+  contacts,
+  onEdit,
+  onDelete,
+  onNote,
+}: ContactListProps) {
   if (!contacts || contacts.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-8 text-center">
@@ -108,7 +114,37 @@ export function ContactList({ contacts, onEdit, onDelete }: ContactListProps) {
               <TableCell className="hidden sm:table-cell">
                 {new Date(contact.createdAt).toLocaleDateString('sv-SE')}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="flex items-center justify-end gap-2 text-right">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={
+                    contact.note
+                      ? 'Redigera anteckning'
+                      : 'Lägg till anteckning'
+                  }
+                  title={
+                    contact.note
+                      ? 'Redigera anteckning'
+                      : 'Lägg till anteckning'
+                  }
+                  onClick={() => onNote(contact)}
+                  tabIndex={0}
+                  className="group relative"
+                >
+                  <StickyNote
+                    className={
+                      contact.note
+                        ? 'text-primary fill-primary/20 h-5 w-5'
+                        : 'text-muted-foreground h-5 w-5'
+                    }
+                  />
+                  {contact.note && (
+                    <span className="absolute top-1 -right-1 flex h-2 w-2">
+                      <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
+                    </span>
+                  )}
+                </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">

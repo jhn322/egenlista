@@ -5,6 +5,7 @@
 // * ==========================================================================
 import { useState } from 'react';
 import { Contact } from '@/generated/prisma';
+import { toast } from 'sonner';
 
 import {
   Card,
@@ -17,6 +18,7 @@ import { ContactList } from './contact-list';
 import { EditContactFeature } from './edit-contact-feature';
 import { DeleteContactFeature } from './delete-contact-feature';
 import { CreateContactFeature } from './create-contact-feature';
+import { ContactNoteModal } from './contact-note-modal';
 
 // ** Props Interface ** //
 interface ContactsViewProps {
@@ -40,6 +42,11 @@ export function ContactsView({
   > | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const [noteContact, setNoteContact] = useState<Contact | null>(null);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+
+  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
+
   const handleEditClick = (contact: Contact) => {
     setEditingContact(contact);
     setIsEditDialogOpen(true);
@@ -50,6 +57,43 @@ export function ContactsView({
   ) => {
     setDeletingContact(contactInfo);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleNoteClick = (contact: Contact) => {
+    setNoteContact(contact);
+    setIsNoteModalOpen(true);
+  };
+
+  const handleNoteSave = async (note: string) => {
+    if (!noteContact) return;
+    const contactId = noteContact.id;
+    try {
+      const res = await fetch(`/api/contacts/${contactId}/note`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Kunde inte spara anteckningen.');
+      }
+      const data = await res.json();
+      setContacts((prev) =>
+        prev.map((c) =>
+          c.id === contactId
+            ? { ...c, note: data.note, noteUpdatedAt: data.noteUpdatedAt }
+            : c
+        )
+      );
+      if (note) {
+        toast.success('Anteckning sparad!');
+      }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : 'Kunde inte spara anteckningen.'
+      );
+      throw err;
+    }
   };
 
   return (
@@ -66,9 +110,10 @@ export function ContactsView({
       <CardContent className="space-y-6">
         {/* Contact List - Removed outer div and flex controls from here */}
         <ContactList
-          contacts={initialContacts}
+          contacts={contacts}
           onEdit={handleEditClick}
           onDelete={handleDeleteClick}
+          onNote={handleNoteClick}
         />
 
         {/* Edit Contact Dialog */}
@@ -86,6 +131,15 @@ export function ContactsView({
           isOpen={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
           userId={userId}
+        />
+
+        {/* Note Modal */}
+        <ContactNoteModal
+          contact={noteContact}
+          isOpen={isNoteModalOpen}
+          onOpenChange={setIsNoteModalOpen}
+          userIsPro={userIsPro}
+          onSave={handleNoteSave}
         />
       </CardContent>
     </Card>

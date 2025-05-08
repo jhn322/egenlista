@@ -23,5 +23,20 @@ export type ContactCreateInput = z.infer<typeof ContactCreateSchema>;
 // Allows partial updates and changing the type
 export const ContactUpdateSchema = ContactCreateSchema.partial().extend({
   type: z.nativeEnum(ContactType).optional(), // Allow updating type
+  note: z.string().optional(),
+  noteUpdatedAt: z.date().optional(),
 });
-export type ContactUpdateInput = z.infer<typeof ContactUpdateSchema>; 
+export type ContactUpdateInput = z.infer<typeof ContactUpdateSchema>;
+
+// ** Schema for Contact Note (Markdown) ** //
+export const getContactNoteSchema = (maxLength: number) =>
+  z.object({
+    note: z
+      .string()
+      .max(maxLength, {
+        message: `Note must be at most ${maxLength} characters.`,
+      })
+      .optional()
+      .default(''),
+  });
+export type ContactNoteInput = z.infer<ReturnType<typeof getContactNoteSchema>>;
