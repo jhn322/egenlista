@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import clsx from 'clsx';
 
 import {
   Table,
@@ -300,40 +301,48 @@ export function ContactList({
                   >
                     {/* ** Name Cell (Edit) ** */}
                     <TableCell>
-                      <FormField
-                        name="firstName"
-                        control={form.control}
-                        render={({ field }) => (
-                          <FormItem className="mb-2">
-                            <FormControl>
-                              <Input
-                                placeholder="Förnamn"
-                                {...field}
-                                disabled={isPending}
-                                className="h-8 text-sm"
-                              />
-                            </FormControl>
-                            <FormMessage className="text-xs" />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        name="lastName"
-                        control={form.control}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                placeholder="Efternamn"
-                                {...field}
-                                disabled={isPending}
-                                className="h-8 text-sm"
-                              />
-                            </FormControl>
-                            <FormMessage className="text-xs" />
-                          </FormItem>
-                        )}
-                      />
+                      {/* Wrap first and last name fields in a flex container */}
+                      <div className="flex items-start gap-2">
+                        <FormField
+                          name="firstName"
+                          control={form.control}
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              {' '}
+                              {/* Allow field to grow */}
+                              {/* Removed mb-2, gap handles spacing */}
+                              <FormControl>
+                                <Input
+                                  placeholder="Förnamn"
+                                  {...field}
+                                  disabled={isPending}
+                                  className="h-8 text-sm"
+                                />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          name="lastName"
+                          control={form.control}
+                          render={({ field }) => (
+                            <FormItem className="flex-1">
+                              {' '}
+                              {/* Allow field to grow */}
+                              <FormControl>
+                                <Input
+                                  placeholder="Efternamn"
+                                  {...field}
+                                  disabled={isPending}
+                                  className="h-8 text-sm"
+                                />
+                              </FormControl>
+                              <FormMessage className="text-xs" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </TableCell>
                     {/* ** Email Cell (Edit) ** */}
                     <TableCell className="hidden md:table-cell">
@@ -533,7 +542,16 @@ export function ContactList({
                   </TableRow>
                 ) : (
                   // *** Display Row ***
-                  <TableRow key={contact.id}>
+                  <TableRow
+                    key={contact.id}
+                    className={clsx(
+                      'transition-filter transition-opacity duration-300 ease-in-out', // Added transition-filter
+                      {
+                        'pointer-events-none opacity-50 blur-sm':
+                          editingContactId && editingContactId !== contact.id,
+                      }
+                    )}
+                  >
                     {/* ** Name Cell (Display) ** */}
                     <TableCell>
                       <div className="font-medium">
