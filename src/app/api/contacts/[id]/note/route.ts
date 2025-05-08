@@ -19,7 +19,7 @@ export async function PATCH(
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ message: 'Ej autentiserad' }, { status: 401 });
     }
     const userId = session.user.id;
 
@@ -27,7 +27,7 @@ export async function PATCH(
     const contact = await getContactById(contactId, userId);
     if (!contact) {
       return NextResponse.json(
-        { message: 'Contact not found' },
+        { message: 'Kontakt hittades inte' },
         { status: 404 }
       );
     }
@@ -43,7 +43,7 @@ export async function PATCH(
     if (!validationResult.success) {
       return NextResponse.json(
         {
-          message: 'Invalid note',
+          message: 'Ogiltig anteckning',
           errors: validationResult.error.flatten(),
         },
         { status: 400 }
@@ -58,7 +58,7 @@ export async function PATCH(
     });
     if (!updatedContact) {
       return NextResponse.json(
-        { message: 'Contact not found or update failed' },
+        { message: 'Kontakt hittades inte eller uppdateringen misslyckades' },
         { status: 404 }
       );
     }
@@ -68,7 +68,9 @@ export async function PATCH(
     });
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : 'Failed to update note';
+      error instanceof Error
+        ? error.message
+        : 'Uppdateringen av anteckningen misslyckades';
     return NextResponse.json({ message: errorMessage }, { status: 500 });
   }
 }

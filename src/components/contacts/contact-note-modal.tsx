@@ -1,6 +1,3 @@
-// * ============================================================================
-// *                        CONTACT NOTE MODAL COMPONENT
-// * ============================================================================
 'use client';
 import { useState, useEffect } from 'react';
 import { Contact } from '@/generated/prisma';
@@ -12,8 +9,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ShieldAlert } from 'lucide-react';
+import MDEditor from '@uiw/react-md-editor';
 
 interface ContactNoteModalProps {
   contact: Contact | null;
@@ -76,35 +73,68 @@ export const ContactNoteModal = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent aria-label="Anteckning för kontakt" className="max-w-lg">
+        <DialogContent
+          aria-label="Anteckning för kontakt"
+          className="max-w-4xl"
+        >
           <DialogHeader>
             <DialogTitle>
               {contact?.firstName} {contact?.lastName} – Anteckning
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <Textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              maxLength={maxLength}
-              rows={8}
-              placeholder="Skriv en anteckning i markdown..."
-              aria-label="Anteckning"
-              disabled={isSaving}
-              className="resize-y"
-              autoFocus
-            />
-            <div className="text-muted-foreground flex items-center justify-between text-xs">
-              <span>
+            <div data-color-mode="light">
+              <MDEditor
+                value={note}
+                onChange={(value) => {
+                  const newValue = value || '';
+                  if (newValue.length <= (userIsPro ? maxLength : 1200)) {
+                    setNote(newValue);
+                  }
+                }}
+                preview="edit"
+                height={400}
+                textareaProps={{
+                  placeholder: 'Skriv en anteckning...',
+                  disabled: isSaving,
+                }}
+                className="!border-input"
+              />
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span
+                className={
+                  !userIsPro && note.length > 1000
+                    ? 'text-destructive font-semibold'
+                    : 'text-muted-foreground'
+                }
+              >
                 {note.length}/{maxLength} tecken
               </span>
-              {!userIsPro && note.length > 1000 && (
-                <span className="text-destructive font-medium">
-                  Max 1000 tecken för gratisanvändare. Uppgradera till Pro för
-                  längre anteckningar.
-                </span>
-              )}
             </div>
+            {/* Show yellow Pro info box only when free user exceeds 1000 chars */}
+            {!userIsPro && note.length > 1000 && (
+              <div className="mt-1 flex flex-col items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                <div className="mb-1 flex items-center gap-2">
+                  <ShieldAlert className="h-6 w-6 text-amber-500" />
+                  <span className="font-semibold">PRO-funktion</span>
+                </div>
+                <div className="text-center leading-tight">
+                  Max <span className="font-semibold">1000</span> tecken för
+                  gratisanvändare. Uppgradera till{' '}
+                  <span className="font-semibold">PRO</span> för att spara
+                  längre anteckningar.
+                  <br />
+                  <Button
+                    variant="link"
+                    className="px-0 text-amber-700 hover:text-amber-900"
+                    onClick={() => window.open('/pro', '_blank')}
+                  >
+                    Läs mer om PRO
+                  </Button>
+                </div>
+              </div>
+            )}
             {error && <div className="text-destructive text-sm">{error}</div>}
           </div>
           <DialogFooter className="flex items-center justify-between">
@@ -133,12 +163,21 @@ export const ContactNoteModal = ({
               <Button
                 onClick={handleSave}
                 disabled={
-                  isSaving || isOverLimit || note === (contact?.note || '')
+                  isSaving ||
+                  isOverLimit ||
+                  (!userIsPro && note.length > 1000) ||
+                  note === (contact?.note || '')
                 }
-                aria-disabled={isSaving || isOverLimit}
+                aria-disabled={
+                  isSaving || isOverLimit || (!userIsPro && note.length > 1000)
+                }
                 aria-label="Spara anteckning"
               >
-                {isSaving ? 'Sparar...' : 'Spara'}
+                {!userIsPro && note.length > 1000
+                  ? 'Uppgradera till Pro'
+                  : isSaving
+                    ? 'Sparar...'
+                    : 'Spara'}
               </Button>
             </div>
           </DialogFooter>
