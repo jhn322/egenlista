@@ -8,10 +8,20 @@ import { ContactType } from '@/generated/prisma'; // Import the enum
 // ** Schema for Creating a Contact ** //
 // Includes fields expected from the widget/form submission
 export const ContactCreateSchema = z.object({
-  firstName: z.string().min(1, { message: 'First name is required.' }).max(100),
-  lastName: z.string().min(1, { message: 'Last name is required.' }).max(100),
-  email: z.string().email({ message: 'Invalid email address.' }),
-  phone: z.string().optional(), // Keep optional as in schema
+  firstName: z.string().min(1, { message: 'Förnamn måste anges.' }).max(100),
+  lastName: z.string().min(1, { message: 'Efternamn måste anges.' }).max(100),
+  email: z.string().email({ message: 'Ogiltig e-postadress.' }),
+  phone: z.string().max(50).optional().or(z.literal('')), // Allow empty string or make optional
+
+  // ** Optional Address Fields ** //
+  addressStreet: z.string().max(200).optional().or(z.literal('')),
+  addressStreet2: z.string().max(200).optional().or(z.literal('')),
+  addressPostalCode: z.string().max(20).optional().or(z.literal('')),
+  addressCity: z.string().max(100).optional().or(z.literal('')),
+  addressCountry: z.string().max(100).optional().or(z.literal('')),
+  // addressStateOrProvince: z.string().max(100).optional().or(z.literal('')), // Maybe add later if needed
+  // addressType: z.nativeEnum(AddressType).optional(), // Type could be added later
+
   // Note: 'type' is defaulted in Prisma, not expected from client form
   // Note: 'userId' is determined server-side from widget/auth
 });

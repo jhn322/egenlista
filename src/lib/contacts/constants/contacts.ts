@@ -57,6 +57,9 @@ export const SERVER_ACTION_ERRORS = {
   GENERIC_UPDATE_FAILURE: 'Kunde inte uppdatera kontakten. Försök igen.',
   GENERIC_DELETE_FAILURE: 'Kunde inte ta bort kontakten. Försök igen.',
   GENERIC_FETCH_FAILURE: 'Kunde inte hämta kontaktdata. Försök igen senare.',
+  INVALID_RELATION_DATA: 'Ogiltig relaterad data. Kontrollera indata.',
+  DB_OPERATION_FAILED: 'Databasåtgärden misslyckades. Försök igen.',
+  VALIDATION_ERROR_INTERNAL_USER_FACING: 'Indata är ogiltig. Kontrollera och försök igen.',
 
   // More technical/internal errors (could be used for logging or mapping to user-facing ones)
   USER_ID_REQUIRED: 'Användar-ID krävs.',
@@ -67,6 +70,8 @@ export const SERVER_ACTION_ERRORS = {
   COULD_NOT_FETCH_CONTACTS_INTERNAL: 'Internt fel vid hämtning av kontakter.',
   COULD_NOT_FETCH_CONTACT_INTERNAL: 'Internt fel vid hämtning av enskild kontakt.',
   UPDATE_WITH_EMPTY_DATA_WARN: 'Varning: Uppdatering anropad med tom data.', // For logging
+  DB_OPERATION_FAILED_INTERNAL: 'Databasåtgärden misslyckades internt',
+  VALIDATION_ERROR_INTERNAL: 'Valideringsfel vid databasinteraktion internt.',
 };
 
 // ** General UI Text ** //

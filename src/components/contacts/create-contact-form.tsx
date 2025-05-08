@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 
 import {
   ContactCreateSchema,
@@ -54,6 +55,11 @@ export function CreateContactForm({ userId, onClose }: CreateContactFormProps) {
       lastName: '',
       email: '',
       phone: '',
+      addressStreet: '',
+      addressStreet2: '',
+      addressPostalCode: '',
+      addressCity: '',
+      addressCountry: '',
     },
   });
 
@@ -158,6 +164,104 @@ export function CreateContactForm({ userId, onClose }: CreateContactFormProps) {
             </FormItem>
           )}
         />
+
+        {/* Separator and Optional Address Fields */}
+        <div className="space-y-2 pt-4">
+          <h4 className="text-muted-foreground text-sm font-medium">
+            Adress (Valfri)
+          </h4>
+          <Separator />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="addressStreet"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gatuadress</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ange gatuadress"
+                  {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="addressStreet2"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gatuadress 2 (valfri)</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ange C/O, lägenhetsnr etc."
+                  {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="addressPostalCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Postnummer</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ange postnummer"
+                    {...field}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="addressCity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stad</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ange stad"
+                    {...field}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormField
+          control={form.control}
+          name="addressCountry"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Land</FormLabel>
+              <FormControl>
+                {/* Maybe use a Select for country later? */}
+                <Input
+                  placeholder="Ange land"
+                  {...field}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Changed DialogFooter to a simple div, added explicit Cancel button */}
         <div className="flex flex-col-reverse gap-2 pt-4 sm:flex-row sm:justify-end">
           <Button
