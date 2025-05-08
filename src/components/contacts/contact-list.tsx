@@ -645,10 +645,10 @@ export function ContactList({
                                 lastName: contact.lastName,
                               })
                             }
-                            className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer"
+                            className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer hover:text-white"
                             disabled={isPending || !!editingContactId}
                           >
-                            <Trash2 className="mr-2 h-4 w-4" />
+                            <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
                             <span>Ta bort</span>
                           </DropdownMenuItem>
                         </DropdownMenuContent>

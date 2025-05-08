@@ -5,7 +5,7 @@
 // * ==========================================================================
 import { useState } from 'react';
 import { Contact } from '@/generated/prisma';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -31,6 +31,7 @@ import { CreateContactForm } from './create-contact-form';
 import { UpgradeToProModal } from '@/components/shared/upgrade-to-pro-modal';
 import { DIALOG_TEXTS } from '@/lib/contacts/constants/contacts'; // Added DIALOG_TEXTS for modal titles/desc
 import { ContactNoteModal } from './contact-note-modal';
+import { exportContactsToCSV } from '@/lib/contacts/utils/actions';
 
 // ** Props Interface ** //
 interface ContactsViewProps {
@@ -110,6 +111,33 @@ export function ContactsView({
     }
   };
 
+  const handleExportClick = async () => {
+    try {
+      const csvContent = await exportContactsToCSV(userId);
+
+      // Create download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute(
+        'download',
+        `kontakter-${new Date().toISOString().split('T')[0]}.csv`
+      );
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success('Kontaktlistan har exporterats!');
+    } catch (error) {
+      toast.error('Kunde inte exportera kontaktlistan');
+      console.error('Export error:', error);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -118,12 +146,20 @@ export function ContactsView({
             <CardTitle>Kontaktlista</CardTitle>
             <CardDescription>Alla dina kontakter visas nedan.</CardDescription>
           </div>
-          {/* Create Contact Button - Triggers handler */}
-          <Button onClick={handleCreateClick}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Skapa Ny Kontakt
-          </Button>
-          {/* Removed old CreateContactFeature component */}
+          <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center md:justify-end md:gap-2">
+            <Button
+              variant="outline"
+              onClick={handleExportClick}
+              className="w-full md:w-auto"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Exportera CSV
+            </Button>
+            <Button onClick={handleCreateClick} className="w-full md:w-auto">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Skapa Ny Kontakt
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
