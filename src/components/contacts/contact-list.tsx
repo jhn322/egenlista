@@ -3,6 +3,11 @@
 // * ==========================================================================
 // *                            CONTACT LIST COMPONENT
 // * ==========================================================================
+// * This component displays a list of contacts in a table, allowing for
+// * inline editing and deletion of contacts. It handles different states
+// * for PRO and non-PRO users regarding editing capabilities.
+// * ==========================================================================
+
 import { useState, useTransition, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -38,7 +43,6 @@ import {
   Popover,
   PopoverAnchor,
   PopoverContent,
-  PopoverTrigger,
 } from '@/components/ui/popover';
 import { UpgradeToProContent } from '@/components/shared/upgrade-to-pro-content';
 
@@ -72,15 +76,14 @@ import {
 
 import { formatContactType } from '@/lib/contacts/utils/formatting';
 
-// **  Props Interface  ** //
+// **  Component Props Interface  ** //
 interface ContactListProps {
   contacts: Contact[];
-  // onEdit: (contact: Contact) => void; // Removed onEdit
   onDelete: (
     contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
   ) => void;
-  userIsPro: boolean; // Added userIsPro
-  userId: string; // Added userId
+  userIsPro: boolean;
+  userId: string;
 }
 
 // **  ContactList Component  ** //
@@ -90,28 +93,41 @@ export function ContactList({
   userIsPro,
   userId,
 }: ContactListProps) {
+  // ** State Variables ** //
+  // * ID of the contact currently being edited inline (null if none)
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
+  // * State for the "Upgrade to PRO" Popover visibility (for non-PRO trying to edit type)
   const [isTypeUpgradePopoverOpen, setIsTypeUpgradePopoverOpen] =
     useState(false);
+  // * Transition state for pending server actions (e.g., saving edits)
   const [isPending, startTransition] = useTransition();
+
+  // ** Refs ** //
+  // * Ref for the currently editing table row (for click-outside detection)
+  const editRowRef = useRef<HTMLTableRowElement>(null);
+  // * Ref for the Select dropdown content (for click-outside / popover interaction)
   const selectContentRef = useRef<HTMLDivElement>(null);
+  // * Ref for the main table wrapper div (for click-outside listener attachment)
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
+
+  // ** Hooks ** //
   const router = useRouter();
 
+  // * Form Hook Initialization (react-hook-form)
   const form = useForm<ContactUpdateInput>({
     resolver: zodResolver(ContactUpdateSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      type: ContactType.LEAD,
-    },
+    // Default values are set when resetting the form
+    defaultValues: {},
   });
 
+  // * Effect: Reset Form on Edit Change
+  // * Populates the form with the selected contact's data when editing starts,
+  // * or clears the form when editing stops.
   useEffect(() => {
     if (editingContactId) {
       const contactToEdit = contacts.find((c) => c.id === editingContactId);
       if (contactToEdit) {
+        // console.log('Setting form values:', contactToEdit); // Debug
         form.reset({
           firstName: contactToEdit.firstName || '',
           lastName: contactToEdit.lastName || '',
@@ -121,27 +137,70 @@ export function ContactList({
         });
       }
     } else {
-      form.reset({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        type: ContactType.LEAD,
-      });
+      form.reset({}); // Reset to empty or default values if needed
     }
   }, [editingContactId, contacts, form]);
 
+  // * Effect: Click Outside Detection
+  // * Adds a listener to detect clicks outside the editing row and associated portals
+  // * (Select dropdown, Popover) to cancel the editing state.
+  useEffect(() => {
+    if (!editingContactId) return; // Only run if editing
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const rowNode = editRowRef.current;
+      const wrapperNode = tableWrapperRef.current;
+      if (!rowNode || !wrapperNode) return;
+
+      const isInsideRow = rowNode.contains(target);
+
+      // If click is outside the row, check if it's also outside relevant portals
+      if (!isInsideRow) {
+        const selectContentNode = selectContentRef.current;
+        const popoverContentNode = document.querySelector(
+          '[data-slot="popover-content"]'
+        );
+        const isInsideSelect =
+          selectContentNode && selectContentNode.contains(target);
+        const isInsidePopover =
+          popoverContentNode && popoverContentNode.contains(target);
+
+        // Cancel edit only if click is outside row AND outside Select/Popover portals
+        if (!isInsideSelect && !isInsidePopover) {
+          setEditingContactId(null);
+        }
+      }
+    };
+
+    const currentWrapper = tableWrapperRef.current;
+    if (currentWrapper) {
+      currentWrapper.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup listener on component unmount or when editingContactId changes
+    return () => {
+      if (currentWrapper) {
+        currentWrapper.removeEventListener('mousedown', handleClickOutside);
+      }
+    };
+  }, [editingContactId]);
+
+  // ** Event Handlers ** //
+
+  // * Start editing a specific contact
   const handleEditClick = (contact: Contact) => {
     setEditingContactId(contact.id);
   };
 
+  // * Cancel the current inline edit
   const handleCancelEdit = () => {
     setEditingContactId(null);
   };
 
+  // * Handle Form Submission (Save Changes)
   const onSubmit = (values: ContactUpdateInput) => {
     if (!editingContactId) return;
-
     const contactToEdit = contacts.find((c) => c.id === editingContactId);
     if (!contactToEdit) return;
 
@@ -149,7 +208,7 @@ export function ContactList({
       try {
         const dataToUpdate: ContactUpdateInput = {};
 
-        // Non-PRO users can now edit these fields
+        // Determine changed fields (respecting PRO status for certain fields)
         if (values.firstName !== contactToEdit.firstName)
           dataToUpdate.firstName = values.firstName;
         if (values.lastName !== contactToEdit.lastName)
@@ -158,38 +217,33 @@ export function ContactList({
           dataToUpdate.email = values.email;
         if ((values.phone || null) !== contactToEdit.phone)
           dataToUpdate.phone = values.phone ? values.phone : undefined;
-
-        // Type can only be updated by PRO users
         if (userIsPro && values.type !== contactToEdit.type) {
           dataToUpdate.type = values.type;
         } else if (!userIsPro && values.type !== contactToEdit.type) {
-          // Optionally inform user or log if they are non-PRO and type somehow changed in form
-          // This should ideally be prevented by the UI (disabled select)
+          // Prevent non-PRO type change attempt (should be blocked by UI but safeguard here)
           toast.info('Kontakttypen kan endast ändras av PRO-användare.');
         }
 
+        // Only submit if there are actual changes
         if (Object.keys(dataToUpdate).length === 0) {
           toast.info(TOAST_MESSAGES.NO_CHANGES_TO_SAVE);
           setEditingContactId(null);
           return;
         }
 
+        // Call server action to update
         await updateContact(editingContactId, userId, dataToUpdate);
 
         toast.success(TOAST_MESSAGES.CONTACT_UPDATED_SUCCESS_TITLE, {
           description: TOAST_MESSAGES.CONTACT_UPDATED_SUCCESS_DESC(
-            `${values.firstName || contactToEdit.firstName} ${
-              values.lastName || contactToEdit.lastName
-            }`
+            `${values.firstName || contactToEdit.firstName} ${values.lastName || contactToEdit.lastName}`
           ),
         });
-        setEditingContactId(null);
-        router.refresh(); // Refresh data on the page
+        setEditingContactId(null); // Exit edit mode on success
+        router.refresh();
       } catch (error) {
         let errorMessage = TOAST_MESSAGES.UNKNOWN_ERROR_DESC;
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        }
+        if (error instanceof Error) errorMessage = error.message;
         toast.error(TOAST_MESSAGES.UPDATE_ERROR_TITLE, {
           description: errorMessage,
         });
@@ -198,6 +252,9 @@ export function ContactList({
     });
   };
 
+  // ** Render Logic ** //
+
+  // * Empty State: Render if no contacts are provided
   if (!contacts || contacts.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-8 text-center">
@@ -211,10 +268,13 @@ export function ContactList({
     );
   }
 
+  // * Main Table Structure
   return (
     <Form {...form}>
+      {' '}
+      {/* Form provider from react-hook-form */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <div className="rounded-md border">
+        <div className="rounded-md border" ref={tableWrapperRef}>
           <Table>
             <TableHeader>
               <TableRow>
@@ -229,20 +289,22 @@ export function ContactList({
               </TableRow>
             </TableHeader>
             <TableBody>
+              {/* Map through contacts and render rows */}
               {contacts.map((contact) =>
                 editingContactId === contact.id ? (
-                  // * Editing Row
+                  // *** Editing Row ***
                   <TableRow
                     key={`${contact.id}-editing`}
                     className="bg-muted/30"
+                    ref={editRowRef}
                   >
+                    {/* ** Name Cell (Edit) ** */}
                     <TableCell>
                       <FormField
-                        control={form.control}
                         name="firstName"
+                        control={form.control}
                         render={({ field }) => (
                           <FormItem className="mb-2">
-                            {/* <FormLabel className="sr-only">Förnamn</FormLabel> */}
                             <FormControl>
                               <Input
                                 placeholder="Förnamn"
@@ -256,11 +318,10 @@ export function ContactList({
                         )}
                       />
                       <FormField
-                        control={form.control}
                         name="lastName"
+                        control={form.control}
                         render={({ field }) => (
                           <FormItem>
-                            {/* <FormLabel className="sr-only">Efternamn</FormLabel> */}
                             <FormControl>
                               <Input
                                 placeholder="Efternamn"
@@ -274,13 +335,13 @@ export function ContactList({
                         )}
                       />
                     </TableCell>
+                    {/* ** Email Cell (Edit) ** */}
                     <TableCell className="hidden md:table-cell">
                       <FormField
-                        control={form.control}
                         name="email"
+                        control={form.control}
                         render={({ field }) => (
                           <FormItem>
-                            {/* <FormLabel className="sr-only">E-post</FormLabel> */}
                             <FormControl>
                               <Input
                                 type="email"
@@ -295,13 +356,13 @@ export function ContactList({
                         )}
                       />
                     </TableCell>
+                    {/* ** Phone Cell (Edit) ** */}
                     <TableCell className="hidden lg:table-cell">
                       <FormField
-                        control={form.control}
                         name="phone"
+                        control={form.control}
                         render={({ field }) => (
                           <FormItem>
-                            {/* <FormLabel className="sr-only">Telefon</FormLabel> */}
                             <FormControl>
                               <Input
                                 placeholder="Telefon (valfri)"
@@ -316,6 +377,7 @@ export function ContactList({
                         )}
                       />
                     </TableCell>
+                    {/* ** Type Cell (Edit) with Popover for non-PRO ** */}
                     <TableCell>
                       <FormField
                         control={form.control}
@@ -326,48 +388,46 @@ export function ContactList({
                               <Popover
                                 open={isTypeUpgradePopoverOpen}
                                 onOpenChange={(popoverOpenState) => {
+                                  // Logic to prevent closing popover when interacting inside SelectContent
                                   if (!popoverOpenState) {
                                     const selectContentNode =
                                       selectContentRef.current;
                                     const activeElement =
                                       document.activeElement;
-
                                     if (
                                       selectContentNode &&
                                       activeElement &&
                                       selectContentNode.contains(activeElement)
                                     ) {
                                       return;
-                                    } else {
                                     }
                                   }
                                   setIsTypeUpgradePopoverOpen(popoverOpenState);
                                 }}
                               >
                                 <PopoverAnchor asChild>
-                                  <div
-                                    className="relative"
-                                    onClick={() => {
-                                      if (!userIsPro) {
-                                        setIsTypeUpgradePopoverOpen(true);
-                                      }
-                                    }}
-                                  >
+                                  <div className="relative">
+                                    {' '}
+                                    {/* Wrapper for potential styling/positioning */}
                                     <Select
                                       onValueChange={(value) => {
+                                        // Conditional onValueChange for PRO
                                         if (
                                           (value === '' ||
                                             value === undefined ||
                                             value === null) &&
                                           field.value
-                                        ) {
-                                          return;
-                                        }
+                                        )
+                                          return; // Ignore initial empty call
                                         field.onChange(value);
                                       }}
+                                      {...(userIsPro
+                                        ? {}
+                                        : { onValueChange: undefined })}
                                       value={field.value}
                                       disabled={isPending}
                                       onOpenChange={(selectOpenState) => {
+                                        // Open popover for non-PRO
                                         if (selectOpenState && !userIsPro) {
                                           setIsTypeUpgradePopoverOpen(true);
                                         }
@@ -376,7 +436,6 @@ export function ContactList({
                                       <FormControl>
                                         <SelectTrigger
                                           className={`h-8 text-sm`}
-                                          aria-disabled={!userIsPro}
                                         >
                                           <SelectValue placeholder="Välj typ" />
                                         </SelectTrigger>
@@ -391,7 +450,7 @@ export function ContactList({
                                               disabled={
                                                 !userIsPro &&
                                                 typeValue !== field.value
-                                              }
+                                              } // Disable options for non-PRO
                                             >
                                               {formatContactType(typeValue)}
                                             </SelectItem>
@@ -407,6 +466,7 @@ export function ContactList({
                                   side="top"
                                   align="center"
                                 >
+                                  {/* Popover content: Title/Desc + Upgrade Button */}
                                   <div className="space-y-2 text-center">
                                     <h3 className="text-sm font-semibold">
                                       Ändra Kontakttyp
@@ -418,6 +478,7 @@ export function ContactList({
                                   </div>
                                   <UpgradeToProContent
                                     onActionButtonClick={() => {
+                                      // router.push('/pris');
                                       setIsTypeUpgradePopoverOpen(false);
                                     }}
                                     showDismissButton={true}
@@ -433,11 +494,14 @@ export function ContactList({
                         }}
                       />
                     </TableCell>
+                    {/* ** Created At Cell (Edit - Display Only) ** */}
                     <TableCell className="hidden pt-3 align-top sm:table-cell">
                       {new Date(contact.createdAt).toLocaleDateString('sv-SE')}
                     </TableCell>
+                    {/* ** Actions Cell (Edit - Save/Cancel) ** */}
                     <TableCell className="pt-1.5 text-right align-top">
                       <div className="flex items-center justify-end space-x-1">
+                        {/* Save Button */}
                         <Button
                           type="submit"
                           variant="ghost"
@@ -452,6 +516,7 @@ export function ContactList({
                           )}
                           <span className="sr-only">Spara</span>
                         </Button>
+                        {/* Cancel Button */}
                         <Button
                           type="button"
                           variant="ghost"
@@ -467,8 +532,9 @@ export function ContactList({
                     </TableCell>
                   </TableRow>
                 ) : (
-                  // * Display Row
+                  // *** Display Row ***
                   <TableRow key={contact.id}>
+                    {/* ** Name Cell (Display) ** */}
                     <TableCell>
                       <div className="font-medium">
                         {contact.firstName} {contact.lastName}
@@ -477,12 +543,15 @@ export function ContactList({
                         {contact.email}
                       </div>
                     </TableCell>
+                    {/* ** Email Cell (Display) ** */}
                     <TableCell className="hidden md:table-cell">
                       {contact.email}
                     </TableCell>
+                    {/* ** Phone Cell (Display) ** */}
                     <TableCell className="hidden lg:table-cell">
                       {contact.phone || '-'}
                     </TableCell>
+                    {/* ** Type Cell (Display) ** */}
                     <TableCell>
                       <Badge
                         variant={
@@ -496,24 +565,25 @@ export function ContactList({
                         {formatContactType(contact.type)}
                       </Badge>
                     </TableCell>
+                    {/* ** Created At Cell (Display) ** */}
                     <TableCell className="hidden sm:table-cell">
                       {new Date(contact.createdAt).toLocaleDateString('sv-SE')}
                     </TableCell>
+                    {/* ** Actions Cell (Display - Edit/Delete Menu) ** */}
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            disabled={
-                              isPending && editingContactId === contact.id
-                            }
+                            disabled={isPending || !!editingContactId}
                           >
                             <MoreVertical className="h-4 w-4" />
                             <span className="sr-only">Fler åtgärder</span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          {/* Edit Action */}
                           <DropdownMenuItem
                             onClick={() => handleEditClick(contact)}
                             className="cursor-pointer"
@@ -523,6 +593,7 @@ export function ContactList({
                             <span>Redigera</span>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
+                          {/* Delete Action */}
                           <DropdownMenuItem
                             onClick={() =>
                               onDelete({
