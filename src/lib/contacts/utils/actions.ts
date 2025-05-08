@@ -32,41 +32,110 @@ export async function getAllContactsForUser(userId: string) {
   }
 }
 
-// ** CREATE a new contact for a specific user ** //
+// ** CREATE a new contact for a specific user (with optional address) ** //
 export async function createContact(data: ContactCreateInput, userId: string) {
   if (!userId) {
     throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
 
-  // Data should already be validated by Zod before calling this function
+  // Extract address fields and main contact data
+  const {
+    addressStreet,
+    addressStreet2,
+    addressPostalCode,
+    addressCity,
+    addressCountry,
+    consents, // Destructure consents from data
+    ...contactData // Rest are firstName, lastName, email, phone
+  } = data;
+
+  // Check if essential address data is provided
+  const hasAddressData = !!(
+    addressStreet &&
+    addressPostalCode &&
+    addressCity &&
+    addressCountry
+  );
 
   try {
-    const newContact = await prisma.contact.create({
-      data: {
-        ...data, // Spread validated fields (firstName, lastName, email, phone?)
-        userId: userId, // Associate with the user
-        // 'type' will use the default defined in schema.prisma (LEAD)
-      },
+    // Use a transaction to create Contact and potentially Address together
+    const newContact = await prisma.$transaction(async (tx) => {
+      // 1. Create the Contact
+      const createdContact = await tx.contact.create({
+        data: {
+          ...contactData,
+          userId: userId,
+        },
+      });
+
+      // 2. If address data exists, create the related Address
+      if (hasAddressData) {
+        await tx.address.create({
+          data: {
+            contactId: createdContact.id, // Link to the new contact
+            street: addressStreet!, // Use non-null assertion as we checked hasAddressData
+            street2: addressStreet2 || null, // Use provided value or null
+            postalCode: addressPostalCode!,
+            city: addressCity!,
+            country: addressCountry!,
+            // addressStateOrProvince: data.addressStateOrProvince || null, // If added later
+            // type: data.addressType || null, // Default address type if needed
+            isPrimary: true, // Mark this first address as primary
+          },
+        });
+      }
+
+      // 3. Create ContactConsentEvent records for each consent
+      if (consents && consents.length > 0) {
+        const consentEventsToCreate = consents.map((consentItem) => ({
+          contactId: createdContact.id,
+          consentType: consentItem.consentType,
+          granted: consentItem.granted,
+          // proof and legalNotice could be set here if needed
+          // For now, proof might be e.g. "Form: CreateContactForm v1.0"
+          // legalNotice could be a link to a privacy policy version
+          // timestamp is defaulted by Prisma schema
+        }));
+        await tx.contactConsentEvent.createMany({
+          data: consentEventsToCreate,
+        });
+      }
+
+      return createdContact; // Return the created contact from the transaction
     });
 
     return newContact;
   } catch (error) {
     console.error(`Error creating contact for user ${userId}:`, error);
 
-    // Handle specific Prisma errors, e.g., unique constraints
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // Example: Unique constraint violation (e.g., email + userId)
-      if (error.code === 'P2002') {
-        // Check the specific constraint if necessary (using error.meta.target)
+      console.error('Prisma Known Request Error in createContact:', { code: error.code, meta: error.meta });
+      if (error.code === 'P2002') { // Unique constraint violation
         const target = error.meta?.target as string[] | undefined;
         if (target?.includes('email') && target?.includes('userId')) {
           throw new Error(SERVER_ACTION_ERRORS.CONTACT_EXISTS);
         }
-        // Throw a more generic duplicate error if target isn't specific
-        throw new Error(SERVER_ACTION_ERRORS.CREATE_CONFLICT_INTERNAL);
+        throw new Error(
+          `${SERVER_ACTION_ERRORS.CREATE_CONFLICT_INTERNAL} (Constraint: ${target?.join(', ') || 'unknown'})`
+        );
+      } else if (error.code === 'P2003') { // Foreign key constraint failed
+        const fieldName = error.meta?.field_name as string | undefined;
+        // User-facing, but with a hint of what might be wrong if it's, for example, a user not existing
+        throw new Error(
+          `${SERVER_ACTION_ERRORS.INVALID_RELATION_DATA} (Fält: ${fieldName || 'okänt'})`
+        );
       }
+      // For other known Prisma errors, use the more generic user-facing DB operation failed
+      throw new Error(
+        `${SERVER_ACTION_ERRORS.DB_OPERATION_FAILED} (Kod: ${error.code})`
+      );
+    } else if (error instanceof Prisma.PrismaClientValidationError) {
+      console.error('Prisma Validation Error in createContact:', error.message);
+      // This is more of an internal server/data setup error before hitting DB rules
+      throw new Error(SERVER_ACTION_ERRORS.VALIDATION_ERROR_INTERNAL_USER_FACING);
     }
-    // Re-throw a generic error for other issues
+
+    // Fallback for other types of errors
     throw new Error(SERVER_ACTION_ERRORS.GENERIC_CREATE_FAILURE);
   }
 }

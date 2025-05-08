@@ -5,6 +5,7 @@
 // * ==========================================================================
 import { useState } from 'react';
 import { Contact } from '@/generated/prisma';
+import { PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -13,11 +14,22 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'; // Import Card components
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
 import { ContactList } from './contact-list';
-import { EditContactFeature } from './edit-contact-feature';
 import { DeleteContactFeature } from './delete-contact-feature';
-import { CreateContactFeature } from './create-contact-feature';
+// import { CreateContactFeature } from './create-contact-feature'; // Removed old import
+import { CreateContactForm } from './create-contact-form';
+import { UpgradeToProModal } from '@/components/shared/upgrade-to-pro-modal';
+import { DIALOG_TEXTS } from '@/lib/contacts/constants/contacts'; // Added DIALOG_TEXTS for modal titles/desc
 import { ContactNoteModal } from './contact-note-modal';
 
 // ** Props Interface ** //
@@ -33,30 +45,32 @@ export function ContactsView({
   userIsPro,
   userId,
 }: ContactsViewProps) {
-  const [editingContact, setEditingContact] = useState<Contact | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-
   const [deletingContact, setDeletingContact] = useState<Pick<
     Contact,
     'id' | 'firstName' | 'lastName'
   > | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
+  // State for note modal
   const [noteContact, setNoteContact] = useState<Contact | null>(null);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-
   const [contacts, setContacts] = useState<Contact[]>(initialContacts);
-
-  const handleEditClick = (contact: Contact) => {
-    setEditingContact(contact);
-    setIsEditDialogOpen(true);
-  };
+  // State for controlling the dialogs
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
   const handleDeleteClick = (
     contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
   ) => {
     setDeletingContact(contactInfo);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleCreateClick = () => {
+    if (userIsPro) {
+      setIsCreateDialogOpen(true);
+    } else {
+      setIsUpgradeModalOpen(true);
+    }
   };
 
   const handleNoteClick = (contact: Contact) => {
@@ -104,25 +118,21 @@ export function ContactsView({
             <CardTitle>Kontaktlista</CardTitle>
             <CardDescription>Alla dina kontakter visas nedan.</CardDescription>
           </div>
-          <CreateContactFeature userIsPro={userIsPro} userId={userId} />
+          {/* Create Contact Button - Triggers handler */}
+          <Button onClick={handleCreateClick}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Skapa Ny Kontakt
+          </Button>
+          {/* Removed old CreateContactFeature component */}
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Contact List - Removed outer div and flex controls from here */}
         <ContactList
           contacts={contacts}
-          onEdit={handleEditClick}
           onDelete={handleDeleteClick}
-          onNote={handleNoteClick}
-        />
-
-        {/* Edit Contact Dialog */}
-        <EditContactFeature
-          contactToEdit={editingContact}
-          isOpen={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
           userIsPro={userIsPro}
           userId={userId}
+          onNote={handleNoteClick}
         />
 
         {/* Delete Contact Confirmation Dialog */}
@@ -131,6 +141,38 @@ export function ContactsView({
           isOpen={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
           userId={userId}
+        />
+
+        {/* Create Contact Dialog (Only for PRO) */}
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogContent className="sm:max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Skapa Ny Kontakt</DialogTitle>
+              <DialogDescription>
+                {DIALOG_TEXTS.CREATE_CONTACT_PRO_DESCRIPTION}
+              </DialogDescription>
+            </DialogHeader>
+            {/* Render form inside */}
+            <CreateContactForm
+              userId={userId}
+              onClose={() => setIsCreateDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Upgrade to PRO Modal (Only for Non-PRO) */}
+        <UpgradeToProModal
+          isOpen={isUpgradeModalOpen}
+          onOpenChange={setIsUpgradeModalOpen}
+          featureTitle={DIALOG_TEXTS.CREATE_CONTACT_UPGRADE_PROMPT_TITLE}
+          featureDescription={
+            DIALOG_TEXTS.CREATE_CONTACT_UPGRADE_PROMPT_DESCRIPTION
+          }
+          onActionButtonClick={() => {
+            // Example: Navigate to pricing page
+            // router.push('/pris');
+            setIsUpgradeModalOpen(false);
+          }}
         />
 
         {/* Note Modal */}
