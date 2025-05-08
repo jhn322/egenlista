@@ -14,6 +14,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// * ---------------------------------
+// *            USERS
+// * ---------------------------------
+
 // ** User model ** //
 model User {
   id            String     @id @default(cuid()) @map("_id")
@@ -51,7 +55,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-
+// ** Session model ** //
 model Session {
   id           String   @id @default(cuid()) @map("_id")
   sessionToken String   @unique
@@ -70,33 +74,10 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ** Contact model ** //
-model Contact {
-  id            String     @id @default(cuid()) @map("_id")
-  userId        String  // Owner(user) of the contact
-  firstName     String
-  lastName      String
-  email         String
-  phone         String?
-  type          ContactType   @default(LEAD)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
-  @@unique([userId, email]) // Only one contact per user per email
-}
-
 // ** UserRole enum ** //
 enum UserRole {
   USER
   ADMIN
-}
-
-// ** ContactType enum ** //
-enum ContactType {
-  LEAD      // Someone who might buy
-  CUSTOMER  // Someone who has bought
-  AMBASSADOR // Someone who promotes/sells for you
 }
 
 // ** Subscription model ** //
@@ -119,11 +100,13 @@ model Subscription {
   updatedAt          DateTime  @updatedAt
 }
 
+// ** SubscriptionPlanType enum ** //
 enum SubscriptionPlanType {
   FREE
   PRO
 }
 
+// ** SubscriptionStatus enum ** //
 enum SubscriptionStatus {
   ACTIVE
   CANCELED
@@ -131,5 +114,92 @@ enum SubscriptionStatus {
   INCOMPLETE
   TRIALING
 }
+
+
+// * ---------------------------------
+// *            CONTACTS
+// * ---------------------------------
+
+// ** Contact model ** //
+model Contact {
+  id            String     @id @default(cuid()) @map("_id")
+  userId        String  // Owner(user) of the contact
+  firstName     String
+  lastName      String
+  email         String
+  phone         String?
+  type          ContactType   @default(LEAD)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  contactConsents ContactConsentEvent[] // Relation to consent events
+  addresses       Address[]             // Relation to addresses
+
+  @@unique([userId, email]) // Only one contact per user per email
+}
+
+// ** ContactType enum ** //
+enum ContactType {
+  LEAD      // Someone who might buy
+  CUSTOMER  // Someone who has bought
+  AMBASSADOR // Someone who promotes/sells for you
+}
+
+// ** ContactConsentEvent model ** //
+model ContactConsentEvent {
+  id          String   @id @default(cuid()) @map("_id")
+  contactId   String
+  contact     Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  consentType ConsentType
+  granted     Boolean  // True if consent was given, false if revoked or denied at this point
+  timestamp   DateTime @default(now()) // When this specific consent event occurred
+  proof       String?  // e.g., "Form: Signup v1.2, IP: 123.45.67.89"
+  legalNotice String?  // e.g., "Privacy Policy v1.1", "Terms of Service v2.0"
+
+  @@index([contactId, consentType, timestamp]) // Index for querying consent history
+}
+
+// ** ConsentType enum ** //
+enum ConsentType {
+  STORAGE
+  MARKETING
+  PARTNERS
+}
+
+// ** AddressType enum ** //
+enum AddressType {
+  HOME
+  WORK
+  SHIPPING
+  BILLING
+  OTHER
+}
+
+// ** Address model ** //
+model Address {
+  id        String  @id @default(cuid()) @map("_id")
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  type            AddressType? // Type of address (e.g., HOME, WORK)
+  street          String       // Street address
+  street2         String?      // Additional street line (e.g., apt number, c/o)
+  postalCode      String       // Postal code
+  city            String       // City
+  stateOrProvince String?      // State or province (optional depending on country)
+  country         String       // Country
+
+  isPrimary       Boolean @default(false) // Is this the primary address for the contact?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactId]) // Index for faster querying of a contact's addresses
+}
+
+
 
 

@@ -40,7 +40,8 @@ import {
   DIALOG_TEXTS,
 } from '@/lib/contacts/constants/contacts'; // Import constants
 
-import { PlusCircle, ShieldAlert, Loader2 } from 'lucide-react';
+// import { UpgradeToProModal } from '@/components/shared/upgrade-to-pro-modal'; // Removed import
+import { PlusCircle, Loader2 } from 'lucide-react';
 
 // **  Props Interface  ** //
 interface CreateContactFeatureProps {
@@ -49,10 +50,7 @@ interface CreateContactFeatureProps {
 }
 
 // **  CreateContactFeature Component  ** //
-export function CreateContactFeature({
-  userIsPro,
-  userId,
-}: CreateContactFeatureProps) {
+export function CreateContactFeature({ userId }: CreateContactFeatureProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -110,132 +108,106 @@ export function CreateContactFeature({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {userIsPro ? 'Skapa Ny Kontakt' : 'PRO Funktion'}
+            {DIALOG_TEXTS.CREATE_CONTACT_UPGRADE_PROMPT_TITLE}
           </DialogTitle>
           <DialogDescription>
-            {userIsPro
-              ? DIALOG_TEXTS.CREATE_CONTACT_PRO_DESCRIPTION
-              : DIALOG_TEXTS.CREATE_CONTACT_NON_PRO_DESCRIPTION}
+            {DIALOG_TEXTS.CREATE_CONTACT_PRO_DESCRIPTION}
           </DialogDescription>
         </DialogHeader>
 
-        {userIsPro ? (
-          // ** PRO User: Show Contact Creation Form ** //
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 py-4"
-            >
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Förnamn</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Ange förnamn"
-                        {...field}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Efternamn</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Ange efternamn"
-                        {...field}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>E-post</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Ange e-postadress"
-                        {...field}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Telefon (valfri)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Ange telefonnummer"
-                        {...field}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="outline" disabled={isPending}>
-                    Avbryt
-                  </Button>
-                </DialogClose>
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sparar...
-                    </>
-                  ) : (
-                    'Spara Kontakt'
-                  )}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        ) : (
-          // ** Non-PRO User: Show Upgrade Message ** //
-          <div className="space-y-4 py-4">
-            <div className="flex flex-col items-center text-center">
-              <ShieldAlert className="mb-3 h-12 w-12 text-amber-500" />
-              <p className="font-semibold">
-                {DIALOG_TEXTS.CREATE_CONTACT_UPGRADE_PROMPT_TITLE}
-              </p>
-              <p className="text-muted-foreground mt-1 text-sm">
-                {DIALOG_TEXTS.CREATE_CONTACT_UPGRADE_PROMPT_DESCRIPTION}
-              </p>
-            </div>
-            <Button className="w-full" onClick={() => setIsOpen(false)}>
-              Läs mer om PRO
-            </Button>
-            <DialogFooter className="pt-4 sm:justify-center">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 py-4"
+          >
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Förnamn</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ange förnamn"
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Efternamn</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ange efternamn"
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>E-post</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Ange e-postadress"
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefon (valfri)</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ange telefonnummer"
+                      {...field}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Stäng</Button>
+                <Button type="button" variant="outline" disabled={isPending}>
+                  Avbryt
+                </Button>
               </DialogClose>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sparar...
+                  </>
+                ) : (
+                  'Spara Kontakt'
+                )}
+              </Button>
             </DialogFooter>
-          </div>
-        )}
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
