@@ -1,5 +1,7 @@
 // src/lib/contacts/constants/contacts.ts
 
+import { ConsentType } from '@/generated/prisma'; // Import Prisma enum
+
 // * ==========================================================================
 // *                        CONTACT FEATURE CONSTANTS
 // * ==========================================================================
@@ -78,4 +80,37 @@ export const SERVER_ACTION_ERRORS = {
 export const CONTACT_LIST_EMPTY_STATE = {
   TITLE: 'Inga kontakter än',
   DESCRIPTION: 'När du börjar samla in kontakter kommer de att visas här.',
-}; 
+};
+
+// ** Consent Types ** //
+// Used to define the types of consent that can be recorded.
+export const CONTACT_CONSENT_TYPES = {
+  STORAGE: {
+    id: ConsentType.STORAGE, // Use enum value
+    label: 'Lagring av personuppgifter',
+    description: 'Jag godkänner att mina personuppgifter lagras för att hantera min kontakt. <a href="/integritetspolicy#lagring" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
+  },
+  MARKETING: {
+    id: ConsentType.MARKETING, // Use enum value
+    label: 'Marknadsföringskommunikation',
+    description: 'Jag godkänner att ta emot marknadsföringsmaterial och nyhetsbrev. <a href="/integritetspolicy#marknadsforing" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
+  },
+  PARTNERS: {
+    id: ConsentType.PARTNERS, // Use enum value
+    label: 'Delning med partners',
+    description: 'Jag godkänner att mina uppgifter kan delas med utvalda samarbetspartners för relevanta erbjudanden. <a href="/integritetspolicy#partners" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
+  },
+} as const; // Using "as const" for stricter typing of IDs
+
+// Helper to get an array of consent type enum values, useful for iterating in forms
+// Ensures it's a non-empty array type that z.enum expects
+const consentTypeEnumValues = Object.values(ConsentType);
+
+if (consentTypeEnumValues.length === 0) {
+  throw new Error('ConsentType enum from Prisma must not be empty for schema validation.');
+}
+
+export const AVAILABLE_CONSENT_TYPE_IDS: readonly [ConsentType, ...ConsentType[]] = [
+  consentTypeEnumValues[0],
+  ...consentTypeEnumValues.slice(1),
+]; 

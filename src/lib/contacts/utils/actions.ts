@@ -45,6 +45,7 @@ export async function createContact(data: ContactCreateInput, userId: string) {
     addressPostalCode,
     addressCity,
     addressCountry,
+    consents, // Destructure consents from data
     ...contactData // Rest are firstName, lastName, email, phone
   } = data;
 
@@ -81,6 +82,22 @@ export async function createContact(data: ContactCreateInput, userId: string) {
             // type: data.addressType || null, // Default address type if needed
             isPrimary: true, // Mark this first address as primary
           },
+        });
+      }
+
+      // 3. Create ContactConsentEvent records for each consent
+      if (consents && consents.length > 0) {
+        const consentEventsToCreate = consents.map((consentItem) => ({
+          contactId: createdContact.id,
+          consentType: consentItem.consentType,
+          granted: consentItem.granted,
+          // proof and legalNotice could be set here if needed
+          // For now, proof might be e.g. "Form: CreateContactForm v1.0"
+          // legalNotice could be a link to a privacy policy version
+          // timestamp is defaulted by Prisma schema
+        }));
+        await tx.contactConsentEvent.createMany({
+          data: consentEventsToCreate,
         });
       }
 

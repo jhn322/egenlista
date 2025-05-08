@@ -103,7 +103,7 @@ export function ContactsView({
 
         {/* Create Contact Dialog (Only for PRO) */}
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-3xl">
             <DialogHeader>
               <DialogTitle>Skapa Ny Kontakt</DialogTitle>
               <DialogDescription>

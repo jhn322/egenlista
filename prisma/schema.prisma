@@ -153,13 +153,20 @@ model ContactConsentEvent {
   contactId   String
   contact     Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
 
-  consentType String   // e.g., "STORAGE", "MARKETING", "PARTNERS"
+  consentType ConsentType
   granted     Boolean  // True if consent was given, false if revoked or denied at this point
   timestamp   DateTime @default(now()) // When this specific consent event occurred
   proof       String?  // e.g., "Form: Signup v1.2, IP: 123.45.67.89"
   legalNotice String?  // e.g., "Privacy Policy v1.1", "Terms of Service v2.0"
 
   @@index([contactId, consentType, timestamp]) // Index for querying consent history
+}
+
+// ** ConsentType enum ** //
+enum ConsentType {
+  STORAGE
+  MARKETING
+  PARTNERS
 }
 
 // ** AddressType enum ** //
