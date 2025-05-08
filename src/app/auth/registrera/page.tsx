@@ -10,8 +10,10 @@ import { AuthFooter } from '@/components/auth/AuthFooter';
 import { useAuthForm } from '@/lib/auth/hooks/useAuthForm';
 import { useGoogleAuth } from '@/lib/auth/hooks/useGoogleAuth';
 import { useAuth } from '@/lib/auth/hooks/useAuth';
-
-import { DEFAULT_LOGIN_REDIRECT_PATH } from '@/lib/constants/routes';
+import {
+  DEFAULT_LOGIN_REDIRECT_PATH,
+  AUTH_PATHS,
+} from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
 
 export default function RegisterPage() {
@@ -52,7 +54,7 @@ export default function RegisterPage() {
       footer={
         <AuthFooter
           mode="register"
-          onNavigate={() => router.push('/auth/logga-in')}
+          onNavigate={() => router.push(AUTH_PATHS.LOGIN)}
         />
       }
     >
