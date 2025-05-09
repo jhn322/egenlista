@@ -69,6 +69,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { formatContactType } from '@/lib/contacts/utils/formatting';
+import { ContactPagination } from './contact-pagination';
 
 // **  Component Props Interface  ** //
 interface ContactListProps {
@@ -97,6 +98,15 @@ export function ContactList({
     useState(false);
   // * Transition state for pending server actions (e.g., saving edits)
   const [isPending, startTransition] = useTransition();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(() => {
+    // Get the saved value from localStorage
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('contactsItemsPerPage');
+      return saved ? parseInt(saved, 10) : 25;
+    }
+    return 25;
+  });
 
   // ** Refs ** //
   // * Ref for the currently editing table row (for click-outside detection)
@@ -115,6 +125,24 @@ export function ContactList({
     // Default values are set when resetting the form
     defaultValues: {},
   });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(contacts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedContacts = contacts.slice(startIndex, endIndex);
+
+  // Reset to first page when items per page changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [itemsPerPage]);
+
+  // Save itemsPerPage to localStorage when it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('contactsItemsPerPage', itemsPerPage.toString());
+    }
+  }, [itemsPerPage]);
 
   // * Effect: Reset Form on Edit Change
   // * Populates the form with the selected contact's data when editing starts,
@@ -285,8 +313,8 @@ export function ContactList({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {/* Map through contacts and render rows */}
-              {contacts.map((contact) =>
+              {/* Map through paginated contacts and render rows */}
+              {paginatedContacts.map((contact) =>
                 editingContactId === contact.id ? (
                   // *** Editing Row ***
                   <TableRow
@@ -660,6 +688,13 @@ export function ContactList({
             </TableBody>
           </Table>
         </div>
+        <ContactPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
       </form>
     </Form>
   );
