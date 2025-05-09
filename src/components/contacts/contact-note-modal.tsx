@@ -114,7 +114,7 @@ export const ContactNoteModal = ({
             </div>
             {/* Show yellow Pro info box only when free user exceeds 1000 chars */}
             {!userIsPro && note.length > 1000 && (
-              <div className="mt-1 flex flex-col items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+              <div className="mt-1 flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
                 <div className="mb-1 flex items-center gap-2">
                   <ShieldAlert className="h-6 w-6 text-amber-500" />
                   <span className="font-semibold">PRO-funktion</span>
