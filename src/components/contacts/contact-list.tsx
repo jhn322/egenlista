@@ -48,6 +48,8 @@ import {
   Save,
   XCircle,
   Loader2,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import {
   CONTACT_LIST_EMPTY_STATE,
@@ -83,6 +85,11 @@ interface ContactListProps {
   userId: string;
 }
 
+type SortConfiguration = {
+  column: 'firstName' | 'lastName' | 'email' | 'phone' | 'type' | 'createdAt';
+  direction: 'asc' | 'desc';
+};
+
 // **  ContactList Component  ** //
 export function ContactList({
   contacts,
@@ -113,6 +120,10 @@ export function ContactList({
   const [selectedContacts, setSelectedContacts] = useState<Set<string>>(
     new Set()
   );
+  const [sort, setSort] = useState<SortConfiguration>({
+    column: 'createdAt',
+    direction: 'desc',
+  });
 
   // ** Refs ** //
   // * Ref for the currently editing table row (for click-outside detection)
@@ -147,11 +158,51 @@ export function ContactList({
     });
   }, [contacts, searchQuery, typeFilter]);
 
+  const handleSort = (column: SortConfiguration['column']) => {
+    setSort((prev) => ({
+      column,
+      direction:
+        prev.column === column && prev.direction === 'desc' ? 'asc' : 'desc',
+    }));
+  };
+
+  // Sort contacts based on current sort configuration
+  const sortedAndFilteredContacts = useMemo(() => {
+    return [...filteredContacts].sort((a, b) => {
+      const modifier = sort.direction === 'desc' ? -1 : 1;
+
+      switch (sort.column) {
+        case 'firstName':
+          return (
+            modifier * (a.firstName || '').localeCompare(b.firstName || '')
+          );
+        case 'lastName':
+          return modifier * (a.lastName || '').localeCompare(b.lastName || '');
+        case 'email':
+          return modifier * (a.email || '').localeCompare(b.email || '');
+        case 'phone':
+          return modifier * (a.phone || '').localeCompare(b.phone || '');
+        case 'type':
+          return modifier * a.type.localeCompare(b.type);
+        case 'createdAt':
+          return (
+            modifier *
+            (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+          );
+        default:
+          return 0;
+      }
+    });
+  }, [filteredContacts, sort]);
+
   // Calculate pagination
-  const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedAndFilteredContacts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedContacts = filteredContacts.slice(startIndex, endIndex);
+  const paginatedContacts = sortedAndFilteredContacts.slice(
+    startIndex,
+    endIndex
+  );
 
   // Reset to first page when filters change or per page changes
   useEffect(() => {
@@ -388,12 +439,83 @@ export function ContactList({
                     aria-label="Välj alla kontakter"
                   />
                 </TableHead>
-                <TableHead className="w-[200px]">Namn</TableHead>
-                <TableHead className="hidden md:table-cell">E-post</TableHead>
-                <TableHead className="hidden lg:table-cell">Telefon</TableHead>
-                <TableHead className="w-[120px]">Typ</TableHead>
-                <TableHead className="hidden w-[120px] sm:table-cell">
-                  Skapad
+                <TableHead
+                  className="w-[200px]"
+                  sortable
+                  onClick={() => handleSort('firstName')}
+                >
+                  <div className="flex items-center gap-1">
+                    Namn
+                    {sort.column === 'firstName' &&
+                      (sort.direction === 'desc' ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronUp className="h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+                <TableHead
+                  className="hidden md:table-cell"
+                  sortable
+                  onClick={() => handleSort('email')}
+                >
+                  <div className="flex items-center gap-1">
+                    E-post
+                    {sort.column === 'email' &&
+                      (sort.direction === 'desc' ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronUp className="h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+                <TableHead
+                  className="hidden lg:table-cell"
+                  sortable
+                  onClick={() => handleSort('phone')}
+                >
+                  <div className="flex items-center gap-1">
+                    Telefon
+                    {sort.column === 'phone' &&
+                      (sort.direction === 'desc' ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronUp className="h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+                <TableHead
+                  className="w-[120px]"
+                  sortable
+                  onClick={() => handleSort('type')}
+                >
+                  <div className="flex items-center gap-1">
+                    Typ
+                    {sort.column === 'type' &&
+                      (sort.direction === 'desc' ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronUp className="h-4 w-4" />
+                      ))}
+                  </div>
+                </TableHead>
+                <TableHead
+                  className="hidden w-[120px] sm:table-cell"
+                  sortable
+                  onClick={() => handleSort('createdAt')}
+                >
+                  <div className="flex items-center gap-1">
+                    Skapad
+                    {sort.column === 'createdAt' ? (
+                      sort.direction === 'desc' ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronUp className="h-4 w-4" />
+                      )
+                    ) : (
+                      <ChevronDown className="text-muted-foreground/50 h-4 w-4" />
+                    )}
+                  </div>
                 </TableHead>
                 <TableHead className="w-[100px] text-right">Åtgärder</TableHead>
               </TableRow>
@@ -653,13 +775,10 @@ export function ContactList({
                   // *** Display Row ***
                   <TableRow
                     key={contact.id}
-                    className={clsx(
-                      'transition-filter transition-opacity duration-300 ease-in-out',
-                      {
-                        'pointer-events-none opacity-50 blur-sm':
-                          editingContactId && editingContactId !== contact.id,
-                      }
-                    )}
+                    className={clsx('hover:bg-muted/50 transition-colors', {
+                      'pointer-events-none opacity-50 blur-sm':
+                        editingContactId && editingContactId !== contact.id,
+                    })}
                   >
                     <TableCell>
                       <input
