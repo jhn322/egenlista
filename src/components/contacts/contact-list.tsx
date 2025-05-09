@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useEffect, useRef } from 'react';
+import { useState, useTransition, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -70,6 +70,7 @@ import {
 
 import { formatContactType } from '@/lib/contacts/utils/formatting';
 import { ContactPagination } from './contact-pagination';
+import { ContactToolbar } from './contact-toolbar';
 
 // **  Component Props Interface  ** //
 interface ContactListProps {
@@ -107,6 +108,11 @@ export function ContactList({
     }
     return 25;
   });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<ContactType | 'all'>('all');
+  const [selectedContacts, setSelectedContacts] = useState<Set<string>>(
+    new Set()
+  );
 
   // ** Refs ** //
   // * Ref for the currently editing table row (for click-outside detection)
@@ -126,16 +132,31 @@ export function ContactList({
     defaultValues: {},
   });
 
+  // Filter contacts based on search query and type filter
+  const filteredContacts = useMemo(() => {
+    return contacts.filter((contact) => {
+      const matchesSearch = searchQuery
+        ? `${contact.firstName} ${contact.lastName} ${contact.email} ${contact.phone || ''}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        : true;
+
+      const matchesType = typeFilter === 'all' || contact.type === typeFilter;
+
+      return matchesSearch && matchesType;
+    });
+  }, [contacts, searchQuery, typeFilter]);
+
   // Calculate pagination
-  const totalPages = Math.ceil(contacts.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredContacts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedContacts = contacts.slice(startIndex, endIndex);
+  const paginatedContacts = filteredContacts.slice(startIndex, endIndex);
 
-  // Reset to first page when items per page changes
+  // Reset to first page when filters change or per page changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [itemsPerPage]);
+  }, [searchQuery, typeFilter, itemsPerPage]);
 
   // Save itemsPerPage to localStorage when it changes
   useEffect(() => {
@@ -210,6 +231,50 @@ export function ContactList({
     };
   }, [editingContactId]);
 
+  // Handle the contact selection
+  const handleSelectContact = (contactId: string, checked: boolean) => {
+    setSelectedContacts((prev) => {
+      const next = new Set(prev);
+      if (checked) {
+        next.add(contactId);
+      } else {
+        next.delete(contactId);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedContacts(
+        new Set(paginatedContacts.map((contact) => contact.id))
+      );
+    } else {
+      setSelectedContacts(new Set());
+    }
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedContacts(new Set());
+  };
+
+  const handleDeleteSelected = () => {
+    // Get contact info for selected contacts
+    const contactsToDelete = Array.from(selectedContacts).map((id) => {
+      const contact = contacts.find((c) => c.id === id);
+      if (!contact) throw new Error('Contact not found');
+      return {
+        id: contact.id,
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+      };
+    });
+
+    // Call onDelete for each selected contact
+    contactsToDelete.forEach((contact) => onDelete(contact));
+    setSelectedContacts(new Set());
+  };
+
   // ** Event Handlers ** //
 
   // * Start editing a specific contact
@@ -281,7 +346,7 @@ export function ContactList({
   // * Empty State: Render if no contacts are provided
   if (!contacts || contacts.length === 0) {
     return (
-      <div className="rounded-md border border-dashed p-8 text-center">
+      <div className="rounded-lg border border-dashed p-8 text-center">
         <h3 className="text-lg font-semibold">
           {CONTACT_LIST_EMPTY_STATE.TITLE}
         </h3>
@@ -295,13 +360,34 @@ export function ContactList({
   // * Main Table Structure
   return (
     <Form {...form}>
-      {' '}
-      {/* Form provider from react-hook-form */}
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <div className="rounded-md border" ref={tableWrapperRef}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+        <ContactToolbar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          typeFilter={typeFilter}
+          onTypeChange={setTypeFilter}
+          selectedCount={selectedContacts.size}
+          onDeleteSelected={handleDeleteSelected}
+          onDeselectAll={handleDeselectAll}
+        />
+        <div className="rounded-lg border" ref={tableWrapperRef}>
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[40px]">
+                  <input
+                    type="checkbox"
+                    checked={
+                      paginatedContacts.length > 0 &&
+                      paginatedContacts.every((contact) =>
+                        selectedContacts.has(contact.id)
+                      )
+                    }
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                    aria-label="Välj alla kontakter"
+                  />
+                </TableHead>
                 <TableHead className="w-[200px]">Namn</TableHead>
                 <TableHead className="hidden md:table-cell">E-post</TableHead>
                 <TableHead className="hidden lg:table-cell">Telefon</TableHead>
@@ -568,13 +654,24 @@ export function ContactList({
                   <TableRow
                     key={contact.id}
                     className={clsx(
-                      'transition-filter transition-opacity duration-300 ease-in-out', // Added transition-filter
+                      'transition-filter transition-opacity duration-300 ease-in-out',
                       {
                         'pointer-events-none opacity-50 blur-sm':
                           editingContactId && editingContactId !== contact.id,
                       }
                     )}
                   >
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        checked={selectedContacts.has(contact.id)}
+                        onChange={(e) =>
+                          handleSelectContact(contact.id, e.target.checked)
+                        }
+                        className="h-4 w-4 rounded border-gray-300"
+                        aria-label={`Välj ${contact.firstName} ${contact.lastName}`}
+                      />
+                    </TableCell>
                     {/* ** Name Cell (Display) ** */}
                     <TableCell>
                       <div className="font-medium">
@@ -684,6 +781,16 @@ export function ContactList({
                     </TableCell>
                   </TableRow>
                 )
+              )}
+              {paginatedContacts.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="text-muted-foreground h-24 text-center"
+                  >
+                    Inga kontakter hittades.
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
