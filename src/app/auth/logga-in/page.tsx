@@ -14,6 +14,7 @@ import { useRedirect } from '@/lib/auth/hooks/useRedirect';
 import { AUTH_MESSAGES } from '@/lib/auth/constants/auth';
 import { DEFAULT_LOGIN_REDIRECT_PATH } from '@/lib/constants/routes';
 import { useAuth } from '@/lib/auth/hooks/useAuth';
+import { APP_NAME } from '@/lib/constants/site';
 
 function LoginContent() {
   const router = useRouter();
@@ -65,7 +66,7 @@ function LoginContent() {
 
   return (
     <AuthCard
-      title="Logga in på Egen Lista"
+      title={`Logga in på ${APP_NAME}`}
       description="Fortsätt med Google eller använd ditt konto"
       footer={<AuthFooter mode="login" onNavigate={redirectToRegister} />}
     >

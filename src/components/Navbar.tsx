@@ -39,12 +39,6 @@ const publicNavItems: NavItem[] = [
   { href: '/page4', label: 'Page 4' },
 ];
 
-// Rollspecifika navigationslänkar
-const roleBasedNavItems: Record<string, NavItem[]> = {
-  // ADMIN: [{ href: "/dashboard", label: "Dashboard" }],
-  USER: [{ href: PROTECTED_PATHS.MINA_SIDOR_BASE, label: 'Mina Sidor' }],
-};
-
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -57,13 +51,8 @@ export function Navbar() {
   // Hämta användarens roll om inloggad
   const userRole = session?.user?.role;
 
-  // Bygg upp dynamisk navlista baserat på användarstatus och roll
+  // Bygg upp navlista med endast publika länkar
   const navItems = [...publicNavItems];
-
-  // Lägg till rollspecifika alternativ om användaren har en roll
-  if (isAuthenticated && userRole && roleBasedNavItems[userRole]) {
-    navItems.splice(1, 0, ...roleBasedNavItems[userRole]);
-  }
 
   const handleToggleMenu = () => {
     setIsOpen(!isOpen);

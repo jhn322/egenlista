@@ -109,8 +109,12 @@ export async function createContact(data: ContactCreateInput, userId: string) {
     console.error(`Error creating contact for user ${userId}:`, error);
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error('Prisma Known Request Error in createContact:', { code: error.code, meta: error.meta });
-      if (error.code === 'P2002') { // Unique constraint violation
+      console.error('Prisma Known Request Error in createContact:', {
+        code: error.code,
+        meta: error.meta,
+      });
+      if (error.code === 'P2002') {
+        // Unique constraint violation
         const target = error.meta?.target as string[] | undefined;
         if (target?.includes('email') && target?.includes('userId')) {
           throw new Error(SERVER_ACTION_ERRORS.CONTACT_EXISTS);
@@ -118,7 +122,8 @@ export async function createContact(data: ContactCreateInput, userId: string) {
         throw new Error(
           `${SERVER_ACTION_ERRORS.CREATE_CONFLICT_INTERNAL} (Constraint: ${target?.join(', ') || 'unknown'})`
         );
-      } else if (error.code === 'P2003') { // Foreign key constraint failed
+      } else if (error.code === 'P2003') {
+        // Foreign key constraint failed
         const fieldName = error.meta?.field_name as string | undefined;
         // User-facing, but with a hint of what might be wrong if it's, for example, a user not existing
         throw new Error(
@@ -132,7 +137,9 @@ export async function createContact(data: ContactCreateInput, userId: string) {
     } else if (error instanceof Prisma.PrismaClientValidationError) {
       console.error('Prisma Validation Error in createContact:', error.message);
       // This is more of an internal server/data setup error before hitting DB rules
-      throw new Error(SERVER_ACTION_ERRORS.VALIDATION_ERROR_INTERNAL_USER_FACING);
+      throw new Error(
+        SERVER_ACTION_ERRORS.VALIDATION_ERROR_INTERNAL_USER_FACING
+      );
     }
 
     // Fallback for other types of errors
@@ -243,7 +250,10 @@ export async function updateContact(
 }
 
 // ** DELETE a contact by ID, ensuring user ownership ** //
-export async function deleteContact(contactId: string, userId: string): Promise<{ count: number }> {
+export async function deleteContact(
+  contactId: string,
+  userId: string
+): Promise<{ count: number }> {
   if (!userId) {
     throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
   }
@@ -257,7 +267,7 @@ export async function deleteContact(contactId: string, userId: string): Promise<
       where: {
         id: contactId,
         userId: userId,
-      }
+      },
     });
 
     // if (deleteResult.count > 0) {
@@ -274,4 +284,50 @@ export async function deleteContact(contactId: string, userId: string): Promise<
     );
     throw new Error(SERVER_ACTION_ERRORS.GENERIC_DELETE_FAILURE);
   }
-} 
+}
+
+export async function exportContactsToCSV(userId: string) {
+  try {
+    const contacts = await prisma.contact.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Define CSV headers
+    const headers = [
+      'Förnamn',
+      'Efternamn',
+      'E-post',
+      'Telefon',
+      'Typ',
+      'Anteckning',
+      'Anteckning uppdaterad',
+      'Skapad',
+    ];
+
+    // Convert contacts to CSV rows
+    const rows = contacts.map((contact) => [
+      contact.firstName,
+      contact.lastName,
+      contact.email,
+      contact.phone || '',
+      contact.type,
+      contact.note || '',
+      contact.noteUpdatedAt
+        ? new Date(contact.noteUpdatedAt).toLocaleString('sv-SE')
+        : '',
+      new Date(contact.createdAt).toLocaleString('sv-SE'),
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+    ].join('\n');
+
+    return csvContent;
+  } catch (error) {
+    console.error('Error exportering av kontaktlista:', error);
+    throw new Error('Kunde inte exportera kontakter');
+  }
+}
