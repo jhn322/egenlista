@@ -30,6 +30,18 @@ async function getUserInfo(userId: string) {
   }
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: { userId: string };
+}): Promise<Metadata> {
+  const user = await getUserInfo(params.userId);
+  return {
+    title: `Tack för din registrering hos ${user?.name || 'företaget'}`,
+    description: 'Din registrering har mottagits.',
+  };
+}
+
 export default async function ContactSignupPage({
   params,
 }: {
