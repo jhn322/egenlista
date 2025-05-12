@@ -18,6 +18,7 @@ interface ContactSignupPageProps {
   params: {
     userId: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 async function getUserInfo(userId: string) {
