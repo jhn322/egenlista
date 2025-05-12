@@ -17,48 +17,47 @@ import { notFound } from 'next/navigation';
 //     'Fyll i formuläret för att registrera dig som kontakt till företaget.',
 // };
 
-// interface ContactSignupPageProps { // Removed interface as it was only used by generateMetadata
-//   params: {
-//     userId: string;
-//   };
-// }
+// Define PageProps with params as a Promise
+interface PageProps {
+  params: Promise<{ userId: string }>; // params itself is the Promise
+  // If searchParams were used, they might also need Promise type:
+  // searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
+// Function to fetch user information (kept simple for this example)
 async function getUserInfo(userId: string) {
+  if (!userId) {
+    // Although Next.js routing should prevent this with dynamic segments,
+    // adding a check doesn't hurt.
+    console.warn('getUserInfo called without a userId in signup page.');
+    return null;
+  }
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         name: true,
-        email: true,
       },
     });
     return user;
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error(`Error fetching user (${userId}) for signup page:`, error);
     return null;
   }
 }
 
-// Removed generateMetadata function
-// export async function generateMetadata({ params }: ContactSignupPageProps): Promise<Metadata> {
-//   const user = await getUserInfo(params.userId);
-//   return {
-//     title: `Registrera dig hos ${user?.name || 'företaget'}`,
-//     description:
-//       'Fyll i formuläret för att registrera dig som kontakt till företaget.',
-//   };
-// }
-
-export default async function ContactSignupPage({
-  params,
-}: {
-  params: { userId: string };
-}) {
+// Type props directly, params inside is the promise
+export default async function ContactSignupPage(props: PageProps) {
+  // Await the params promise before accessing userId
+  const params = await props.params;
   const { userId } = params;
+
+  // Fetch user information based on userId from params
   const user = await getUserInfo(userId);
 
+  // Handle case where user is not found
   if (!user) {
-    notFound();
+    notFound(); // Trigger 404 page
   }
 
   return (
@@ -68,6 +67,7 @@ export default async function ContactSignupPage({
           <h1 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
             Registrera dig som kontakt
           </h1>
+          {/* Display user name fetched from DB */}
           <p className="text-primary-foreground/90 mx-auto max-w-2xl text-sm">
             hos {user.name || 'företaget'} via detta formulär
           </p>
@@ -80,6 +80,7 @@ export default async function ContactSignupPage({
             <h2 className="text-card-foreground mb-6 text-center text-xl font-semibold">
               Fyll i dina uppgifter
             </h2>
+            {/* Pass the userId to the form component */}
             <ContactPublicSignupForm userId={userId} />
           </div>
         </div>
