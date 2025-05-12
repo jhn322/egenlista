@@ -38,7 +38,8 @@ export const API_AUTH_PATHS = {
   REGISTER: '/api/auth/register',
   VERIFY_EMAIL: '/api/auth/verify-email', // API endpoint that handles the token
   RESEND_VERIFICATION_EMAIL: '/api/auth/resend-verification', // API endpoint to resend verification
-  // Potentially others like /api/auth/password-reset-request, /api/auth/password-reset-confirm
+  FORGOT_PASSWORD: '/api/auth/glomt-losenord', // API endpoint to request password reset
+  RESET_PASSWORD: '/api/auth/aterstall-losenord', // API endpoint to reset password with token
 } as const;
 
 // ** API Application-Specific Paths ** //
@@ -51,7 +52,8 @@ export const API_APP_PATHS = {
 } as const;
 
 // ** Default Redirects ** //
-export const DEFAULT_LOGIN_REDIRECT_PATH: string = PROTECTED_PATHS.MINA_SIDOR_BASE;
+export const DEFAULT_LOGIN_REDIRECT_PATH: string =
+  PROTECTED_PATHS.MINA_SIDOR_BASE;
 export const DEFAULT_LOGOUT_REDIRECT_PATH: string = SITE_PATHS.HOME; // Or AUTH_PATHS.LOGIN
 
 // ** Public Route Patterns ** //
@@ -80,4 +82,4 @@ export const API_ROUTE_PREFIX = '/api';
 export const API_AUTH_ROUTE_PREFIX = '/api/auth'; // Default NextAuth prefix
 
 // ** Special Route Identifiers (if needed by middleware or logic) ** //
-export const ROOT_PATH = '/'; 
+export const ROOT_PATH = '/';

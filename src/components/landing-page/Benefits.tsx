@@ -6,15 +6,15 @@ import { APP_NAME } from '@/lib/constants/site';
 export default function BenefitsSection() {
   return (
     <section className="bg-background relative w-full px-4 py-32">
-      <div className="absolute inset-0 flex items-center justify-center overflow-visible">
-        <div className="relative h-full max-h-[900px] w-full max-w-[1200px]">
+      <div className="absolute inset-0 flex max-h-[500px] w-full items-center justify-center overflow-hidden">
+        <div className="relative h-full w-full">
           <Image
             src="/logo-bg.png"
             alt="Background"
             fill
             sizes="(max-width: 2600px) 100vw, 2200px"
-            className="object-none opacity-30 blur-[20px]"
-            style={{ transform: 'scale(1)', objectPosition: 'center' }}
+            className="object-contain opacity-30 blur-[20px]"
+            style={{ objectPosition: 'center' }}
             loading="lazy"
             fetchPriority="low"
           />

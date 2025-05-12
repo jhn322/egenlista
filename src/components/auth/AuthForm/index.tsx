@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AUTH_PATHS } from '@/lib/constants/routes';
 import type { AuthFormProps, AuthFormData } from './types';
 
 export const AuthForm = ({
@@ -58,6 +60,16 @@ export const AuthForm = ({
           }
           required
         />
+      )}
+      {mode === 'login' && (
+        <div className="text-right text-sm">
+          <Link
+            href={AUTH_PATHS.FORGOT_PASSWORD}
+            className="text-primary hover:text-primary/80"
+          >
+            Glömt lösenord?
+          </Link>
+        </div>
       )}
       {error && <div className="text-center text-sm text-red-500">{error}</div>}
       <Button type="submit" className="w-full" disabled={isLoading}>
