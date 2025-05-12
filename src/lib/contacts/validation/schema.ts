@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ContactType } from '@/generated/prisma'; // Import the enum
+import { ContactType, ConsentType } from '@/generated/prisma'; // Import the enum and ConsentType
 import { AVAILABLE_CONSENT_TYPE_IDS } from '@/lib/contacts/constants/contacts'; // Import consent types
 
 // * ==========================================================================
@@ -33,26 +33,41 @@ const ContactObjectSchema = z.object({
   // addressType: z.nativeEnum(AddressType).optional(), // Type could be added later
 
   // ** Consents ** //
-  consents: z.array(ConsentItemSchema).min(AVAILABLE_CONSENT_TYPE_IDS.length, {
-    message: 'Alla nödvändiga samtycken måste hanteras.', // Ensures all defined types are present
-  }),
+  consents: z
+    .array(ConsentItemSchema)
+    .min(AVAILABLE_CONSENT_TYPE_IDS.length, {
+      message: 'Alla nödvändiga samtycken måste hanteras.',
+    })
+    // Use superRefine for more control over adding issues
+    .superRefine((consents, ctx) => {
+      const storageConsentIndex = consents.findIndex(
+        (c) => c.consentType === ConsentType.STORAGE
+      );
+
+      if (storageConsentIndex === -1) {
+        // This case should ideally be caught by .min() or initial setup,
+        // but adding a check just in case.
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Nödvändigt samtycke för lagring saknas helt.', // More specific error
+          path: [], // Add to the array level if STORAGE type isn't even present
+        });
+      } else if (!consents[storageConsentIndex].granted) {
+        // If STORAGE exists but is not granted, add issue to its 'granted' field
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom, // Use custom code for refine-like errors
+          message: 'Godkännande för lagring av personuppgifter är obligatoriskt.',
+          path: [storageConsentIndex, 'granted'], // Path relative to the array
+        });
+      }
+    }),
 
   // Note: 'type' is defaulted in Prisma, not expected from client form
   // Note: 'userId' is determined server-side from widget/auth
 });
 
-// ** Schema for Creating a Contact ** //
-export const ContactCreateSchema = ContactObjectSchema.refine(data => {
-  // If STORAGE consent is present, it must be granted.
-  const storageConsent = data.consents.find(c => c.consentType === 'STORAGE');
-  if (storageConsent && !storageConsent.granted) {
-    return false;
-  }
-  return true;
-}, {
-  message: 'Godkännande för lagring av personuppgifter är obligatoriskt för att skapa en kontakt.',
-  path: ['consents'], // General error on the consents array, or be more specific e.g., consents[STORAGE_INDEX].granted
-});
+// ** Schema for Creating a Contact (No longer needs the top-level refine) ** //
+export const ContactCreateSchema = ContactObjectSchema;
 
 // Infer the TypeScript type for input data validation
 export type ContactCreateInput = z.infer<typeof ContactCreateSchema>;
