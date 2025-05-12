@@ -1,18 +1,27 @@
 // * ============================================================================
-// *                        CONTACT SIGNUP PAGE (ISOLATED)
+// *                           CONTACT SIGNUP PAGE
 // * ============================================================================
 
-import type { Metadata } from 'next';
+// Removed static metadata, generateMetadata will handle it
+// import type { Metadata } from 'next';
 import React from 'react';
 import { ContactPublicSignupForm } from '@/components/contacts/contact-public-signup-form';
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+// import type { Metadata } from 'next'; // Removed Metadata type import
 
-export const metadata: Metadata = {
-  title: 'Registrera dig som kontakt',
-  description:
-    'Fyll i formuläret för att registrera dig som kontakt till företaget.',
-};
+// Static metadata removed as generateMetadata is used
+// export const metadata: Metadata = {
+//   title: 'Registrera dig som kontakt', // Typo was likely here or this was old
+//   description:
+//     'Fyll i formuläret för att registrera dig som kontakt till företaget.',
+// };
+
+// interface ContactSignupPageProps { // Removed interface as it was only used by generateMetadata
+//   params: {
+//     userId: string;
+//   };
+// }
 
 async function getUserInfo(userId: string) {
   try {
@@ -30,17 +39,15 @@ async function getUserInfo(userId: string) {
   }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { userId: string };
-}): Promise<Metadata> {
-  const user = await getUserInfo(params.userId);
-  return {
-    title: `Tack för din registrering hos ${user?.name || 'företaget'}`,
-    description: 'Din registrering har mottagits.',
-  };
-}
+// Removed generateMetadata function
+// export async function generateMetadata({ params }: ContactSignupPageProps): Promise<Metadata> {
+//   const user = await getUserInfo(params.userId);
+//   return {
+//     title: `Registrera dig hos ${user?.name || 'företaget'}`,
+//     description:
+//       'Fyll i formuläret för att registrera dig som kontakt till företaget.',
+//   };
+// }
 
 export default async function ContactSignupPage({
   params,
