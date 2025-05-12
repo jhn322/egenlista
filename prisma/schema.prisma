@@ -31,6 +31,7 @@ model User {
   sessions      Session[]  // Required for NextAuth
   contacts      Contact[]
   subscription  Subscription? // User has one subscription (or none)
+  passwordResetTokens PasswordResetToken[] // Relation to PasswordResetToken model
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -72,6 +73,19 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ** PasswordResetToken model ** //
+model PasswordResetToken {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  token     String   @unique // Store a hash of the actual token
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // ** UserRole enum ** //
