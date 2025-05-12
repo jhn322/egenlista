@@ -14,13 +14,6 @@ export const metadata: Metadata = {
     'Fyll i formuläret för att registrera dig som kontakt till företaget.',
 };
 
-interface ContactSignupPageProps {
-  params: {
-    userId: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
 async function getUserInfo(userId: string) {
   try {
     const user = await prisma.user.findUnique({
@@ -39,7 +32,9 @@ async function getUserInfo(userId: string) {
 
 export default async function ContactSignupPage({
   params,
-}: ContactSignupPageProps) {
+}: {
+  params: { userId: string };
+}) {
   const { userId } = params;
   const user = await getUserInfo(userId);
 
