@@ -23,7 +23,7 @@ import { AUTH_PATHS } from '@/lib/constants/routes';
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
@@ -166,6 +166,10 @@ export default function ResetPasswordPage() {
     );
   }
 
+  return <div className="mt-10">{renderContent()}</div>;
+}
+
+export default function ResetPasswordPage() {
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -185,7 +189,9 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        <div className="mt-10">{renderContent()}</div>
+        <React.Suspense fallback={<div className="mt-10">Laddar...</div>}>
+          <ResetPasswordForm />
+        </React.Suspense>
       </div>
     </div>
   );
