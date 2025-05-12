@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Navbar } from '../components/Navbar';
-import Footer from '../components/Footer';
 import { Providers } from '../app/providers';
 import { Toaster } from 'sonner';
 import { APP_NAME } from '@/lib/constants/site';
+import PageWrapper from '@/components/PageWrapper';
 
 const inter = Inter({
   variable: '--font-sans',
@@ -43,11 +42,7 @@ export default function RootLayout({
     <html lang="sv" className={inter.variable}>
       <body className="antialiased">
         <Providers>
-          <header>
-            <Navbar />
-          </header>
-          {children}
-          <Footer />
+          <PageWrapper>{children}</PageWrapper>
           <Toaster richColors position="bottom-right" />
         </Providers>
       </body>
