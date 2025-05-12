@@ -134,9 +134,9 @@ export default function Footer() {
             </CardDescription>
 
             <div className="flex gap-4 text-sm">
-              <Link href="/privacy-policy">
+              <Link href="/integritetspolicy">
                 <CardDescription className="hover:text-primary text-foreground text-sm transition-colors">
-                  Privacy Policy
+                  Integritetspolicy
                 </CardDescription>
               </Link>
             </div>

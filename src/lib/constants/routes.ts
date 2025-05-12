@@ -16,8 +16,8 @@ export const SITE_PATHS = {
 export const AUTH_PATHS = {
   LOGIN: '/auth/logga-in',
   REGISTER: '/auth/registrera',
-  FORGOT_PASSWORD: '/auth/glomt-losenord', // Placeholder, page not yet created
-  RESET_PASSWORD: '/auth/aterstall-losenord', // Placeholder, page not yet created
+  FORGOT_PASSWORD: '/auth/glomt-losenord',
+  RESET_PASSWORD: '/auth/aterstall-losenord',
   VERIFY_EMAIL_INFO_PAGE: '/auth/verifiering', // Page shown when email verification is pending or to request a new link
   AUTH_ERROR: '/auth/fel', // Placeholder, page not yet created
   UNAUTHORIZED: '/auth/obehorig', // Placeholder, page not yet created
