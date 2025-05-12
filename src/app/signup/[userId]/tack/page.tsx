@@ -25,16 +25,17 @@ async function getUserInfo(userId: string) {
   }
 }
 
+// Update interface: params is a Promise
 interface ContactSignupThankYouPageProps {
-  params: {
-    userId: string;
-  };
+  params: Promise<{ userId: string }>;
+  // searchParams: Promise<{ [key: string]: string | string[] | undefined }>; // Add if needed later
 }
 
-// Dynamic metadata based on user
+// Dynamic metadata based on user - needs to await params
 export async function generateMetadata({
-  params,
+  params: paramsPromise, // Rename to avoid conflict
 }: ContactSignupThankYouPageProps): Promise<Metadata> {
+  const params = await paramsPromise; // Await the params promise
   const user = await getUserInfo(params.userId);
   return {
     title: `Tack för din registrering hos ${user?.name || 'företaget'}`,
@@ -42,9 +43,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function ContactSignupThankYouPage({
-  params,
-}: ContactSignupThankYouPageProps) {
+// Update component signature and add await
+export default async function ContactSignupThankYouPage(
+  props: ContactSignupThankYouPageProps
+) {
+  // Await the params promise
+  const params = await props.params;
   const { userId } = params;
   const user = await getUserInfo(userId);
 
