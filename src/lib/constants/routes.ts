@@ -83,3 +83,10 @@ export const API_AUTH_ROUTE_PREFIX = '/api/auth'; // Default NextAuth prefix
 
 // ** Special Route Identifiers (if needed by middleware or logic) ** //
 export const ROOT_PATH = '/';
+
+// Paths that should use a minimal layout (e.g., no Navbar/Footer)
+// Includes auth paths and public signup paths
+export const ISOLATED_LAYOUT_PATHS = [
+  ...Object.values(AUTH_PATHS),
+  '/signup/:path*', // Match /signup/ and any sub-paths like /signup/[userId]/tack
+];
