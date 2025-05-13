@@ -61,7 +61,8 @@ export const SERVER_ACTION_ERRORS = {
   GENERIC_FETCH_FAILURE: 'Kunde inte hämta kontaktdata. Försök igen senare.',
   INVALID_RELATION_DATA: 'Ogiltig relaterad data. Kontrollera indata.',
   DB_OPERATION_FAILED: 'Databasåtgärden misslyckades. Försök igen.',
-  VALIDATION_ERROR_INTERNAL_USER_FACING: 'Indata är ogiltig. Kontrollera och försök igen.',
+  VALIDATION_ERROR_INTERNAL_USER_FACING:
+    'Indata är ogiltig. Kontrollera och försök igen.',
 
   // More technical/internal errors (could be used for logging or mapping to user-facing ones)
   USER_ID_REQUIRED: 'Användar-ID krävs.',
@@ -70,7 +71,8 @@ export const SERVER_ACTION_ERRORS = {
   UPDATE_CONFLICT_INTERNAL: 'Intern konflikt vid uppdatering av kontakt.',
   UPDATE_NOT_FOUND_INTERNAL: 'Internt fel: Kontakt att uppdatera ej hittad.',
   COULD_NOT_FETCH_CONTACTS_INTERNAL: 'Internt fel vid hämtning av kontakter.',
-  COULD_NOT_FETCH_CONTACT_INTERNAL: 'Internt fel vid hämtning av enskild kontakt.',
+  COULD_NOT_FETCH_CONTACT_INTERNAL:
+    'Internt fel vid hämtning av enskild kontakt.',
   UPDATE_WITH_EMPTY_DATA_WARN: 'Varning: Uppdatering anropad med tom data.', // For logging
   DB_OPERATION_FAILED_INTERNAL: 'Databasåtgärden misslyckades internt',
   VALIDATION_ERROR_INTERNAL: 'Valideringsfel vid databasinteraktion internt.',
@@ -82,23 +84,30 @@ export const CONTACT_LIST_EMPTY_STATE = {
   DESCRIPTION: 'När du börjar samla in kontakter kommer de att visas här.',
 };
 
+// ** Badge Settings & Texts ** //
+export const NEW_CONTACT_THRESHOLD_DAYS = 14;
+export const NEW_CONTACT_BADGE_TEXT = 'Ny';
+
 // ** Consent Types ** //
 // Used to define the types of consent that can be recorded.
 export const CONTACT_CONSENT_TYPES = {
   STORAGE: {
     id: ConsentType.STORAGE, // Use enum value
     label: 'Lagring av personuppgifter',
-    description: 'Jag godkänner att mina personuppgifter lagras för att hantera min kontakt. <a href="/integritetspolicy#lagring" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
+    description:
+      'Jag godkänner att mina personuppgifter lagras för att hantera min kontakt. <a href="/integritetspolicy#lagring" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
   },
   MARKETING: {
     id: ConsentType.MARKETING, // Use enum value
     label: 'Marknadsföringskommunikation',
-    description: 'Jag godkänner att ta emot marknadsföringsmaterial och nyhetsbrev. <a href="/integritetspolicy#marknadsforing" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
+    description:
+      'Jag godkänner att ta emot marknadsföringsmaterial och nyhetsbrev. <a href="/integritetspolicy#marknadsforing" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
   },
   PARTNERS: {
     id: ConsentType.PARTNERS, // Use enum value
     label: 'Delning med partners',
-    description: 'Jag godkänner att mina uppgifter kan delas med utvalda samarbetspartners för relevanta erbjudanden. <a href="/integritetspolicy#partners" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
+    description:
+      'Jag godkänner att mina uppgifter kan delas med utvalda samarbetspartners för relevanta erbjudanden. <a href="/integritetspolicy#partners" target="_blank" rel="noopener noreferrer" class="underline hover:text-primary">Läs mer</a>',
   },
 } as const; // Using "as const" for stricter typing of IDs
 
@@ -107,10 +116,12 @@ export const CONTACT_CONSENT_TYPES = {
 const consentTypeEnumValues = Object.values(ConsentType);
 
 if (consentTypeEnumValues.length === 0) {
-  throw new Error('ConsentType enum from Prisma must not be empty for schema validation.');
+  throw new Error(
+    'ConsentType enum from Prisma must not be empty for schema validation.'
+  );
 }
 
-export const AVAILABLE_CONSENT_TYPE_IDS: readonly [ConsentType, ...ConsentType[]] = [
-  consentTypeEnumValues[0],
-  ...consentTypeEnumValues.slice(1),
-]; 
+export const AVAILABLE_CONSENT_TYPE_IDS: readonly [
+  ConsentType,
+  ...ConsentType[],
+] = [consentTypeEnumValues[0], ...consentTypeEnumValues.slice(1)];

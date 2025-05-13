@@ -54,6 +54,8 @@ import {
 import {
   CONTACT_LIST_EMPTY_STATE,
   TOAST_MESSAGES,
+  NEW_CONTACT_THRESHOLD_DAYS,
+  NEW_CONTACT_BADGE_TEXT,
 } from '@/lib/contacts/constants/contacts';
 
 import {
@@ -73,6 +75,8 @@ import {
 import { formatContactType } from '@/lib/contacts/utils/formatting';
 import { ContactPagination } from './contact-pagination';
 import { ContactToolbar } from './contact-toolbar';
+import { Checkbox } from '@/components/ui/checkbox';
+import { getContactTypeColorValue } from '@/lib/contacts/constants/contact-charts-constants';
 
 // **  Component Props Interface  ** //
 interface ContactListProps {
@@ -83,6 +87,9 @@ interface ContactListProps {
   onNote: (contact: Contact) => void;
   userIsPro: boolean;
   userId: string;
+  showAllContactsInList: boolean;
+  onShowAllContactsInListChange: (showAll: boolean) => void;
+  isDateRangeActive: boolean;
 }
 
 type SortConfiguration = {
@@ -97,6 +104,9 @@ export function ContactList({
   userIsPro,
   userId,
   onNote,
+  showAllContactsInList,
+  onShowAllContactsInListChange,
+  isDateRangeActive,
 }: ContactListProps) {
   // ** State Variables ** //
   // * ID of the contact currently being edited inline (null if none)
@@ -136,12 +146,35 @@ export function ContactList({
   // ** Hooks ** //
   const router = useRouter();
 
+  // * Helper function to check if a contact is new
+  const isContactNew = (createdAtDate: Date): boolean => {
+    const threshold = new Date();
+    threshold.setDate(threshold.getDate() - NEW_CONTACT_THRESHOLD_DAYS);
+    // Ensure createdAtDate is a Date object
+    const contactCreationDate = new Date(createdAtDate);
+    return contactCreationDate > threshold;
+  };
+
   // * Form Hook Initialization (react-hook-form)
   const form = useForm<ContactUpdateInput>({
     resolver: zodResolver(ContactUpdateSchema),
     // Default values are set when resetting the form
     defaultValues: {},
   });
+
+  // useEffect to 'prune' selectedContacts when the main contacts list changes
+  useEffect(() => {
+    const currentContactIds = new Set(contacts.map((c) => c.id));
+    setSelectedContacts((prevSelected) => {
+      const newSelected = new Set<string>();
+      for (const id of prevSelected) {
+        if (currentContactIds.has(id)) {
+          newSelected.add(id);
+        }
+      }
+      return newSelected;
+    });
+  }, [contacts]);
 
   // Filter contacts based on search query and type filter
   const filteredContacts = useMemo(() => {
@@ -420,22 +453,25 @@ export function ContactList({
           selectedCount={selectedContacts.size}
           onDeleteSelected={handleDeleteSelected}
           onDeselectAll={handleDeselectAll}
+          showAllContactsInList={showAllContactsInList}
+          onShowAllContactsInListChange={onShowAllContactsInListChange}
+          isDateRangeActive={isDateRangeActive}
         />
         <div className="rounded-lg border" ref={tableWrapperRef}>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px]">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={
                       paginatedContacts.length > 0 &&
                       paginatedContacts.every((contact) =>
                         selectedContacts.has(contact.id)
                       )
                     }
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300"
+                    onCheckedChange={(checkedState) => {
+                      handleSelectAll(!!checkedState);
+                    }}
                     aria-label="Välj alla kontakter"
                   />
                 </TableHead>
@@ -781,13 +817,11 @@ export function ContactList({
                     })}
                   >
                     <TableCell>
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={selectedContacts.has(contact.id)}
-                        onChange={(e) =>
-                          handleSelectContact(contact.id, e.target.checked)
-                        }
-                        className="h-4 w-4 rounded border-gray-300"
+                        onCheckedChange={(checkedState) => {
+                          handleSelectContact(contact.id, !!checkedState);
+                        }}
                         aria-label={`Välj ${contact.firstName} ${contact.lastName}`}
                       />
                     </TableCell>
@@ -795,6 +829,15 @@ export function ContactList({
                     <TableCell>
                       <div className="font-medium">
                         {contact.firstName} {contact.lastName}
+                        {isContactNew(contact.createdAt) && (
+                          <Badge
+                            variant="outline"
+                            className="border-primary text-primary ml-2"
+                            aria-label="Ny kontakt"
+                          >
+                            {NEW_CONTACT_BADGE_TEXT}
+                          </Badge>
+                        )}
                       </div>
                       <div className="text-muted-foreground text-sm md:hidden">
                         {contact.email}
@@ -811,13 +854,13 @@ export function ContactList({
                     {/* ** Type Cell (Display) ** */}
                     <TableCell>
                       <Badge
-                        variant={
-                          contact.type === ContactType.CUSTOMER
-                            ? 'default'
-                            : contact.type === ContactType.AMBASSADOR
-                              ? 'outline'
-                              : 'secondary'
-                        }
+                        style={{
+                          backgroundColor: getContactTypeColorValue(
+                            contact.type
+                          ),
+                          color: 'white',
+                        }}
+                        className="px-2 py-0.5 text-xs font-medium"
                       >
                         {formatContactType(contact.type)}
                       </Badge>

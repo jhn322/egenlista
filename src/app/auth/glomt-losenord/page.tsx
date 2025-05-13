@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div>
           {/* <Link href="/" className="mb-6 inline-block">
-            <div className="bg-primary/10 flex h-12 w-12 flex-shrink-0 items-center space-x-2 rounded-xl p-1.5">
+            <div className="bg-primary/10 flex h-12 w-12 flex-shrink-0 items-center space-x-2 rounded-lg p-1.5">
               <span className="p-2 text-xl font-bold tracking-tight">
                 {APP_NAME}
               </span>

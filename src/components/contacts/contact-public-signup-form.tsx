@@ -327,7 +327,7 @@ export function ContactPublicSignupForm({
                   render={({ field: checkboxField, fieldState: { error } }) => (
                     <FormItem
                       className={cn(
-                        'bg-background flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4 transition-colors',
+                        'bg-background flex flex-row items-start space-y-0 space-x-3 rounded-lg border p-4 transition-colors',
                         isStorage ? 'border-primary/30' : 'border-border',
                         error
                           ? 'border-destructive ring-destructive ring-1'
