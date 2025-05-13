@@ -76,6 +76,7 @@ import { formatContactType } from '@/lib/contacts/utils/formatting';
 import { ContactPagination } from './contact-pagination';
 import { ContactToolbar } from './contact-toolbar';
 import { Checkbox } from '@/components/ui/checkbox';
+import { getContactTypeColorValue } from '@/lib/contacts/constants/contact-charts-constants';
 
 // **  Component Props Interface  ** //
 interface ContactListProps {
@@ -853,13 +854,13 @@ export function ContactList({
                     {/* ** Type Cell (Display) ** */}
                     <TableCell>
                       <Badge
-                        variant={
-                          contact.type === ContactType.CUSTOMER
-                            ? 'default'
-                            : contact.type === ContactType.AMBASSADOR
-                              ? 'outline'
-                              : 'secondary'
-                        }
+                        style={{
+                          backgroundColor: getContactTypeColorValue(
+                            contact.type
+                          ),
+                          color: 'white',
+                        }}
+                        className="px-2 py-0.5 text-xs font-medium"
                       >
                         {formatContactType(contact.type)}
                       </Badge>

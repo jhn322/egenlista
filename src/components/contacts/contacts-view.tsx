@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { Contact } from '@/generated/prisma';
 import { PlusCircle, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { DateRange } from 'react-day-picker';
 
 import {
   Card,
@@ -32,6 +33,7 @@ import { UpgradeToProModal } from '@/components/shared/upgrade-to-pro-modal';
 import { DIALOG_TEXTS } from '@/lib/contacts/constants/contacts'; // Added DIALOG_TEXTS for modal titles/desc
 import { ContactNoteModal } from './contact-note-modal';
 import { exportContactsToCSV } from '@/lib/contacts/utils/actions';
+import { ContactCharts } from './contact-charts';
 
 // ** Props Interface ** //
 interface ContactsViewProps {
@@ -41,6 +43,8 @@ interface ContactsViewProps {
   showAllContactsInList: boolean;
   onShowAllContactsInListChange: (showAll: boolean) => void;
   isDateRangeActive: boolean;
+  dateRange?: DateRange;
+  comparisonDateRange?: DateRange;
 }
 
 // ** ContactsView Component ** //
@@ -51,6 +55,8 @@ export function ContactsView({
   showAllContactsInList,
   onShowAllContactsInListChange,
   isDateRangeActive,
+  dateRange,
+  comparisonDateRange,
 }: ContactsViewProps) {
   const [deletingContact, setDeletingContact] = useState<Pick<
     Contact,
@@ -103,11 +109,15 @@ export function ContactsView({
         const data = await res.json();
         throw new Error(data.message || 'Kunde inte spara anteckningen.');
       }
-      const data = await res.json();
+      const updatedContact = await res.json();
       setContacts((prev) =>
         prev.map((c) =>
           c.id === contactId
-            ? { ...c, note: data.note, noteUpdatedAt: data.noteUpdatedAt }
+            ? {
+                ...c,
+                note: updatedContact.note,
+                noteUpdatedAt: updatedContact.noteUpdatedAt,
+              }
             : c
         )
       );
@@ -118,7 +128,6 @@ export function ContactsView({
       toast.error(
         err instanceof Error ? err.message : 'Kunde inte spara anteckningen.'
       );
-      throw err;
     }
   };
 
@@ -149,70 +158,92 @@ export function ContactsView({
     }
   };
 
+  // Determine which contacts to pass to the charts
+  const contactsForChart = contacts;
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col gap-3 pb-2 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
-          <div className="space-y-1.5">
-            <CardTitle>Kontaktlista</CardTitle>
-            <CardDescription>
-              Sök, filtrera och hantera dina kontakter nedan.
-            </CardDescription>
-          </div>
-          <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center md:justify-end md:gap-2">
-            <Button
-              variant="outline"
-              onClick={handleExportClick}
-              className="w-full md:w-auto"
-            >
-              <Download className="mr-2 h-4 w-4" />
-              Exportera CSV
-            </Button>
-            <Button onClick={handleCreateClick} className="w-full md:w-auto">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Skapa Ny Kontakt
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <ContactList
-          contacts={contacts}
-          onDelete={handleDeleteClick}
-          userIsPro={userIsPro}
-          userId={userId}
-          onNote={handleNoteClick}
-          showAllContactsInList={showAllContactsInList}
-          onShowAllContactsInListChange={onShowAllContactsInListChange}
-          isDateRangeActive={isDateRangeActive}
-        />
+    <div className="space-y-6">
+      {/* Contact Charts */}
+      <ContactCharts
+        contacts={contactsForChart}
+        dateRange={dateRange}
+        comparisonDateRange={comparisonDateRange}
+      />
 
-        {/* Delete Contact Confirmation Dialog */}
-        <DeleteContactFeature
-          contactToDelete={deletingContact}
-          isOpen={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
-          userId={userId}
-        />
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col gap-3 pb-2 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+            <div className="space-y-1.5">
+              <CardTitle>Kontaktlista</CardTitle>
+              <CardDescription>
+                Sök, filtrera och hantera dina kontakter nedan.
+              </CardDescription>
+            </div>
+            <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center md:justify-end md:gap-2">
+              <Button
+                variant="outline"
+                onClick={handleExportClick}
+                className="w-full md:w-auto"
+                aria-label="Exportera kontakter till CSV-fil"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Exportera CSV
+              </Button>
+              <Button
+                onClick={handleCreateClick}
+                className="w-full md:w-auto"
+                aria-label="Skapa ny kontakt"
+              >
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Skapa Ny Kontakt
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ContactList
+            contacts={contacts}
+            onDelete={handleDeleteClick}
+            userIsPro={userIsPro}
+            userId={userId}
+            onNote={handleNoteClick}
+            showAllContactsInList={showAllContactsInList}
+            onShowAllContactsInListChange={onShowAllContactsInListChange}
+            isDateRangeActive={isDateRangeActive}
+          />
+        </CardContent>
+      </Card>
 
-        {/* Create Contact Dialog (Only for PRO) */}
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="sm:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>Skapa Ny Kontakt</DialogTitle>
-              <DialogDescription>
-                {DIALOG_TEXTS.CREATE_CONTACT_PRO_DESCRIPTION}
-              </DialogDescription>
-            </DialogHeader>
-            {/* Render form inside */}
+      {/* Delete Contact Confirmation Dialog */}
+      <DeleteContactFeature
+        contactToDelete={deletingContact}
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        userId={userId}
+      />
+
+      {/* Create Contact Dialog (Only for PRO) */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Skapa Ny Kontakt</DialogTitle>
+            <DialogDescription>
+              {userIsPro
+                ? DIALOG_TEXTS.CREATE_CONTACT_PRO_DESCRIPTION
+                : DIALOG_TEXTS.CREATE_CONTACT_NON_PRO_DESCRIPTION}
+            </DialogDescription>
+          </DialogHeader>
+          {userIsPro && (
             <CreateContactForm
               userId={userId}
               onClose={() => setIsCreateDialogOpen(false)}
             />
-          </DialogContent>
-        </Dialog>
+          )}
+        </DialogContent>
+      </Dialog>
 
-        {/* Upgrade to PRO Modal (Only for Non-PRO) */}
+      {/* Upgrade to PRO Modal (Only for Non-PRO) */}
+      {!userIsPro && (
         <UpgradeToProModal
           isOpen={isUpgradeModalOpen}
           onOpenChange={setIsUpgradeModalOpen}
@@ -220,22 +251,17 @@ export function ContactsView({
           featureDescription={
             DIALOG_TEXTS.CREATE_CONTACT_UPGRADE_PROMPT_DESCRIPTION
           }
-          onActionButtonClick={() => {
-            // Example: Navigate to pricing page
-            // router.push('/pris');
-            setIsUpgradeModalOpen(false);
-          }}
         />
+      )}
 
-        {/* Note Modal */}
-        <ContactNoteModal
-          contact={noteContact}
-          isOpen={isNoteModalOpen}
-          onOpenChange={setIsNoteModalOpen}
-          userIsPro={userIsPro}
-          onSave={handleNoteSave}
-        />
-      </CardContent>
-    </Card>
+      {/* Note Modal */}
+      <ContactNoteModal
+        contact={noteContact}
+        isOpen={isNoteModalOpen}
+        onOpenChange={setIsNoteModalOpen}
+        userIsPro={userIsPro}
+        onSave={handleNoteSave}
+      />
+    </div>
   );
 }
