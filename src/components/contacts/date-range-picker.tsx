@@ -224,6 +224,23 @@ export function DateRangePicker({
     setIsOpen(true);
   };
 
+  // Reset the selected range to default
+  const handleReset = () => {
+    const today = new Date();
+    const oneMonthAgo = subMonths(today, 1);
+    const newDefaultRange = { from: oneMonthAgo, to: today };
+
+    setTempDateRange(newDefaultRange);
+    setCurrentMonth(oneMonthAgo);
+
+    if (isComparisonMode) {
+      updateComparisonDateRange(newDefaultRange, comparisonMode);
+    } else {
+      // If comparison is not active, clear any temp comparison range
+      setTempComparisonDateRange(undefined);
+    }
+  };
+
   return (
     <div className={cn('grid gap-2', className)}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -377,15 +394,25 @@ export function DateRangePicker({
             )}
 
             <div className="flex justify-between border-t p-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                className="hover:bg-destructive flex items-center hover:text-white"
-              >
-                <X className="mr-1 h-4 w-4" />
-                Avbryt
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel}
+                  className="hover:bg-destructive flex items-center hover:text-white"
+                >
+                  <X className="mr-1 h-4 w-4" />
+                  Avbryt
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  className="flex items-center"
+                >
+                  Återställ
+                </Button>
+              </div>
               <Button
                 variant="default"
                 size="sm"
