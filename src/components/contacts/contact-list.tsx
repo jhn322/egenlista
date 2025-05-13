@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition, useEffect, useRef, useMemo } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { /* useRouter, */ usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -124,6 +124,9 @@ export function ContactList({
     column: 'createdAt',
     direction: 'desc',
   });
+  const [highlightedContactId, setHighlightedContactId] = useState<
+    string | null
+  >(null);
 
   // ** Refs ** //
   // * Ref for the currently editing table row (for click-outside detection)
@@ -134,7 +137,7 @@ export function ContactList({
   const tableWrapperRef = useRef<HTMLDivElement>(null);
 
   // ** Hooks ** //
-  const router = useRouter();
+  // const router = useRouter();
   const pathname = usePathname();
 
   // * Form Hook Initialization (react-hook-form)
@@ -348,6 +351,7 @@ export function ContactList({
     startTransition(async () => {
       try {
         const dataToUpdate: ContactUpdateInput = {};
+        const justEditedId = editingContactId;
 
         // Determine changed fields (respecting PRO status for certain fields)
         if (values.firstName !== contactToEdit.firstName)
@@ -382,8 +386,13 @@ export function ContactList({
             `${values.firstName || contactToEdit.firstName} ${values.lastName || contactToEdit.lastName}`
           ),
         });
-        setEditingContactId(null); // Exit edit mode on success
-        router.refresh();
+        setEditingContactId(null);
+        setHighlightedContactId(justEditedId);
+        // router.refresh();
+
+        setTimeout(() => {
+          setHighlightedContactId(null);
+        }, 3000);
       } catch (error) {
         let errorMessage = TOAST_MESSAGES.UNKNOWN_ERROR_DESC;
         if (error instanceof Error) errorMessage = error.message;
@@ -787,10 +796,15 @@ export function ContactList({
                   // *** Display Row ***
                   <TableRow
                     key={contact.id}
-                    className={clsx('hover:bg-muted/50 transition-colors', {
-                      'pointer-events-none opacity-50 blur-sm':
-                        editingContactId && editingContactId !== contact.id,
-                    })}
+                    className={clsx(
+                      'hover:bg-muted/50 transition-colors duration-300',
+                      {
+                        'pointer-events-none opacity-50 blur-sm':
+                          editingContactId && editingContactId !== contact.id,
+                        'bg-green-100 dark:bg-green-700/50':
+                          contact.id === highlightedContactId,
+                      }
+                    )}
                   >
                     <TableCell>
                       <input
