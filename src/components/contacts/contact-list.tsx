@@ -323,13 +323,48 @@ export function ContactList({
 
   const handleCellValueChange = (value: string | ContactType) => {
     setCurrentCellValue(value);
+
+    // Om det är typ-fältet och användaren är PRO, försök spara direkt.
+    // Vi måste skicka med värdet eftersom setCurrentCellValue är asynkront.
+    if (editingCell && editingCell.fieldName === 'type' && userIsPro) {
+      console.log(
+        'handleCellValueChange: Typ ändrad för PRO, anropar handleCellSave med nya värdet:',
+        value
+      );
+      handleCellSave(value as ContactType);
+    }
   };
 
-  const handleCellSave = async () => {
-    if (!editingCell) return;
+  const handleCellSave = async (newValueForType?: ContactType) => {
+    console.log(
+      'handleCellSave anropad. Redigerar cell:',
+      editingCell,
+      'Nuvarande värde i cellen (från state):',
+      currentCellValue,
+      'Eventuellt nytt värde för typ (från parameter):',
+      newValueForType
+    );
+    if (!editingCell) {
+      console.log('handleCellSave: Ingen cell redigeras, avbryter.');
+      return;
+    }
 
     const { contactId, fieldName, originalValue } = editingCell;
-    let valueForUpdate: string | null | ContactType = currentCellValue;
+    let valueForUpdate: string | null | ContactType;
+
+    if (fieldName === 'type' && newValueForType !== undefined) {
+      console.log(
+        'handleCellSave: Använder newValueForType från parameter:',
+        newValueForType
+      );
+      valueForUpdate = newValueForType;
+    } else {
+      console.log(
+        'handleCellSave: Använder currentCellValue från state:',
+        currentCellValue
+      );
+      valueForUpdate = currentCellValue;
+    }
 
     const previouslyEditingCell = editingCell;
     setEditingCell(null);
@@ -348,6 +383,13 @@ export function ContactList({
     if (
       String(valueForUpdate ?? '').trim() === String(originalValue ?? '').trim()
     ) {
+      console.log(
+        'handleCellSave: Värdet har inte ändrats (',
+        valueForUpdate,
+        '===',
+        originalValue,
+        '), avbryter.'
+      );
       return;
     }
 
@@ -392,6 +434,9 @@ export function ContactList({
       !userIsPro &&
       valueForUpdate !== originalValue
     ) {
+      console.log(
+        'handleCellSave: Icke-PRO användare försöker ändra typ, avbryter.'
+      );
       toast.info('Du måste vara PRO för att ändra kontakttypen.');
       setEditingCell(null);
       return;
@@ -400,6 +445,10 @@ export function ContactList({
     setIsCellSaving(true);
     startTransition(async () => {
       try {
+        console.log(
+          'handleCellSave: Påbörjar uppdatering med updateContact. Data:',
+          { [fieldName]: valueForUpdate }
+        );
         await updateContact(
           contactId,
           userId,
@@ -623,7 +672,7 @@ export function ContactList({
                           onChange={(e) =>
                             handleCellValueChange(e.target.value)
                           }
-                          onBlur={handleCellSave}
+                          onBlur={() => handleCellSave()}
                           onKeyDown={handleCellKeyDown}
                           className="h-8 min-w-0 flex-grow text-sm"
                           disabled={isCellSaving}
@@ -655,7 +704,7 @@ export function ContactList({
                           onChange={(e) =>
                             handleCellValueChange(e.target.value)
                           }
-                          onBlur={handleCellSave}
+                          onBlur={() => handleCellSave()}
                           onKeyDown={handleCellKeyDown}
                           className="h-8 min-w-0 flex-grow text-sm"
                           disabled={isCellSaving}
@@ -687,7 +736,7 @@ export function ContactList({
                           onChange={(e) =>
                             handleCellValueChange(e.target.value)
                           }
-                          onBlur={handleCellSave}
+                          onBlur={() => handleCellSave()}
                           onKeyDown={handleCellKeyDown}
                           className="h-8 min-w-0 flex-grow text-sm"
                           disabled={isCellSaving}
@@ -717,7 +766,7 @@ export function ContactList({
                           onChange={(e) =>
                             handleCellValueChange(e.target.value)
                           }
-                          onBlur={handleCellSave}
+                          onBlur={() => handleCellSave()}
                           onKeyDown={handleCellKeyDown}
                           className="h-8 min-w-0 flex-grow text-sm"
                           disabled={isCellSaving}
@@ -768,16 +817,24 @@ export function ContactList({
                                   editingCell?.contactId === contact.id &&
                                   editingCell?.fieldName === 'type'
                                 ) {
-                                  if (userIsPro) {
-                                    if (
-                                      currentCellValue !==
-                                      editingCell.originalValue
-                                    ) {
-                                      handleCellSave();
-                                    } else {
-                                      setEditingCell(null);
+                                  console.log(
+                                    'Select (Typ) onOpenChange - stängs för typ-fältet',
+                                    {
+                                      contactId: contact.id,
+                                      userIsPro,
+                                      currentVal: currentCellValue,
+                                      originalVal: editingCell.originalValue,
                                     }
+                                  );
+                                  if (userIsPro) {
+                                    console.log(
+                                      'Select (Typ) onOpenChange: PRO användare, anropar handleCellSave.'
+                                    );
+                                    handleCellSave();
                                   } else {
+                                    console.log(
+                                      'Select (Typ) onOpenChange: Inte PRO-användare, nollställer editingCell.'
+                                    );
                                     setEditingCell(null);
                                   }
                                 }
