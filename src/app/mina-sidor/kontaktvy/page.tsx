@@ -12,15 +12,7 @@ import { Contact } from '@/generated/prisma';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { ContactStats } from '@/components/contacts/contact-stats';
-import { ContactsView } from '@/components/contacts/contacts-view';
+import { ContactsPageClientContent } from '@/components/contacts/contacts-page-client-content';
 
 // **  Page Metadata  ** //
 export const metadata: Metadata = {
@@ -58,33 +50,17 @@ export default async function KontakterPage() {
   } catch (error) {
     console.error('Failed to load contacts or subscription status:', error);
     // Här kan du visa ett felmeddelande till användaren eller logga mer detaljerat
-    // För nu, fortsätt med tom data eller default-värden
+    // För nu, fortsätt med tom data eller default-värden, vilket ContactsPageClientContent kan hantera.
   }
 
   return (
     <main className="container mx-auto py-10">
-      <div className="space-y-6">
-        {/* Section for Overview and Create New */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div className="space-y-1.5">
-              <CardTitle>Översikt Kontakter</CardTitle>
-              <CardDescription>
-                Statistik och möjlighet att skapa nya kontakter.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-4">
-            <ContactStats contacts={contacts} />
-          </CardContent>
-        </Card>
-
-        <ContactsView
-          initialContacts={contacts}
-          userIsPro={userIsPro}
-          userId={userId}
-        />
-      </div>
+      {/* **MODIFIED**: Render the client content wrapper */}
+      <ContactsPageClientContent
+        initialContacts={contacts}
+        userIsPro={userIsPro}
+        userId={userId}
+      />
     </main>
   );
 }

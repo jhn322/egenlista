@@ -3,7 +3,7 @@
 // * ==========================================================================
 // *                       CONTACTS VIEW COMPONENT (Client)
 // * ==========================================================================
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Contact } from '@/generated/prisma';
 import { PlusCircle, Download } from 'lucide-react';
 import { toast } from 'sonner';
@@ -58,6 +58,11 @@ export function ContactsView({
   // State for controlling the dialogs
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+  // useEffect to update local contacts state when initialContacts prop changes
+  useEffect(() => {
+    setContacts(initialContacts);
+  }, [initialContacts]);
 
   const handleDeleteClick = (
     contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
