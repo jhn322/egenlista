@@ -150,6 +150,20 @@ export function ContactList({
     defaultValues: {},
   });
 
+  // useEffect to 'prune' selectedContacts when the main contacts list changes
+  useEffect(() => {
+    const currentContactIds = new Set(contacts.map((c) => c.id));
+    setSelectedContacts((prevSelected) => {
+      const newSelected = new Set<string>();
+      for (const id of prevSelected) {
+        if (currentContactIds.has(id)) {
+          newSelected.add(id);
+        }
+      }
+      return newSelected;
+    });
+  }, [contacts]);
+
   // Filter contacts based on search query and type filter
   const filteredContacts = useMemo(() => {
     return contacts.filter((contact) => {
