@@ -63,11 +63,9 @@ export function ContactToolbar({
             <SelectValue placeholder="Alla typer" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="cursor-pointer">
-              Alla typer
-            </SelectItem>
+            <SelectItem value="all">Alla typer</SelectItem>
             {Object.values(ContactType).map((type) => (
-              <SelectItem key={type} value={type} className="cursor-pointer">
+              <SelectItem key={type} value={type}>
                 {formatContactType(type)}
               </SelectItem>
             ))}

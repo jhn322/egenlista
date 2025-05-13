@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { DateRangePicker } from '@/components/contacts/date-range-picker';
 import { ContactStats } from '@/components/contacts/contact-stats';
 import { ContactsView } from './contacts-view';
+import { ContactGrowthDisplay } from './contact-growth-display';
 
 // **  Props Interface - most props are derived for ContactsView  ** //
 interface ContactsPageClientContentProps {
@@ -139,6 +140,9 @@ export function ContactsPageClientContent({
     return filterContactsByDateRange(initialContacts, dateRange);
   }, [initialContacts, dateRange, showAllContactsInList]);
 
+  // Get the individual stat cards from ContactStats
+  const statCards = ContactStats({ contacts: contactsForStats });
+
   return (
     <div className="space-y-6">
       <Card>
@@ -174,7 +178,13 @@ export function ContactsPageClientContent({
           </div>
         </CardHeader>
         <CardContent className="pt-4">
-          <ContactStats contacts={contactsForStats} />
+          {/* Stats and growth grid */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            {statCards.map((card, index) => (
+              <React.Fragment key={index}>{card}</React.Fragment>
+            ))}
+            <ContactGrowthDisplay contacts={contactsForStats} />
+          </div>
         </CardContent>
       </Card>
 

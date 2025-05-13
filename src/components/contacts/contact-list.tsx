@@ -54,6 +54,8 @@ import {
 import {
   CONTACT_LIST_EMPTY_STATE,
   TOAST_MESSAGES,
+  NEW_CONTACT_THRESHOLD_DAYS,
+  NEW_CONTACT_BADGE_TEXT,
 } from '@/lib/contacts/constants/contacts';
 
 import {
@@ -142,6 +144,15 @@ export function ContactList({
 
   // ** Hooks ** //
   const router = useRouter();
+
+  // * Helper function to check if a contact is new
+  const isContactNew = (createdAtDate: Date): boolean => {
+    const threshold = new Date();
+    threshold.setDate(threshold.getDate() - NEW_CONTACT_THRESHOLD_DAYS);
+    // Ensure createdAtDate is a Date object
+    const contactCreationDate = new Date(createdAtDate);
+    return contactCreationDate > threshold;
+  };
 
   // * Form Hook Initialization (react-hook-form)
   const form = useForm<ContactUpdateInput>({
@@ -817,6 +828,15 @@ export function ContactList({
                     <TableCell>
                       <div className="font-medium">
                         {contact.firstName} {contact.lastName}
+                        {isContactNew(contact.createdAt) && (
+                          <Badge
+                            variant="outline"
+                            className="border-primary text-primary ml-2"
+                            aria-label="Ny kontakt"
+                          >
+                            {NEW_CONTACT_BADGE_TEXT}
+                          </Badge>
+                        )}
                       </div>
                       <div className="text-muted-foreground text-sm md:hidden">
                         {contact.email}
