@@ -38,6 +38,9 @@ interface ContactsViewProps {
   initialContacts: Contact[];
   userIsPro: boolean;
   userId: string;
+  showAllContactsInList: boolean;
+  onShowAllContactsInListChange: (showAll: boolean) => void;
+  isDateRangeActive: boolean;
 }
 
 // ** ContactsView Component ** //
@@ -45,6 +48,9 @@ export function ContactsView({
   initialContacts,
   userIsPro,
   userId,
+  showAllContactsInList,
+  onShowAllContactsInListChange,
+  isDateRangeActive,
 }: ContactsViewProps) {
   const [deletingContact, setDeletingContact] = useState<Pick<
     Contact,
@@ -146,10 +152,12 @@ export function ContactsView({
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="flex flex-col gap-3 pb-2 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
           <div className="space-y-1.5">
             <CardTitle>Kontaktlista</CardTitle>
-            <CardDescription>Alla dina kontakter visas nedan.</CardDescription>
+            <CardDescription>
+              Sök, filtrera och hantera dina kontakter nedan.
+            </CardDescription>
           </div>
           <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center md:justify-end md:gap-2">
             <Button
@@ -174,6 +182,9 @@ export function ContactsView({
           userIsPro={userIsPro}
           userId={userId}
           onNote={handleNoteClick}
+          showAllContactsInList={showAllContactsInList}
+          onShowAllContactsInListChange={onShowAllContactsInListChange}
+          isDateRangeActive={isDateRangeActive}
         />
 
         {/* Delete Contact Confirmation Dialog */}

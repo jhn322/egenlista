@@ -11,11 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { DateRangePicker } from '@/components/contacts/date-range-picker';
 import { ContactStats } from '@/components/contacts/contact-stats';
-import { ContactsView } from '@/components/contacts/contacts-view';
+import { ContactsView } from './contacts-view';
 
-// **  Props Interface  ** //
+// **  Props Interface - most props are derived for ContactsView  ** //
 interface ContactsPageClientContentProps {
   initialContacts: Contact[];
   userIsPro: boolean;
@@ -35,7 +36,7 @@ const filterContactsByDateRange = (
   contacts: Contact[],
   dateRange: DateRange | undefined
 ): Contact[] => {
-  if (!dateRange?.from) {
+  if (!dateRange || !dateRange.from) {
     // If no 'from' date is set, return all contacts.
     return contacts;
   }
@@ -97,9 +98,13 @@ export function ContactsPageClientContent({
     DateRange | undefined
   >(undefined);
   const [showComparison, setShowComparison] = React.useState<boolean>(false);
+  // State for toggling all contacts in the list
+  const [showAllContactsInList, setShowAllContactsInList] =
+    React.useState<boolean>(false); // Default to false (show date-filtered)
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
     setDateRange(range);
+    setShowAllContactsInList(false);
   };
 
   const handleComparisonDateRangeChange = (range: DateRange | undefined) => {
@@ -114,45 +119,72 @@ export function ContactsPageClientContent({
     }
   };
 
+  // Handler to clear the date range
+  const handleClearDateRange = () => {
+    setDateRange(undefined);
+    // When clearing date range, the list should show all contacts
+    setShowAllContactsInList(true);
+  };
+
   // Memoize filtered contacts to avoid re-computation on every render unless dependencies change.
-  const activeContacts = React.useMemo(() => {
+  const contactsForStats = React.useMemo(() => {
     return filterContactsByDateRange(initialContacts, dateRange);
   }, [initialContacts, dateRange]);
 
+  // Contacts for the list
+  const contactsForList = React.useMemo(() => {
+    if (showAllContactsInList) {
+      return initialContacts;
+    }
+    return filterContactsByDateRange(initialContacts, dateRange);
+  }, [initialContacts, dateRange, showAllContactsInList]);
+
   return (
     <div className="space-y-6">
-      {/* Section for Overview and Date Range Picker */}
       <Card>
         <CardHeader className="flex flex-col gap-4 pb-2 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1.5">
             <CardTitle>Översikt Kontakter</CardTitle>
             <CardDescription>
-              Statistik över dina kontakter. Filtrera med datumväljaren.
+              Statistik över dina kontakter. Filtrera med datumväljaren eller
+              visa alla.
             </CardDescription>
           </div>
-          {/* Container for DateRangePicker to control its alignment and size */}
-          <div className="w-full shrink-0 sm:w-auto sm:min-w-[280px] md:min-w-[320px] lg:min-w-[360px]">
-            <DateRangePicker
-              dateRange={dateRange}
-              onDateRangeChange={handleDateRangeChange}
-              comparisonDateRange={comparisonDateRange}
-              onComparisonDateRangeChange={handleComparisonDateRangeChange}
-              showComparison={showComparison}
-              onComparisonToggle={handleComparisonToggle}
-              className="w-full"
-            />
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto lg:flex-row-reverse lg:items-center lg:gap-2">
+            <div className="w-full md:min-w-[320px] lg:w-auto lg:min-w-[280px]">
+              <DateRangePicker
+                dateRange={dateRange}
+                onDateRangeChange={handleDateRangeChange}
+                comparisonDateRange={comparisonDateRange}
+                onComparisonDateRangeChange={handleComparisonDateRangeChange}
+                showComparison={showComparison}
+                onComparisonToggle={handleComparisonToggle}
+                className="w-full"
+              />
+            </div>
+            {dateRange && (
+              <Button
+                variant="outline"
+                onClick={handleClearDateRange}
+                className="w-full text-xs whitespace-nowrap sm:text-sm lg:w-auto"
+              >
+                Rensa filter & Visa alla kontakter
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent className="pt-4">
-          <ContactStats contacts={activeContacts} />
+          <ContactStats contacts={contactsForStats} />
         </CardContent>
       </Card>
 
-      {/* ContactsView will also use the filtered contacts */}
       <ContactsView
-        initialContacts={activeContacts}
+        initialContacts={contactsForList}
         userIsPro={userIsPro}
         userId={userId}
+        showAllContactsInList={showAllContactsInList}
+        onShowAllContactsInListChange={setShowAllContactsInList}
+        isDateRangeActive={!!dateRange}
       />
     </div>
   );

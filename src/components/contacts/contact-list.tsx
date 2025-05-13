@@ -73,6 +73,7 @@ import {
 import { formatContactType } from '@/lib/contacts/utils/formatting';
 import { ContactPagination } from './contact-pagination';
 import { ContactToolbar } from './contact-toolbar';
+import { Checkbox } from '@/components/ui/checkbox';
 
 // **  Component Props Interface  ** //
 interface ContactListProps {
@@ -83,6 +84,9 @@ interface ContactListProps {
   onNote: (contact: Contact) => void;
   userIsPro: boolean;
   userId: string;
+  showAllContactsInList: boolean;
+  onShowAllContactsInListChange: (showAll: boolean) => void;
+  isDateRangeActive: boolean;
 }
 
 type SortConfiguration = {
@@ -97,6 +101,9 @@ export function ContactList({
   userIsPro,
   userId,
   onNote,
+  showAllContactsInList,
+  onShowAllContactsInListChange,
+  isDateRangeActive,
 }: ContactListProps) {
   // ** State Variables ** //
   // * ID of the contact currently being edited inline (null if none)
@@ -420,22 +427,25 @@ export function ContactList({
           selectedCount={selectedContacts.size}
           onDeleteSelected={handleDeleteSelected}
           onDeselectAll={handleDeselectAll}
+          showAllContactsInList={showAllContactsInList}
+          onShowAllContactsInListChange={onShowAllContactsInListChange}
+          isDateRangeActive={isDateRangeActive}
         />
         <div className="rounded-lg border" ref={tableWrapperRef}>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px]">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={
                       paginatedContacts.length > 0 &&
                       paginatedContacts.every((contact) =>
                         selectedContacts.has(contact.id)
                       )
                     }
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300"
+                    onCheckedChange={(checkedState) => {
+                      handleSelectAll(!!checkedState);
+                    }}
                     aria-label="Välj alla kontakter"
                   />
                 </TableHead>
@@ -781,13 +791,11 @@ export function ContactList({
                     })}
                   >
                     <TableCell>
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={selectedContacts.has(contact.id)}
-                        onChange={(e) =>
-                          handleSelectContact(contact.id, e.target.checked)
-                        }
-                        className="h-4 w-4 rounded border-gray-300"
+                        onCheckedChange={(checkedState) => {
+                          handleSelectContact(contact.id, !!checkedState);
+                        }}
                         aria-label={`Välj ${contact.firstName} ${contact.lastName}`}
                       />
                     </TableCell>
