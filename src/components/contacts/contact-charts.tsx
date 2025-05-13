@@ -58,7 +58,7 @@ interface ContactChartsProps {
   comparisonDateRange?: DateRange;
 }
 
-// **  Data Interfaces for Charts  ** //
+// Data Interfaces for Charts  //
 interface MonthlyData {
   month: string;
   count: number;
