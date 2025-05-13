@@ -530,6 +530,15 @@ export function ContactList({
                     className="bg-muted/30"
                     ref={editRowRef}
                   >
+                    {/* ** Checkbox Cell (Edit - Disabled) ** */}
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-300"
+                        aria-label="Checkbox inaktiverad vid redigering"
+                        disabled
+                      />
+                    </TableCell>
                     {/* ** Name Cell (Edit) ** */}
                     <TableCell>
                       {/* Wrap first and last name fields in a flex container */}
