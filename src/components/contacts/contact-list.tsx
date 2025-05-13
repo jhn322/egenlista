@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition, useEffect, useRef, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -135,6 +135,7 @@ export function ContactList({
 
   // ** Hooks ** //
   const router = useRouter();
+  const pathname = usePathname();
 
   // * Form Hook Initialization (react-hook-form)
   const form = useForm<ContactUpdateInput>({
@@ -372,7 +373,9 @@ export function ContactList({
         }
 
         // Call server action to update
-        await updateContact(editingContactId, userId, dataToUpdate);
+        await updateContact(editingContactId, userId, dataToUpdate, {
+          revalidatePath: pathname,
+        });
 
         toast.success(TOAST_MESSAGES.CONTACT_UPDATED_SUCCESS_TITLE, {
           description: TOAST_MESSAGES.CONTACT_UPDATED_SUCCESS_DESC(

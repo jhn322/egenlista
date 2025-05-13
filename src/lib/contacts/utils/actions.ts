@@ -6,7 +6,7 @@ import {
   type ContactUpdateInput, // Add update input type
 } from '@/lib/contacts/validation/schema';
 import { Prisma } from '@/generated/prisma'; // Import Prisma for error types
-// import { revalidatePath } from 'next/cache'; // Import for revalidation -> No longer needed
+import { revalidatePath, revalidateTag } from 'next/cache'; // Import for revalidation
 import { SERVER_ACTION_ERRORS } from '../constants/contacts'; // Import constants
 
 // * ==========================================================================
@@ -178,7 +178,8 @@ export async function getContactById(contactId: string, userId: string) {
 export async function updateContact(
   contactId: string,
   userId: string,
-  data: ContactUpdateInput
+  data: ContactUpdateInput,
+  options?: { revalidatePath?: string; revalidateTag?: string }
 ) {
   if (!userId) {
     throw new Error(SERVER_ACTION_ERRORS.USER_ID_REQUIRED);
@@ -222,6 +223,14 @@ export async function updateContact(
       },
       data: data, // Pass the validated update data
     });
+
+    // Revalidate data if options are provided
+    if (options?.revalidatePath) {
+      revalidatePath(options.revalidatePath);
+    }
+    if (options?.revalidateTag) {
+      revalidateTag(options.revalidateTag); // If you plan to use tags
+    }
 
     return updatedContact;
   } catch (error) {
