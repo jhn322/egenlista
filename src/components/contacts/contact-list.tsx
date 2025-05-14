@@ -566,6 +566,8 @@ export function ContactList({
                     className="bg-muted/30"
                     ref={editRowRef}
                   >
+                    {/* Empty cell for checkbox alignment */}
+                    <TableCell />
                     {/* ** Name Cell (Edit) ** */}
                     <TableCell>
                       {/* Wrap first and last name fields in a flex container */}
