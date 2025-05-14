@@ -563,7 +563,7 @@ export function ContactList({
                   // *** Editing Row ***
                   <TableRow
                     key={`${contact.id}-editing`}
-                    className="bg-blue-50 dark:bg-blue-950/30"
+                    className="animate-in fade-in bg-blue-50 duration-200 ease-out dark:bg-blue-950/30"
                     ref={editRowRef}
                   >
                     {/* Empty cell for checkbox alignment */}
@@ -813,10 +813,14 @@ export function ContactList({
                   // *** Display Row ***
                   <TableRow
                     key={contact.id}
-                    className={clsx('hover:bg-muted/50 transition-colors', {
-                      'pointer-events-none opacity-50 blur-sm':
-                        editingContactId && editingContactId !== contact.id,
-                    })}
+                    className={clsx(
+                      'hover:bg-muted/50',
+                      'transition-all duration-200 ease-in-out',
+                      {
+                        'pointer-events-none opacity-50 blur-sm':
+                          editingContactId && editingContactId !== contact.id,
+                      }
+                    )}
                   >
                     <TableCell>
                       <Checkbox
