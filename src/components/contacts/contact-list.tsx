@@ -134,6 +134,8 @@ export function ContactList({
     column: 'createdAt',
     direction: 'desc',
   });
+  const [successfullyUpdatedContactId, setSuccessfullyUpdatedContactId] =
+    useState<string | null>(null);
 
   // ** Refs ** //
   // * Ref for the currently editing table row (for click-outside detection)
@@ -269,6 +271,17 @@ export function ContactList({
       form.reset({}); // Reset to empty or default values if needed
     }
   }, [editingContactId, contacts, form]);
+
+  // * Effect: Clear Success Highlight
+  // * Clears the successfully updated contact ID after a short delay.
+  useEffect(() => {
+    if (successfullyUpdatedContactId) {
+      const timer = setTimeout(() => {
+        setSuccessfullyUpdatedContactId(null);
+      }, 3000); // Highlight duration: 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [successfullyUpdatedContactId]);
 
   // * Effect: Click Outside Detection
   // * Adds a listener to detect clicks outside the editing row and associated portals
@@ -412,6 +425,7 @@ export function ContactList({
             `${values.firstName || contactToEdit.firstName} ${values.lastName || contactToEdit.lastName}`
           ),
         });
+        setSuccessfullyUpdatedContactId(editingContactId); // Highlight the row
         setEditingContactId(null); // Exit edit mode on success
         router.refresh();
       } catch (error) {
@@ -563,9 +577,11 @@ export function ContactList({
                   // *** Editing Row ***
                   <TableRow
                     key={`${contact.id}-editing`}
-                    className="bg-muted/30"
+                    className="animate-in fade-in bg-blue-50 duration-200 ease-out dark:bg-blue-950/30"
                     ref={editRowRef}
                   >
+                    {/* Empty cell for checkbox alignment */}
+                    <TableCell />
                     {/* ** Name Cell (Edit) ** */}
                     <TableCell>
                       {/* Wrap first and last name fields in a flex container */}
@@ -583,7 +599,7 @@ export function ContactList({
                                   placeholder="Förnamn"
                                   {...field}
                                   disabled={isPending}
-                                  className="h-8 text-sm"
+                                  className="bg-card h-8 text-sm"
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -602,7 +618,7 @@ export function ContactList({
                                   placeholder="Efternamn"
                                   {...field}
                                   disabled={isPending}
-                                  className="h-8 text-sm"
+                                  className="bg-card h-8 text-sm"
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -624,7 +640,7 @@ export function ContactList({
                                 placeholder="E-post"
                                 {...field}
                                 disabled={isPending}
-                                className="h-8 text-sm"
+                                className="bg-card h-8 text-sm"
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
@@ -645,7 +661,7 @@ export function ContactList({
                                 {...field}
                                 value={field.value ?? ''}
                                 disabled={isPending}
-                                className="h-8 text-sm"
+                                className="bg-card h-8 text-sm"
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
@@ -711,7 +727,7 @@ export function ContactList({
                                     >
                                       <FormControl>
                                         <SelectTrigger
-                                          className={`h-8 text-sm`}
+                                          className={`bg-card h-8 text-sm`}
                                         >
                                           <SelectValue placeholder="Välj typ" />
                                         </SelectTrigger>
@@ -811,10 +827,17 @@ export function ContactList({
                   // *** Display Row ***
                   <TableRow
                     key={contact.id}
-                    className={clsx('hover:bg-muted/50 transition-colors', {
-                      'pointer-events-none opacity-50 blur-sm':
-                        editingContactId && editingContactId !== contact.id,
-                    })}
+                    className={clsx(
+                      'transition-all duration-500 ease-in-out', // Base transition for hover, opacity, blur
+                      {
+                        'hover:bg-muted/50':
+                          successfullyUpdatedContactId !== contact.id, // Only apply hover if not success-highlighted
+                        'bg-green-100 dark:bg-green-900/30':
+                          successfullyUpdatedContactId === contact.id, // Success highlight
+                        'pointer-events-none opacity-50 blur-sm':
+                          editingContactId && editingContactId !== contact.id, // Dim other rows when editing
+                      }
+                    )}
                   >
                     <TableCell>
                       <Checkbox
