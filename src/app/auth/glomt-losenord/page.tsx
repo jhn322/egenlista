@@ -26,6 +26,10 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
   const [pageError, setPageError] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null
+  );
+  const [isOAuthAccount, setIsOAuthAccount] = React.useState<boolean>(false);
 
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -38,6 +42,8 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
     setIsSuccess(false);
     setPageError(null);
+    setSuccessMessage(null);
+    setIsOAuthAccount(false);
 
     try {
       const response = await fetch('/api/auth/glomt-losenord', {
@@ -62,6 +68,8 @@ export default function ForgotPasswordPage() {
         return;
       }
 
+      setSuccessMessage(responseData.message);
+      setIsOAuthAccount(responseData.isOAuthAccount || false);
       setIsSuccess(true);
     } catch (error) {
       const errorMessage =
@@ -104,14 +112,15 @@ export default function ForgotPasswordPage() {
           )}
 
           {isSuccess ? (
-            <div className="space-y-4 text-center">
-              <h2 className="text-foreground mt-4 text-2xl leading-9 font-bold tracking-tight sm:text-3xl">
-                Återställningslänk skickad
+            <div className="space-y-6 text-center">
+              <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+                {isOAuthAccount ? 'Information' : 'Återställningslänk skickad'}
               </h2>
-              <p className="text-green-600">
-                Kolla din e-post inkorg för en återställningslänk!
+              <p className="text-muted-foreground">
+                {successMessage ||
+                  'Standard success message if API fails to provide one.'}
               </p>
-              <Button asChild variant="outline" className="w-full">
+              <Button asChild variant="default" className="w-full">
                 <Link href={AUTH_PATHS.LOGIN}>Tillbaka till inloggning</Link>
               </Button>
             </div>

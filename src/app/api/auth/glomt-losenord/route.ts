@@ -32,11 +32,24 @@ export async function POST(req: Request) {
       where: { email },
     });
 
-    if (!user || !user.password) {
+    // If no user is found, return a generic message to avoid email enumeration
+    if (!user) {
       return NextResponse.json(
         {
           message:
             'If an account with this email exists and uses password login, a reset link has been sent.',
+        },
+        { status: 200 }
+      );
+    }
+
+    // If user exists but has no password (aka an OAuth account)
+    if (!user.password) {
+      return NextResponse.json(
+        {
+          message:
+            'Denna e-postadress är associerad med ett konto som använder Google inloggning. Vänligen försök att logga in direkt med denna metod. Inget lösenordsåterställning krävs för denna kontotyp.',
+          isOAuthAccount: true,
         },
         { status: 200 }
       );
