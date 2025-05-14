@@ -134,6 +134,8 @@ export function ContactList({
     column: 'createdAt',
     direction: 'desc',
   });
+  const [successfullyUpdatedContactId, setSuccessfullyUpdatedContactId] =
+    useState<string | null>(null);
 
   // ** Refs ** //
   // * Ref for the currently editing table row (for click-outside detection)
@@ -269,6 +271,17 @@ export function ContactList({
       form.reset({}); // Reset to empty or default values if needed
     }
   }, [editingContactId, contacts, form]);
+
+  // * Effect: Clear Success Highlight
+  // * Clears the successfully updated contact ID after a short delay.
+  useEffect(() => {
+    if (successfullyUpdatedContactId) {
+      const timer = setTimeout(() => {
+        setSuccessfullyUpdatedContactId(null);
+      }, 3000); // Highlight duration: 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [successfullyUpdatedContactId]);
 
   // * Effect: Click Outside Detection
   // * Adds a listener to detect clicks outside the editing row and associated portals
@@ -412,6 +425,7 @@ export function ContactList({
             `${values.firstName || contactToEdit.firstName} ${values.lastName || contactToEdit.lastName}`
           ),
         });
+        setSuccessfullyUpdatedContactId(editingContactId); // Highlight the row
         setEditingContactId(null); // Exit edit mode on success
         router.refresh();
       } catch (error) {
@@ -814,11 +828,14 @@ export function ContactList({
                   <TableRow
                     key={contact.id}
                     className={clsx(
-                      'hover:bg-muted/50',
-                      'transition-all duration-200 ease-in-out',
+                      'transition-all duration-500 ease-in-out', // Base transition for hover, opacity, blur
                       {
+                        'hover:bg-muted/50':
+                          successfullyUpdatedContactId !== contact.id, // Only apply hover if not success-highlighted
+                        'bg-green-100 dark:bg-green-900/30':
+                          successfullyUpdatedContactId === contact.id, // Success highlight
                         'pointer-events-none opacity-50 blur-sm':
-                          editingContactId && editingContactId !== contact.id,
+                          editingContactId && editingContactId !== contact.id, // Dim other rows when editing
                       }
                     )}
                   >
