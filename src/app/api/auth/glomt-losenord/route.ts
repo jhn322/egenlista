@@ -42,6 +42,30 @@ export async function POST(req: Request) {
       );
     }
 
+    // * Check for recent password reset requests
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentToken = await db.passwordResetToken.findFirst({
+      where: {
+        userId: user.id,
+        createdAt: {
+          gte: twentyFourHoursAgo,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (recentToken) {
+      return NextResponse.json(
+        {
+          message:
+            'Du har redan begärt en lösenordsåterställning idag. Vänligen försök igen om 24 timmar.',
+        },
+        { status: 429 } // Too Many Requests
+      );
+    }
+
     const { token, hash } = await generateTokenAndHash();
     const expires = new Date(Date.now() + TOKEN_EXPIRATION_DURATION);
 
