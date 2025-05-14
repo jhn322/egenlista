@@ -8,6 +8,7 @@ import { Contact } from '@/generated/prisma';
 import { PlusCircle, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { DateRange } from 'react-day-picker';
+import { startOfDay, endOfDay } from 'date-fns';
 
 import {
   Card,
@@ -133,7 +134,25 @@ export function ContactsView({
 
   const handleExportClick = async () => {
     try {
-      const csvContent = await exportContactsToCSV(userId);
+      let exportStartDate: string | undefined = undefined;
+      let exportEndDate: string | undefined = undefined;
+
+      // Only apply date filter if a range is active AND showAllContactsInList is false
+      if (isDateRangeActive && dateRange?.from && !showAllContactsInList) {
+        exportStartDate = startOfDay(dateRange.from).toISOString();
+        if (dateRange.to) {
+          exportEndDate = endOfDay(dateRange.to).toISOString();
+        } else {
+          // Single day selection, end of the 'from' day
+          exportEndDate = endOfDay(dateRange.from).toISOString();
+        }
+      }
+
+      const csvContent = await exportContactsToCSV(
+        userId,
+        exportStartDate,
+        exportEndDate
+      );
 
       // Create download
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
