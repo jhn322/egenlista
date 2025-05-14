@@ -563,7 +563,7 @@ export function ContactList({
                   // *** Editing Row ***
                   <TableRow
                     key={`${contact.id}-editing`}
-                    className="bg-muted/30"
+                    className="bg-blue-50 dark:bg-blue-950/30"
                     ref={editRowRef}
                   >
                     {/* Empty cell for checkbox alignment */}
@@ -585,7 +585,7 @@ export function ContactList({
                                   placeholder="Förnamn"
                                   {...field}
                                   disabled={isPending}
-                                  className="h-8 text-sm"
+                                  className="bg-card h-8 text-sm"
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -604,7 +604,7 @@ export function ContactList({
                                   placeholder="Efternamn"
                                   {...field}
                                   disabled={isPending}
-                                  className="h-8 text-sm"
+                                  className="bg-card h-8 text-sm"
                                 />
                               </FormControl>
                               <FormMessage className="text-xs" />
@@ -626,7 +626,7 @@ export function ContactList({
                                 placeholder="E-post"
                                 {...field}
                                 disabled={isPending}
-                                className="h-8 text-sm"
+                                className="bg-card h-8 text-sm"
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
@@ -647,7 +647,7 @@ export function ContactList({
                                 {...field}
                                 value={field.value ?? ''}
                                 disabled={isPending}
-                                className="h-8 text-sm"
+                                className="bg-card h-8 text-sm"
                               />
                             </FormControl>
                             <FormMessage className="text-xs" />
@@ -713,7 +713,7 @@ export function ContactList({
                                     >
                                       <FormControl>
                                         <SelectTrigger
-                                          className={`h-8 text-sm`}
+                                          className={`bg-card h-8 text-sm`}
                                         >
                                           <SelectValue placeholder="Välj typ" />
                                         </SelectTrigger>
