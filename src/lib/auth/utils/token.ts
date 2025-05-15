@@ -183,7 +183,8 @@ export async function consumeVerificationToken(
 }
 
 // ** Constants ** //
-const VERIFICATION_TOKEN_EXPIRES_IN_HOURS = 24;
+const VERIFICATION_TOKEN_EXPIRES_IN_MINUTES = 1; // For testing: 1 minute
+// const VERIFICATION_TOKEN_EXPIRES_IN_DAYS = 7; // For production: 1 week
 
 // ** Helper Functions ** //
 /**
@@ -192,7 +193,15 @@ const VERIFICATION_TOKEN_EXPIRES_IN_HOURS = 24;
  */
 const getVerificationTokenExpires = (): Date => {
   const expires = new Date();
-  expires.setHours(expires.getHours() + VERIFICATION_TOKEN_EXPIRES_IN_HOURS);
+  expires.setMinutes(
+    expires.getMinutes() + VERIFICATION_TOKEN_EXPIRES_IN_MINUTES
+  ); // For testing
+
+  // Also change vercel.json to "schedule": "* * * * *" for 1 minute testing
+  // Test with POST method, http://localhost:3000/api/internal/trigger-cleanup and http://localhost:3000/api/auth/cleanup-unverified (with headers Authorization: Bearer YOUR_CRON_SECRET_VALUE)
+
+  // For Production (1 week):
+  // expires.setDate(expires.getDate() + VERIFICATION_TOKEN_EXPIRES_IN_DAYS);
   return expires;
 };
 
@@ -240,10 +249,7 @@ export const generateAndSaveVerificationToken = async (
     // * 4. Return the generated token
     return token;
   } catch (error) {
-    console.error(
-      `Failed to save verification token for ${email}:`,
-      error
-    );
+    console.error(`Failed to save verification token for ${email}:`, error);
     throw new Error('Could not generate or save verification token.');
   }
 };

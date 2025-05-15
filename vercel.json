@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/internal/trigger-cleanup",
+      "schedule": "* * * * *",
+      "method": "POST"
+    }
+  ]
+}
