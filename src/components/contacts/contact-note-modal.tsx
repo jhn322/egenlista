@@ -60,6 +60,7 @@ export const ContactNoteModal = ({
       await onSave('');
       setNote('');
       setIsConfirmOpen(false);
+      onOpenChange(false);
     } catch {
       setError('Kunde inte rensa anteckningen. Försök igen.');
     } finally {

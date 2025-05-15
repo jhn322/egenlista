@@ -25,6 +25,11 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isSuccess, setIsSuccess] = React.useState<boolean>(false);
+  const [pageError, setPageError] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null
+  );
+  const [isOAuthAccount, setIsOAuthAccount] = React.useState<boolean>(false);
 
   const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -35,6 +40,11 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsLoading(true);
+    setIsSuccess(false);
+    setPageError(null);
+    setSuccessMessage(null);
+    setIsOAuthAccount(false);
+
     try {
       const response = await fetch('/api/auth/glomt-losenord', {
         method: 'POST',
@@ -44,20 +54,29 @@ export default function ForgotPasswordPage() {
         body: JSON.stringify(data),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || 'Ett fel uppstod vid återställning av lösenord.'
-        );
+        const message =
+          responseData.message ||
+          'Ett fel uppstod vid återställning av lösenord.';
+
+        setPageError(message);
+        if (response.status !== 429) {
+          toast.error(message);
+        }
+        return;
       }
 
+      setSuccessMessage(responseData.message);
+      setIsOAuthAccount(responseData.isOAuthAccount || false);
       setIsSuccess(true);
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : 'Ett oväntat fel har uppstått.';
-      console.error('Fel vid glömt lösenord:', errorMessage);
+          : 'Ett oväntat nätverksfel har inträffat.';
+      setPageError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -67,29 +86,41 @@ export default function ForgotPasswordPage() {
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div>
-          {/* <Link href="/" className="mb-6 inline-block">
+        {!isSuccess && (
+          <div>
+            {/* <Link href="/" className="mb-6 inline-block">
             <div className="bg-primary/10 flex h-12 w-12 flex-shrink-0 items-center space-x-2 rounded-lg p-1.5">
               <span className="p-2 text-xl font-bold tracking-tight">
                 {APP_NAME}
               </span>
             </div>
           </Link> */}
-          <h2 className="text-foreground mt-4 text-2xl leading-9 font-bold tracking-tight sm:text-3xl">
-            Glömt ditt lösenord?
-          </h2>
-          <p className="text-md text-muted-foreground mt-2 leading-6">
-            Ange din e-post nedan för att få en återställningslänk.
-          </p>
-        </div>
+            <h2 className="text-foreground mt-4 text-2xl leading-9 font-bold tracking-tight sm:text-3xl">
+              Glömt ditt lösenord?
+            </h2>
+            <p className="text-md text-muted-foreground mt-2 leading-6">
+              Ange din e-post nedan för att få en återställningslänk.
+            </p>
+          </div>
+        )}
 
         <div className="mt-10">
+          {pageError && !isSuccess && (
+            <div className="border-destructive/50 bg-destructive/10 text-destructive dark:border-destructive dark:bg-destructive/20 mb-6 rounded-md border p-4 text-center text-sm dark:text-red-400">
+              <p>{pageError}</p>
+            </div>
+          )}
+
           {isSuccess ? (
-            <div className="space-y-4 text-center">
-              <p className="text-green-600">
-                Kolla din e-post för återställningslänken!
+            <div className="space-y-6 text-center">
+              <h2 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
+                {isOAuthAccount ? 'Information' : 'Återställningslänk skickad'}
+              </h2>
+              <p className="text-muted-foreground">
+                {successMessage ||
+                  'Standard success message if API fails to provide one.'}
               </p>
-              <Button asChild variant="outline" className="w-full">
+              <Button asChild variant="default" className="w-full">
                 <Link href={AUTH_PATHS.LOGIN}>Tillbaka till inloggning</Link>
               </Button>
             </div>

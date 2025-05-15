@@ -286,10 +286,35 @@ export async function deleteContact(
   }
 }
 
-export async function exportContactsToCSV(userId: string) {
+export async function exportContactsToCSV(
+  userId: string,
+  startDateString?: string,
+  endDateString?: string
+) {
   try {
+    const whereClause: Prisma.ContactWhereInput = { userId };
+
+    if (startDateString && endDateString) {
+      const startDate = new Date(startDateString);
+      const endDate = new Date(endDateString);
+
+      // Validation for dates
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        whereClause.createdAt = {
+          gte: startDate,
+          lte: endDate,
+        };
+      } else {
+        // Handle invalid date strings, log a warning or throw an error
+        console.warn('Invalid date strings provided for CSV export:', {
+          startDateString,
+          endDateString,
+        });
+      }
+    }
+
     const contacts = await prisma.contact.findMany({
-      where: { userId },
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
     });
 

@@ -195,6 +195,8 @@ export function ContactsPageClientContent({
         showAllContactsInList={showAllContactsInList}
         onShowAllContactsInListChange={setShowAllContactsInList}
         isDateRangeActive={!!dateRange}
+        dateRange={dateRange}
+        comparisonDateRange={comparisonDateRange}
       />
     </div>
   );
