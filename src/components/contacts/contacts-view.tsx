@@ -5,7 +5,7 @@
 // * ==========================================================================
 import { useState, useEffect } from 'react';
 import { Contact } from '@/generated/prisma';
-import { PlusCircle, Download } from 'lucide-react';
+import { PlusCircle, Download, QrCode } from 'lucide-react';
 import { toast } from 'sonner';
 import { DateRange } from 'react-day-picker';
 import { startOfDay, endOfDay } from 'date-fns';
@@ -35,6 +35,7 @@ import { DIALOG_TEXTS } from '@/lib/contacts/constants/contacts'; // Added DIALO
 import { ContactNoteModal } from './contact-note-modal';
 import { exportContactsToCSV } from '@/lib/contacts/utils/actions';
 import { ContactCharts } from './contact-charts';
+import { QRCodeModal } from '@/components/qr-code/qr-code-modal';
 
 // ** Props Interface ** //
 interface ContactsViewProps {
@@ -199,6 +200,22 @@ export function ContactsView({
               </CardDescription>
             </div>
             <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center md:justify-end md:gap-2">
+              {/* My QR-kode Button using QRCodeModal */}
+
+              <QRCodeModal
+                triggerButton={
+                  <Button
+                    variant="outline"
+                    className="w-full md:w-auto"
+                    aria-label="Visa min QR-kod"
+                  >
+                    <QrCode className="mr-2 h-4 w-4" />
+                    Min QR-kod
+                  </Button>
+                }
+              />
+
+              {/* Export Button */}
               <Button
                 variant="outline"
                 onClick={handleExportClick}
@@ -208,6 +225,7 @@ export function ContactsView({
                 <Download className="mr-2 h-4 w-4" />
                 Exportera CSV
               </Button>
+              {/* Create Contact Button */}
               <Button
                 onClick={handleCreateClick}
                 className="w-full md:w-auto"

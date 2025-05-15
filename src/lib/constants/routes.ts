@@ -10,6 +10,7 @@ export const SITE_PATHS = {
   CONTACT: '/kontakta-oss', // Example, adjust if needed
   TERMS: '/anvandarvillkor',
   PRIVACY: '/integritetspolicy',
+  SIGNUP: '/signup', // Path for the signup page linked from QR code
 } as const;
 
 // ** Authentication Page Paths ** //
