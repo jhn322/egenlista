@@ -183,8 +183,8 @@ export async function consumeVerificationToken(
 }
 
 // ** Constants ** //
-const VERIFICATION_TOKEN_EXPIRES_IN_MINUTES = 1; // For testing: 1 minute
-// const VERIFICATION_TOKEN_EXPIRES_IN_DAYS = 7; // For production: 1 week
+// const VERIFICATION_TOKEN_EXPIRES_IN_MINUTES = 1; // For testing: 1 minute
+const VERIFICATION_TOKEN_EXPIRES_IN_DAYS = 7; // For production: 1 week
 
 // ** Helper Functions ** //
 /**
@@ -193,15 +193,15 @@ const VERIFICATION_TOKEN_EXPIRES_IN_MINUTES = 1; // For testing: 1 minute
  */
 const getVerificationTokenExpires = (): Date => {
   const expires = new Date();
-  expires.setMinutes(
-    expires.getMinutes() + VERIFICATION_TOKEN_EXPIRES_IN_MINUTES
-  ); // For testing
+  // expires.setMinutes(
+  //   expires.getMinutes() + VERIFICATION_TOKEN_EXPIRES_IN_MINUTES
+  // ); // For testing
 
   // Also change vercel.json to "schedule": "* * * * *" for 1 minute testing
-  // Test with POST method, http://localhost:3000/api/internal/trigger-cleanup and http://localhost:3000/api/auth/cleanup-unverified (with headers Authorization: Bearer YOUR_CRON_SECRET_VALUE)
+  // Test with POST method in Postman, http://localhost:3000/api/internal/trigger-cleanup and http://localhost:3000/api/auth/cleanup-unverified (with headers Authorization: Bearer CRON_SECRET)
 
   // For Production (1 week):
-  // expires.setDate(expires.getDate() + VERIFICATION_TOKEN_EXPIRES_IN_DAYS);
+  expires.setDate(expires.getDate() + VERIFICATION_TOKEN_EXPIRES_IN_DAYS);
   return expires;
 };
 
