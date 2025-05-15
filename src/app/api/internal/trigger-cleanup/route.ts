@@ -4,17 +4,15 @@
 import { NextResponse } from 'next/server';
 import { getEnvVar } from '@/lib/utils/env';
 
-export async function POST() {
-  console.log(
-    'POST /api/internal/trigger-cleanup: Received request from cron job.'
-  );
+async function handleTrigger() {
+  console.log('/api/internal/trigger-cleanup: Received request from cron job.');
 
   const cronSecret = process.env.CRON_SECRET;
   const appUrl = getEnvVar('NEXT_PUBLIC_APP_URL');
 
   if (!cronSecret) {
     console.error(
-      'POST /api/internal/trigger-cleanup: CRON_SECRET is not set. Cannot trigger cleanup worker.'
+      '/api/internal/trigger-cleanup: CRON_SECRET is not set. Cannot trigger cleanup worker.'
     );
     return NextResponse.json(
       { message: 'Internal configuration error: Missing secret.' },
@@ -24,7 +22,7 @@ export async function POST() {
 
   if (!appUrl) {
     console.error(
-      'POST /api/internal/trigger-cleanup: NEXT_PUBLIC_APP_URL is not set. Cannot construct worker URL.'
+      '/api/internal/trigger-cleanup: NEXT_PUBLIC_APP_URL is not set. Cannot construct worker URL.'
     );
     return NextResponse.json(
       { message: 'Internal configuration error: Missing app URL.' },
@@ -36,22 +34,21 @@ export async function POST() {
 
   try {
     console.log(
-      `POST /api/internal/trigger-cleanup: Attempting to call worker: ${workerUrl}`
+      `/api/internal/trigger-cleanup: Attempting to call worker: ${workerUrl}`
     );
     const response = await fetch(workerUrl, {
-      method: 'POST',
+      method: 'POST', // The worker still expects POST
       headers: {
         Authorization: `Bearer ${cronSecret}`,
         'Content-Type': 'application/json',
       },
-      // No body needed for the cleanup worker if it doesn't expect one
     });
 
-    const responseData = await response.json(); // Get response from the worker
+    const responseData = await response.json();
 
     if (!response.ok) {
       console.error(
-        `POST /api/internal/trigger-cleanup: Error calling worker ${workerUrl}. Status: ${response.status}`,
+        `/api/internal/trigger-cleanup: Error calling worker ${workerUrl}. Status: ${response.status}`,
         responseData
       );
       return NextResponse.json(
@@ -64,7 +61,7 @@ export async function POST() {
     }
 
     console.log(
-      `POST /api/internal/trigger-cleanup: Successfully triggered cleanup worker. Worker response:`,
+      `/api/internal/trigger-cleanup: Successfully triggered cleanup worker. Worker response:`,
       responseData
     );
     return NextResponse.json(
@@ -76,7 +73,7 @@ export async function POST() {
     );
   } catch (error) {
     console.error(
-      `POST /api/internal/trigger-cleanup: Exception when trying to call worker ${workerUrl}:`,
+      `/api/internal/trigger-cleanup: Exception when trying to call worker ${workerUrl}:`,
       error
     );
     return NextResponse.json(
@@ -84,4 +81,12 @@ export async function POST() {
       { status: 500 }
     );
   }
+}
+
+export async function POST() {
+  return handleTrigger();
+}
+
+export async function GET() {
+  return handleTrigger();
 }
