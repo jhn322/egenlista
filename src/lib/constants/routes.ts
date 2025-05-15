@@ -41,6 +41,7 @@ export const API_AUTH_PATHS = {
   RESEND_VERIFICATION_EMAIL: '/api/auth/resend-verification', // API endpoint to resend verification
   FORGOT_PASSWORD: '/api/auth/glomt-losenord', // API endpoint to request password reset
   RESET_PASSWORD: '/api/auth/aterstall-losenord', // API endpoint to reset password with token
+  CLEANUP_UNVERIFIED_USERS: '/api/auth/cleanup-unverified', // API endpoint for cron job to clean up users
 } as const;
 
 // ** API Application-Specific Paths ** //
