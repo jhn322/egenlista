@@ -29,6 +29,7 @@ export const PROTECTED_PATHS = {
   MINA_SIDOR_BASE: '/mina-sidor',
   MINA_SIDOR_DASHBOARD: '/mina-sidor/instrumentpanel', // Example
   MINA_SIDOR_KONTAKTVY: '/mina-sidor/kontaktvy',
+  MINA_SIDOR_KONTAKTER: '/mina-sidor/kontakter',
   MINA_SIDOR_INSTÄLLNINGAR: '/mina-sidor/installningar', // Example
   // Add other protected paths here
 } as const;

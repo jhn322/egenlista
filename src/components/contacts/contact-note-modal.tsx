@@ -11,6 +11,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Trash2, ShieldAlert } from 'lucide-react';
 import MDEditor from '@uiw/react-md-editor';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface ContactNoteModalProps {
   contact: Contact | null;
@@ -141,16 +147,25 @@ export const ContactNoteModal = ({
           <DialogFooter className="flex items-center justify-between">
             <div>
               {hasNote && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsConfirmOpen(true)}
-                  disabled={isSaving}
-                  className="gap-2"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Rensa anteckning
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsConfirmOpen(true)}
+                        disabled={isSaving}
+                        className="gap-2"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Rensa anteckning
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Rensa hela anteckningen permanent.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
             <div className="flex gap-2">

@@ -85,8 +85,12 @@ export const CONTACT_LIST_EMPTY_STATE = {
 };
 
 // ** Badge Settings & Texts ** //
-export const NEW_CONTACT_THRESHOLD_DAYS = 14;
+export const NEW_CONTACT_THRESHOLD_DAYS = 7;
 export const NEW_CONTACT_BADGE_TEXT = 'Ny';
+
+// ** Tooltip Texts for Badges ** //
+export const TOOLTIP_NEW_CONTACT =
+  'Kontakten skapades inom de senaste 7 dagarna.';
 
 // ** Consent Types ** //
 // Used to define the types of consent that can be recorded.

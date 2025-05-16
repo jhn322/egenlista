@@ -14,6 +14,12 @@ import { ContactType } from '@/generated/prisma';
 import { formatContactType } from '@/lib/contacts/utils/formatting';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface ContactToolbarProps {
   searchQuery: string;
@@ -74,13 +80,30 @@ export function ContactToolbar({
       </div>
       <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:gap-2">
         <div className="flex items-center justify-start space-x-2 sm:justify-end">
-          <Switch
-            id="show-all-contacts-toggle-toolbar"
-            checked={showAllContactsInList}
-            onCheckedChange={onShowAllContactsInListChange}
-            disabled={isToggleDisabled}
-            aria-label={toggleLabel}
-          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Switch
+                    id="show-all-contacts-toggle-toolbar"
+                    checked={showAllContactsInList}
+                    onCheckedChange={onShowAllContactsInListChange}
+                    disabled={isToggleDisabled}
+                    aria-label={toggleLabel}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="end">
+                <p>
+                  {isToggleDisabled
+                    ? 'Datumfilter är inte aktivt. Alla kontakter visas.'
+                    : showAllContactsInList
+                      ? 'Växla för att endast visa kontakter inom det valda datumintervallet.'
+                      : 'Växla för att visa alla kontakter, oavsett datumfilter.'}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Label
             htmlFor="show-all-contacts-toggle-toolbar"
             className={`text-muted-foreground min-w-[180px] text-left text-xs whitespace-nowrap sm:text-right ${isToggleDisabled ? 'opacity-70' : ''}`}
@@ -93,26 +116,44 @@ export function ContactToolbar({
         {selectedCount > 0 && (
           <div className="flex h-8 items-center gap-2 border-l sm:pl-2">
             {selectedCount > 1 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onDeselectAll}
-                className="flex items-center"
-                aria-label="Avmarkera alla valda kontakter"
-              >
-                Avmarkera
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={onDeselectAll}
+                      className="flex items-center"
+                      aria-label="Avmarkera alla valda kontakter"
+                    >
+                      Avmarkera
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Avmarkera alla {selectedCount} valda kontakter.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={onDeleteSelected}
-              className="flex items-center"
-              aria-label={`Ta bort ${selectedCount} valda kontakter`}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Ta bort ({selectedCount})
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={onDeleteSelected}
+                    className="flex items-center"
+                    aria-label={`Ta bort ${selectedCount} valda kontakter`}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Ta bort ({selectedCount})
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Ta bort de {selectedCount} valda kontakterna permanent.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
       </div>

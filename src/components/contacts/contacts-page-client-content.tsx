@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { DateRange } from 'react-day-picker';
-import { Contact } from '@/generated/prisma';
 import { subMonths, startOfDay, endOfDay } from 'date-fns';
 import {
   Card,
@@ -16,10 +15,17 @@ import { DateRangePicker } from '@/components/contacts/date-range-picker';
 import { ContactStats } from '@/components/contacts/contact-stats';
 import { ContactsView } from './contacts-view';
 import { ContactGrowthDisplay } from './contact-growth-display';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { type ContactWithInteractions } from './contact-list';
 
 // **  Props Interface - most props are derived for ContactsView  ** //
 interface ContactsPageClientContentProps {
-  initialContacts: Contact[];
+  initialContacts: ContactWithInteractions[];
   userIsPro: boolean;
   userId: string;
 }
@@ -34,9 +40,9 @@ const getDefaultDateRange = (): DateRange => {
 // **  Helper Function  ** //
 // Filters contacts based on the provided date range.
 const filterContactsByDateRange = (
-  contacts: Contact[],
+  contacts: ContactWithInteractions[],
   dateRange: DateRange | undefined
-): Contact[] => {
+): ContactWithInteractions[] => {
   if (!dateRange || !dateRange.from) {
     // If no 'from' date is set, return all contacts.
     return contacts;
@@ -167,13 +173,25 @@ export function ContactsPageClientContent({
               />
             </div>
             {dateRange && (
-              <Button
-                variant="outline"
-                onClick={handleClearDateRange}
-                className="w-full text-xs whitespace-nowrap sm:text-sm lg:w-auto"
-              >
-                Rensa filter & Visa alla kontakter
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      onClick={handleClearDateRange}
+                      className="w-full text-xs whitespace-nowrap sm:text-sm lg:w-auto"
+                    >
+                      Rensa filter & Visa alla kontakter
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      Nollställ datumfiltret och visa alla dina kontakter i
+                      listan nedan.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </CardHeader>

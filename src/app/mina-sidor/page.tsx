@@ -7,6 +7,12 @@ import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
   title: `Mina Sidor | ${APP_NAME}`,
@@ -45,10 +51,19 @@ export default async function MinaSidorPage() {
             href={PROTECTED_PATHS.MINA_SIDOR_KONTAKTVY}
             className="block transition-opacity hover:opacity-90"
           >
-            <Card className="h-full">
+            <Card className="hover:bg-muted/50 h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-medium">Kontakter</CardTitle>
-                <Users className="text-muted-foreground h-5 w-5" />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Users className="text-muted-foreground h-5 w-5" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Visa kontaktsidan</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground text-sm">
@@ -59,7 +74,7 @@ export default async function MinaSidorPage() {
           </Link>
 
           {/* Placeholder for Account Settings */}
-          <Card>
+          <Card className="hover:bg-muted/50 h-full">
             <CardHeader>
               <CardTitle>Kontoinställningar</CardTitle>
             </CardHeader>
@@ -69,7 +84,7 @@ export default async function MinaSidorPage() {
           </Card>
 
           {/* Placeholder for Subscription Management */}
-          <Card>
+          <Card className="hover:bg-muted/50 h-full">
             <CardHeader>
               <CardTitle>Prenumeration</CardTitle>
             </CardHeader>

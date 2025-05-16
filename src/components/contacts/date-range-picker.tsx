@@ -24,6 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 type ComparisonMode =
   | 'previous-month'
@@ -268,13 +274,22 @@ export function DateRangePicker({
                   )}
                 </span>
                 {showComparison && comparisonDateRange?.from && (
-                  <Badge
-                    variant="outline"
-                    className="ml-1 flex flex-shrink-0 items-center gap-1 text-[10px] sm:ml-2 sm:text-xs"
-                  >
-                    <ClockIcon className="h-2 w-2 sm:h-3 sm:w-3" />
-                    Jämför
-                  </Badge>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge
+                          variant="outline"
+                          className="ml-1 flex flex-shrink-0 items-center gap-1 text-[10px] sm:ml-2 sm:text-xs"
+                        >
+                          <ClockIcon className="h-2 w-2 sm:h-3 sm:w-3" />
+                          Jämför
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Jämförelseperiod är aktiv.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </span>
             ) : (
@@ -404,24 +419,42 @@ export function DateRangePicker({
                   <X className="mr-1 h-4 w-4" />
                   Avbryt
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleReset}
-                  className="flex items-center"
-                >
-                  Återställ
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleReset}
+                        className="flex items-center"
+                      >
+                        Återställ
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Återställ till standardperiod (senaste månaden).</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleApply}
-                className="flex items-center"
-              >
-                <Check className="mr-1 h-4 w-4" />
-                Tillämpa
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleApply}
+                      className="flex items-center"
+                    >
+                      <Check className="mr-1 h-4 w-4" />
+                      Tillämpa
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Verkställ valt datumintervall.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </PopoverContent>

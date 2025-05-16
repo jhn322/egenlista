@@ -39,7 +39,7 @@ import {
 } from '@/components/ui/popover';
 import { UpgradeToProContent } from '@/components/shared/upgrade-to-pro-content';
 
-import { Contact, ContactType } from '@/generated/prisma';
+import { Contact as PrismaContact, ContactType } from '@/generated/prisma';
 import {
   Trash2,
   MoreVertical,
@@ -56,6 +56,7 @@ import {
   TOAST_MESSAGES,
   NEW_CONTACT_THRESHOLD_DAYS,
   NEW_CONTACT_BADGE_TEXT,
+  TOOLTIP_NEW_CONTACT,
 } from '@/lib/contacts/constants/contacts';
 
 import {
@@ -63,6 +64,7 @@ import {
   type ContactUpdateInput,
 } from '@/lib/contacts/validation/schema';
 import { updateContact } from '@/lib/contacts/utils/actions';
+import { markContactAsViewed } from '@/lib/interactions/actions';
 
 import {
   DropdownMenu,
@@ -77,16 +79,26 @@ import { ContactPagination } from './contact-pagination';
 import { ContactToolbar } from './contact-toolbar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { getContactTypeColorValue } from '@/lib/contacts/constants/contact-charts-constants';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
+export interface ContactWithInteractions extends PrismaContact {
+  interactions: Array<{ lastViewedAt: Date | null }>;
+}
 
 // **  Component Props Interface  ** //
 interface ContactListProps {
-  contacts: Contact[];
+  contacts: ContactWithInteractions[]; // Use the extended type
   onDelete: (
-    contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
+    contactInfo: Pick<PrismaContact, 'id' | 'firstName' | 'lastName'>
   ) => void;
-  onNote: (contact: Contact) => void;
+  onNote: (contact: ContactWithInteractions) => void; // Use the extended type
   userIsPro: boolean;
-  userId: string;
+  userId: string; // Still needed for some operations, though interaction uses session
   showAllContactsInList: boolean;
   onShowAllContactsInListChange: (showAll: boolean) => void;
   isDateRangeActive: boolean;
@@ -148,13 +160,24 @@ export function ContactList({
   // ** Hooks ** //
   const router = useRouter();
 
-  // * Helper function to check if a contact is new
-  const isContactNew = (createdAtDate: Date): boolean => {
+  // * Helper function to check if a contact is new based on interaction and age
+  const isContactNew = (contact: ContactWithInteractions): boolean => {
+    // 1. If there is an interaction record for the current user, it's NOT new.
+    if (contact.interactions && contact.interactions.length > 0) {
+      return false;
+    }
+
+    // 2. If no interaction, check its age. If older than threshold, it's NOT new.
     const threshold = new Date();
     threshold.setDate(threshold.getDate() - NEW_CONTACT_THRESHOLD_DAYS);
-    // Ensure createdAtDate is a Date object
-    const contactCreationDate = new Date(createdAtDate);
-    return contactCreationDate > threshold;
+    const contactCreationDate = new Date(contact.createdAt);
+
+    if (contactCreationDate < threshold) {
+      return false;
+    }
+
+    // 3. Otherwise (no interaction AND within threshold), it IS new.
+    return true;
   };
 
   // * Form Hook Initialization (react-hook-form)
@@ -375,8 +398,17 @@ export function ContactList({
   // ** Event Handlers ** //
 
   // * Start editing a specific contact
-  const handleEditClick = (contact: Contact) => {
+  const handleEditClick = (contact: ContactWithInteractions) => {
     setEditingContactId(contact.id);
+    // Mark as viewed when edit is clicked
+    startTransition(async () => {
+      const result = await markContactAsViewed(contact.id);
+      if (!result.success) {
+        toast.error('Fel', {
+          description: result.message || 'Kunde inte markera kontakt som sedd.',
+        });
+      }
+    });
   };
 
   // * Cancel the current inline edit
@@ -495,7 +527,16 @@ export function ContactList({
                   onClick={() => handleSort('firstName')}
                 >
                   <div className="flex items-center gap-1">
-                    Namn
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>Namn</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Sortera på namn</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     {sort.column === 'firstName' &&
                       (sort.direction === 'desc' ? (
                         <ChevronDown className="h-4 w-4" />
@@ -510,7 +551,16 @@ export function ContactList({
                   onClick={() => handleSort('email')}
                 >
                   <div className="flex items-center gap-1">
-                    E-post
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>E-post</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Sortera på e-post</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     {sort.column === 'email' &&
                       (sort.direction === 'desc' ? (
                         <ChevronDown className="h-4 w-4" />
@@ -525,7 +575,16 @@ export function ContactList({
                   onClick={() => handleSort('phone')}
                 >
                   <div className="flex items-center gap-1">
-                    Telefon
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>Telefon</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Sortera på telefon</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     {sort.column === 'phone' &&
                       (sort.direction === 'desc' ? (
                         <ChevronDown className="h-4 w-4" />
@@ -540,7 +599,16 @@ export function ContactList({
                   onClick={() => handleSort('type')}
                 >
                   <div className="flex items-center gap-1">
-                    Typ
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>Typ</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Sortera på typ</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     {sort.column === 'type' &&
                       (sort.direction === 'desc' ? (
                         <ChevronDown className="h-4 w-4" />
@@ -555,7 +623,16 @@ export function ContactList({
                   onClick={() => handleSort('createdAt')}
                 >
                   <div className="flex items-center gap-1">
-                    Skapad
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>Skapad</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Sortera på skapandedatum</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     {sort.column === 'createdAt' ? (
                       sort.direction === 'desc' ? (
                         <ChevronDown className="h-4 w-4" />
@@ -794,32 +871,48 @@ export function ContactList({
                     <TableCell className="pt-1.5 text-right align-top">
                       <div className="flex items-center justify-end space-x-1">
                         {/* Save Button */}
-                        <Button
-                          type="submit"
-                          variant="ghost"
-                          size="icon"
-                          disabled={isPending}
-                          title="Spara ändringar"
-                        >
-                          {isPending ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Save className="h-4 w-4 text-green-600" />
-                          )}
-                          <span className="sr-only">Spara</span>
-                        </Button>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                type="submit"
+                                variant="ghost"
+                                size="icon"
+                                disabled={isPending}
+                              >
+                                {isPending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Save className="h-4 w-4 text-green-600" />
+                                )}
+                                <span className="sr-only">Spara</span>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Spara ändringar</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                         {/* Cancel Button */}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={handleCancelEdit}
-                          disabled={isPending}
-                          title="Avbryt redigering"
-                        >
-                          <XCircle className="h-4 w-4 text-red-600" />
-                          <span className="sr-only">Avbryt</span>
-                        </Button>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={handleCancelEdit}
+                                disabled={isPending}
+                              >
+                                <XCircle className="h-4 w-4 text-red-600" />
+                                <span className="sr-only">Avbryt</span>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Avbryt redigering</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -827,8 +920,46 @@ export function ContactList({
                   // *** Display Row ***
                   <TableRow
                     key={contact.id}
+                    onClick={(event) => {
+                      if (editingContactId) return;
+
+                      const target = event.target as HTMLElement;
+                      // Check if the click was on specific interactive child elements.
+                      const wasCheckboxClicked =
+                        target.closest('[role="checkbox"]');
+                      const wasNoteButtonClicked = target.closest(
+                        'button[aria-label*="anteckning"]'
+                      );
+                      const wasActionsDropdownTriggered = target.closest(
+                        'button[aria-haspopup="menu"]'
+                      );
+
+                      if (
+                        wasCheckboxClicked ||
+                        wasNoteButtonClicked ||
+                        wasActionsDropdownTriggered ||
+                        target.closest('[role="menuitem"]')
+                      ) {
+                        return;
+                      }
+
+                      // If the contact is currently considered "new" and not being edited,
+                      // then mark it as viewed.
+                      if (isContactNew(contact)) {
+                        startTransition(async () => {
+                          const result = await markContactAsViewed(contact.id);
+                          if (!result.success) {
+                            toast.error('Fel', {
+                              description:
+                                result.message ||
+                                'Kunde inte uppdatera visningsstatus.',
+                            });
+                          }
+                        });
+                      }
+                    }}
                     className={clsx(
-                      'transition-all duration-500 ease-in-out', // Base transition for hover, opacity, blur
+                      'cursor-default transition-all duration-500 ease-in-out',
                       {
                         'hover:bg-muted/50':
                           successfullyUpdatedContactId !== contact.id, // Only apply hover if not success-highlighted
@@ -852,14 +983,23 @@ export function ContactList({
                     <TableCell>
                       <div className="font-medium">
                         {contact.firstName} {contact.lastName}
-                        {isContactNew(contact.createdAt) && (
-                          <Badge
-                            variant="outline"
-                            className="border-primary text-primary ml-2"
-                            aria-label="Ny kontakt"
-                          >
-                            {NEW_CONTACT_BADGE_TEXT}
-                          </Badge>
+                        {isContactNew(contact) && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Badge
+                                  variant="outline"
+                                  className="border-primary text-primary ml-2"
+                                  aria-label="Ny kontakt"
+                                >
+                                  {NEW_CONTACT_BADGE_TEXT}
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{TOOLTIP_NEW_CONTACT}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         )}
                       </div>
                       <div className="text-muted-foreground text-sm md:hidden">
@@ -894,73 +1034,108 @@ export function ContactList({
                     </TableCell>
                     {/* ** Actions Cell (Display - Edit/Delete Menu) ** */}
                     <TableCell className="flex items-center justify-end gap-2 text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label={
-                          contact.note
-                            ? 'Redigera anteckning'
-                            : 'Lägg till anteckning'
-                        }
-                        title={
-                          contact.note
-                            ? 'Redigera anteckning'
-                            : 'Lägg till anteckning'
-                        }
-                        onClick={() => onNote(contact)}
-                        tabIndex={0}
-                        className="group relative"
-                      >
-                        <StickyNote
-                          className={
-                            contact.note
-                              ? 'text-primary fill-primary/20 h-5 w-5'
-                              : 'text-muted-foreground h-5 w-5'
-                          }
-                        />
-                        {contact.note && (
-                          <span className="absolute top-1 -right-1 flex h-2 w-2">
-                            <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
-                          </span>
-                        )}
-                      </Button>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              aria-label={
+                                contact.note
+                                  ? 'Redigera anteckning'
+                                  : 'Lägg till anteckning'
+                              }
+                              onClick={() => onNote(contact)}
+                              tabIndex={0}
+                              className="group relative"
+                            >
+                              <StickyNote
+                                className={
+                                  contact.note
+                                    ? 'text-primary fill-primary/20 h-5 w-5'
+                                    : 'text-muted-foreground h-5 w-5'
+                                }
+                              />
+                              {contact.note && (
+                                <span className="absolute top-1 -right-1 flex h-2 w-2">
+                                  <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
+                                </span>
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {contact.note
+                                ? 'Visa/redigera anteckning'
+                                : 'Lägg till anteckning'}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            disabled={isPending || !!editingContactId}
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                            <span className="sr-only">Fler åtgärder</span>
-                          </Button>
-                        </DropdownMenuTrigger>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={isPending || !!editingContactId}
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                  <span className="sr-only">Fler åtgärder</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Fler åtgärder</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                         <DropdownMenuContent align="end">
                           {/* Edit Action */}
-                          <DropdownMenuItem
-                            onClick={() => handleEditClick(contact)}
-                            className="cursor-pointer"
-                            disabled={isPending || !!editingContactId}
-                          >
-                            <Pencil className="mr-2 h-4 w-4" />
-                            <span>Redigera</span>
-                          </DropdownMenuItem>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <DropdownMenuItem
+                                  onClick={() => handleEditClick(contact)}
+                                  className="cursor-pointer"
+                                  disabled={isPending || !!editingContactId}
+                                >
+                                  <Pencil className="mr-2 h-4 w-4" />
+                                  <span>Redigera</span>
+                                </DropdownMenuItem>
+                              </TooltipTrigger>
+                              <TooltipContent side="left" align="center">
+                                <p>Redigera kontaktuppgifter</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           <DropdownMenuSeparator />
                           {/* Delete Action */}
-                          <DropdownMenuItem
-                            onClick={() =>
-                              onDelete({
-                                id: contact.id,
-                                firstName: contact.firstName,
-                                lastName: contact.lastName,
-                              })
-                            }
-                            className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer hover:text-white"
-                            disabled={isPending || !!editingContactId}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
-                            <span>Ta bort</span>
-                          </DropdownMenuItem>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    onDelete({
+                                      id: contact.id,
+                                      firstName: contact.firstName,
+                                      lastName: contact.lastName,
+                                    })
+                                  }
+                                  className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer hover:text-white"
+                                  disabled={isPending || !!editingContactId}
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
+                                  <span>Ta bort</span>
+                                </DropdownMenuItem>
+                              </TooltipTrigger>
+                              <TooltipContent side="left" align="center">
+                                <p>Ta bort kontakt permanent</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
