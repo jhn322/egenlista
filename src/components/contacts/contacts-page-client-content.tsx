@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { DateRange } from 'react-day-picker';
-import { Contact } from '@/generated/prisma';
 import { subMonths, startOfDay, endOfDay } from 'date-fns';
 import {
   Card,
@@ -22,10 +21,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { type ContactWithInteractions } from './contact-list';
 
 // **  Props Interface - most props are derived for ContactsView  ** //
 interface ContactsPageClientContentProps {
-  initialContacts: Contact[];
+  initialContacts: ContactWithInteractions[];
   userIsPro: boolean;
   userId: string;
 }
@@ -40,9 +40,9 @@ const getDefaultDateRange = (): DateRange => {
 // **  Helper Function  ** //
 // Filters contacts based on the provided date range.
 const filterContactsByDateRange = (
-  contacts: Contact[],
+  contacts: ContactWithInteractions[],
   dateRange: DateRange | undefined
-): Contact[] => {
+): ContactWithInteractions[] => {
   if (!dateRange || !dateRange.from) {
     // If no 'from' date is set, return all contacts.
     return contacts;
