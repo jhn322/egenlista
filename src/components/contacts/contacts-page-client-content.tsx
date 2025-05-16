@@ -16,6 +16,12 @@ import { DateRangePicker } from '@/components/contacts/date-range-picker';
 import { ContactStats } from '@/components/contacts/contact-stats';
 import { ContactsView } from './contacts-view';
 import { ContactGrowthDisplay } from './contact-growth-display';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 // **  Props Interface - most props are derived for ContactsView  ** //
 interface ContactsPageClientContentProps {
@@ -167,13 +173,25 @@ export function ContactsPageClientContent({
               />
             </div>
             {dateRange && (
-              <Button
-                variant="outline"
-                onClick={handleClearDateRange}
-                className="w-full text-xs whitespace-nowrap sm:text-sm lg:w-auto"
-              >
-                Rensa filter & Visa alla kontakter
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      onClick={handleClearDateRange}
+                      className="w-full text-xs whitespace-nowrap sm:text-sm lg:w-auto"
+                    >
+                      Rensa filter & Visa alla kontakter
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      Nollställ datumfiltret och visa alla dina kontakter i
+                      listan nedan.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </CardHeader>

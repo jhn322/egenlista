@@ -7,6 +7,12 @@ import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
   title: `Mina Sidor | ${APP_NAME}`,
@@ -48,7 +54,16 @@ export default async function MinaSidorPage() {
             <Card className="h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-medium">Kontakter</CardTitle>
-                <Users className="text-muted-foreground h-5 w-5" />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Users className="text-muted-foreground h-5 w-5" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Visa kontaktsidan</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground text-sm">
