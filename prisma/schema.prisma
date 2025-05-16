@@ -220,9 +220,7 @@ model Address {
   @@index([contactId]) // Index for faster querying of a contact's addresses
 }
 
-// * ---------------------------------
-// *      CONTACT INTERACTIONS (NEW)
-// * ---------------------------------
+// *      CONTACT INTERACTIONS
 model ContactInteraction {
   id        String   @id @default(cuid()) @map("_id")
   userId    String
