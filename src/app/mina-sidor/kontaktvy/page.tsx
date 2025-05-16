@@ -8,11 +8,11 @@ import { Metadata } from 'next';
 import { authOptions } from '@/lib/auth/options';
 import { getAllContactsForUser } from '@/lib/contacts/utils/actions';
 import { isUserPro } from '@/lib/subscriptions/utils/actions';
-import { Contact } from '@/generated/prisma';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
 
 import { ContactsPageClientContent } from '@/components/contacts/contacts-page-client-content';
+import { type ContactWithInteractions } from '@/components/contacts/contact-list';
 
 // **  Page Metadata  ** //
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default async function KontakterPage() {
   const userId = session.user.id;
 
   // * Fetch contacts and PRO status in parallel
-  let contacts: Contact[] = [];
+  let contacts: ContactWithInteractions[] = [];
   let userIsPro = false;
 
   try {
