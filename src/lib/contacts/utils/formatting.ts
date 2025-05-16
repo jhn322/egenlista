@@ -7,6 +7,8 @@ import { ContactType } from '@/generated/prisma';
 // **  Helper function to format ContactType  ** //
 export function formatContactType(type: ContactType): string {
   switch (type) {
+    case ContactType.CONTACT:
+      return 'Kontakt';
     case ContactType.LEAD:
       return 'Lead';
     case ContactType.CUSTOMER:

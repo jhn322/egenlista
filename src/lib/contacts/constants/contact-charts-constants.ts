@@ -1,12 +1,13 @@
 // **  Contact Types & Translations  ** //
 export const CONTACT_TYPE_TRANSLATIONS: Record<string, string> = {
+  CONTACT: 'Kontakter',
   LEAD: 'Leads',
   CUSTOMER: 'Kunder',
   AMBASSADOR: 'Ambassadörer',
 };
 
 // **  Contact Type Order for Charts  ** //
-export const CONTACT_TYPE_ORDER: string[] = ['LEAD', 'CUSTOMER', 'AMBASSADOR'];
+export const CONTACT_TYPE_ORDER: string[] = ['CONTACT', 'LEAD', 'CUSTOMER', 'AMBASSADOR'];
 
 // **  Contact Type Colors  ** //
 const CONTACT_TYPE_COLOR_PALETTE: Record<string, string> = {
