@@ -92,6 +92,7 @@ model PasswordResetToken {
 enum UserRole {
   USER
   ADMIN
+  SUPER_ADMIN
 }
 
 // ** Subscription model ** //
