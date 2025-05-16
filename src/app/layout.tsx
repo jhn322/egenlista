@@ -5,6 +5,7 @@ import { Providers } from '../app/providers';
 import { Toaster } from 'sonner';
 import { APP_NAME } from '@/lib/constants/site';
 import PageWrapper from '@/components/PageWrapper';
+import { SuperAdminToolbar } from '@/components/super-admin/SuperAdminToolbar';
 
 const inter = Inter({
   variable: '--font-sans',
@@ -44,6 +45,7 @@ export default function RootLayout({
         <Providers>
           <PageWrapper>{children}</PageWrapper>
           <Toaster richColors position="bottom-right" />
+          <SuperAdminToolbar />
         </Providers>
       </body>
     </html>
