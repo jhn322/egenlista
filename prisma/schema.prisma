@@ -30,6 +30,7 @@ model User {
   accounts      Account[]  // Required for NextAuth
   sessions      Session[]  // Required for NextAuth
   contacts      Contact[]
+  contactInteractions ContactInteraction[] // Added relation for interactions
   subscription  Subscription? // User has one subscription (or none)
   passwordResetTokens PasswordResetToken[] // Relation to PasswordResetToken model
   createdAt     DateTime   @default(now())
@@ -153,6 +154,7 @@ model Contact {
 
   contactConsents ContactConsentEvent[] // Relation to consent events
   addresses       Address[]             // Relation to addresses
+  interactions    ContactInteraction[]  // Added relation for interactions
 
   @@unique([userId, email]) // Only one contact per user per email
 }
@@ -216,6 +218,23 @@ model Address {
   updatedAt DateTime @updatedAt
 
   @@index([contactId]) // Index for faster querying of a contact's addresses
+}
+
+// * ---------------------------------
+// *      CONTACT INTERACTIONS (NEW)
+// * ---------------------------------
+model ContactInteraction {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  contactId String
+  lastViewedAt DateTime @updatedAt // Automatically updates on each upsert to this record
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contactId]) // Ensures one interaction record per user-contact pair
+  @@index([userId])
+  @@index([contactId])
 }
 
 

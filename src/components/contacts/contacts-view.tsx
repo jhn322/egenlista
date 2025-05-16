@@ -3,8 +3,8 @@
 // * ==========================================================================
 // *                       CONTACTS VIEW COMPONENT (Client)
 // * ==========================================================================
-import { useState, useEffect } from 'react';
-import { Contact } from '@/generated/prisma';
+import { useState, useEffect, useTransition } from 'react';
+import { Contact as PrismaContact } from '@/generated/prisma';
 import { PlusCircle, Download, QrCode } from 'lucide-react';
 import { toast } from 'sonner';
 import { DateRange } from 'react-day-picker';
@@ -26,7 +26,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { ContactList } from './contact-list';
+import { ContactList, type ContactWithInteractions } from './contact-list';
 import { DeleteContactFeature } from './delete-contact-feature';
 // import { CreateContactFeature } from './create-contact-feature'; // Removed old import
 import { CreateContactForm } from './create-contact-form';
@@ -36,10 +36,11 @@ import { ContactNoteModal } from './contact-note-modal';
 import { exportContactsToCSV } from '@/lib/contacts/utils/actions';
 import { ContactCharts } from './contact-charts';
 import { QRCodeModal } from '@/components/qr-code/qr-code-modal';
+import { markContactAsViewed } from '@/lib/interactions/actions';
 
 // ** Props Interface ** //
 interface ContactsViewProps {
-  initialContacts: Contact[];
+  initialContacts: ContactWithInteractions[];
   userIsPro: boolean;
   userId: string;
   showAllContactsInList: boolean;
@@ -60,15 +61,18 @@ export function ContactsView({
   dateRange,
   comparisonDateRange,
 }: ContactsViewProps) {
+  const [, startInteractionTransition] = useTransition();
   const [deletingContact, setDeletingContact] = useState<Pick<
-    Contact,
+    PrismaContact,
     'id' | 'firstName' | 'lastName'
   > | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // State for note modal
-  const [noteContact, setNoteContact] = useState<Contact | null>(null);
+  const [noteContact, setNoteContact] =
+    useState<ContactWithInteractions | null>(null);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-  const [contacts, setContacts] = useState<Contact[]>(initialContacts);
+  const [contacts, setContacts] =
+    useState<ContactWithInteractions[]>(initialContacts);
   // State for controlling the dialogs
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
@@ -79,7 +83,7 @@ export function ContactsView({
   }, [initialContacts]);
 
   const handleDeleteClick = (
-    contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
+    contactInfo: Pick<PrismaContact, 'id' | 'firstName' | 'lastName'>
   ) => {
     setDeletingContact(contactInfo);
     setIsDeleteDialogOpen(true);
@@ -93,9 +97,19 @@ export function ContactsView({
     }
   };
 
-  const handleNoteClick = (contact: Contact) => {
+  const handleNoteClick = (contact: ContactWithInteractions) => {
     setNoteContact(contact);
     setIsNoteModalOpen(true);
+
+    // Mark as viewed when opening the note modal
+    startInteractionTransition(async () => {
+      const result = await markContactAsViewed(contact.id);
+      if (!result.success) {
+        toast.error('Interaktionsfel', {
+          description: result.message || 'Kunde inte markera kontakt som sedd.',
+        });
+      }
+    });
   };
 
   const handleNoteSave = async (note: string) => {

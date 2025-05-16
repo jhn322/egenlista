@@ -39,7 +39,7 @@ import {
 } from '@/components/ui/popover';
 import { UpgradeToProContent } from '@/components/shared/upgrade-to-pro-content';
 
-import { Contact, ContactType } from '@/generated/prisma';
+import { Contact as PrismaContact, ContactType } from '@/generated/prisma';
 import {
   Trash2,
   MoreVertical,
@@ -56,6 +56,7 @@ import {
   TOAST_MESSAGES,
   NEW_CONTACT_THRESHOLD_DAYS,
   NEW_CONTACT_BADGE_TEXT,
+  TOOLTIP_NEW_CONTACT,
 } from '@/lib/contacts/constants/contacts';
 
 import {
@@ -63,6 +64,7 @@ import {
   type ContactUpdateInput,
 } from '@/lib/contacts/validation/schema';
 import { updateContact } from '@/lib/contacts/utils/actions';
+import { markContactAsViewed } from '@/lib/interactions/actions';
 
 import {
   DropdownMenu,
@@ -84,15 +86,19 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
+export interface ContactWithInteractions extends PrismaContact {
+  interactions: Array<{ lastViewedAt: Date | null }>;
+}
+
 // **  Component Props Interface  ** //
 interface ContactListProps {
-  contacts: Contact[];
+  contacts: ContactWithInteractions[]; // Use the extended type
   onDelete: (
-    contactInfo: Pick<Contact, 'id' | 'firstName' | 'lastName'>
+    contactInfo: Pick<PrismaContact, 'id' | 'firstName' | 'lastName'>
   ) => void;
-  onNote: (contact: Contact) => void;
+  onNote: (contact: ContactWithInteractions) => void; // Use the extended type
   userIsPro: boolean;
-  userId: string;
+  userId: string; // Still needed for some operations, though interaction uses session
   showAllContactsInList: boolean;
   onShowAllContactsInListChange: (showAll: boolean) => void;
   isDateRangeActive: boolean;
@@ -154,13 +160,24 @@ export function ContactList({
   // ** Hooks ** //
   const router = useRouter();
 
-  // * Helper function to check if a contact is new
-  const isContactNew = (createdAtDate: Date): boolean => {
+  // * Helper function to check if a contact is new based on interaction and age
+  const isContactNew = (contact: ContactWithInteractions): boolean => {
+    // 1. If there is an interaction record for the current user, it's NOT new.
+    if (contact.interactions && contact.interactions.length > 0) {
+      return false;
+    }
+
+    // 2. If no interaction, check its age. If older than threshold, it's NOT new.
     const threshold = new Date();
     threshold.setDate(threshold.getDate() - NEW_CONTACT_THRESHOLD_DAYS);
-    // Ensure createdAtDate is a Date object
-    const contactCreationDate = new Date(createdAtDate);
-    return contactCreationDate > threshold;
+    const contactCreationDate = new Date(contact.createdAt);
+
+    if (contactCreationDate < threshold) {
+      return false;
+    }
+
+    // 3. Otherwise (no interaction AND within threshold), it IS new.
+    return true;
   };
 
   // * Form Hook Initialization (react-hook-form)
@@ -381,8 +398,17 @@ export function ContactList({
   // ** Event Handlers ** //
 
   // * Start editing a specific contact
-  const handleEditClick = (contact: Contact) => {
+  const handleEditClick = (contact: ContactWithInteractions) => {
     setEditingContactId(contact.id);
+    // Mark as viewed when edit is clicked
+    startTransition(async () => {
+      const result = await markContactAsViewed(contact.id);
+      if (!result.success) {
+        toast.error('Fel', {
+          description: result.message || 'Kunde inte markera kontakt som sedd.',
+        });
+      }
+    });
   };
 
   // * Cancel the current inline edit
@@ -894,8 +920,46 @@ export function ContactList({
                   // *** Display Row ***
                   <TableRow
                     key={contact.id}
+                    onClick={(event) => {
+                      if (editingContactId) return;
+
+                      const target = event.target as HTMLElement;
+                      // Check if the click was on specific interactive child elements.
+                      const wasCheckboxClicked =
+                        target.closest('[role="checkbox"]');
+                      const wasNoteButtonClicked = target.closest(
+                        'button[aria-label*="anteckning"]'
+                      );
+                      const wasActionsDropdownTriggered = target.closest(
+                        'button[aria-haspopup="menu"]'
+                      );
+
+                      if (
+                        wasCheckboxClicked ||
+                        wasNoteButtonClicked ||
+                        wasActionsDropdownTriggered ||
+                        target.closest('[role="menuitem"]')
+                      ) {
+                        return;
+                      }
+
+                      // If the contact is currently considered "new" and not being edited,
+                      // then mark it as viewed.
+                      if (isContactNew(contact)) {
+                        startTransition(async () => {
+                          const result = await markContactAsViewed(contact.id);
+                          if (!result.success) {
+                            toast.error('Fel', {
+                              description:
+                                result.message ||
+                                'Kunde inte uppdatera visningsstatus.',
+                            });
+                          }
+                        });
+                      }
+                    }}
                     className={clsx(
-                      'transition-all duration-500 ease-in-out', // Base transition for hover, opacity, blur
+                      'cursor-default transition-all duration-500 ease-in-out',
                       {
                         'hover:bg-muted/50':
                           successfullyUpdatedContactId !== contact.id, // Only apply hover if not success-highlighted
@@ -919,7 +983,7 @@ export function ContactList({
                     <TableCell>
                       <div className="font-medium">
                         {contact.firstName} {contact.lastName}
-                        {isContactNew(contact.createdAt) && (
+                        {isContactNew(contact) && (
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
@@ -932,7 +996,7 @@ export function ContactList({
                                 </Badge>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>Kontakten skapades nyligen</p>
+                                <p>{TOOLTIP_NEW_CONTACT}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>

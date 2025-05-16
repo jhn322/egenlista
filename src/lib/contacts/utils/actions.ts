@@ -24,6 +24,13 @@ export async function getAllContactsForUser(userId: string) {
       orderBy: {
         createdAt: 'desc', // Or perhaps lastName, firstName
       },
+      include: {
+        interactions: {
+          where: { userId: userId },
+          select: { lastViewedAt: true },
+          take: 1,
+        },
+      },
     });
     return contacts;
   } catch (error) {
