@@ -164,14 +164,14 @@ export function Navbar() {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    {userRole === 'USER' && (
-                      <Link href={PROTECTED_PATHS.MINA_SIDOR_BASE}>
-                        <DropdownMenuItem className="cursor-pointer">
-                          <AdminIcon className="mr-2" />
-                          <span>Mina Sidor</span>
-                        </DropdownMenuItem>
-                      </Link>
-                    )}
+
+                    <Link href={PROTECTED_PATHS.MINA_SIDOR_BASE}>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <AdminIcon className="mr-2" />
+                        <span>Mina Sidor</span>
+                      </DropdownMenuItem>
+                    </Link>
+
                     <DropdownMenuItem disabled className="cursor-not-allowed">
                       <SettingsIcon className="mr-2" />
                       <span>Settings</span>
