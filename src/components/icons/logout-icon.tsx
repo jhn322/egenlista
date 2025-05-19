@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-interface LogoutIconProps extends React.SVGProps<SVGSVGElement> {
+interface LogOutIconProps extends React.SVGProps<SVGSVGElement> {
   color?: string;
   iconSize?: number;
 }
 
-export const LogoutIcon: React.FC<LogoutIconProps> = ({
+export const LogOutIcon: React.FC<LogOutIconProps> = ({
   color = 'black',
   iconSize = 24,
   ...props
@@ -23,9 +23,9 @@ export const LogoutIcon: React.FC<LogoutIconProps> = ({
     strokeLinejoin="round"
     {...props}
   >
-    <desc>{"Logout 1 Streamline Icon: https://streamlinehq.com"}</desc>
+    <desc>{'Logout 1 Streamline Icon: https://streamlinehq.com'}</desc>
     <path d="M13.5 5V1.5a1 1 0 0 0 -1 -1h-11a1 1 0 0 0 -1 1v21a1 1 0 0 0 1 1h11a1 1 0 0 0 1 -1V19" />
     <path d="m23.5 12 -19 0" />
     <path d="m18.5 17 5 -5 -5 -5" />
   </svg>
-); 
+);

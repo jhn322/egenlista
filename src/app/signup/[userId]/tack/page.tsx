@@ -4,7 +4,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 // import Link from 'next/link'; // Removed unused import
-import { CheckCircle } from 'lucide-react';
+import { CheckCircleIcon } from '@/components/icons/check-circle-icon';
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 // import { Button } from '@/components/ui/button'; // Removed unused import
@@ -63,7 +63,7 @@ export default async function ContactSignupThankYouPage(
       className="bg-background flex min-h-screen flex-col items-center justify-center p-4 sm:p-6"
     >
       <div className="border-border bg-card w-full max-w-md rounded-lg border p-8 text-center shadow-sm">
-        <CheckCircle className="mx-auto mb-4 size-12 text-green-500" />
+        <CheckCircleIcon className="mx-auto mb-4 size-12 text-green-500" />
         <h1 className="text-card-foreground mb-2 text-2xl font-semibold">
           Tack för din registrering!
         </h1>

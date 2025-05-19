@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2 } from 'lucide-react';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 import { cn } from '@/lib/utils';
 
 import {
@@ -386,7 +386,7 @@ export function ContactPublicSignupForm({
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 size-5 animate-spin" />
+                <LoadingCircleIcon className="mr-2 size-5 animate-spin" />
                 Registrerar...
               </>
             ) : (

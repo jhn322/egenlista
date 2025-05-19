@@ -3,7 +3,7 @@
 // * ==========================================================================
 // *                       UPGRADE TO PRO CONTENT COMPONENT
 // * ==========================================================================
-import { ShieldAlert } from 'lucide-react';
+import { ShieldAlertIcon } from '@/components/icons/shield-alert-icon';
 import { Button } from '@/components/ui/button';
 
 // ** Props Interface ** //
@@ -31,7 +31,7 @@ export function UpgradeToProContent({
 }: UpgradeToProContentProps) {
   return (
     <div className="flex flex-col items-center text-center">
-      <ShieldAlert className="mb-3 h-12 w-12 text-amber-500" />
+      <ShieldAlertIcon className="mb-3 h-12 w-12 text-amber-500" />
       {/* Removed h3 and p tags for title/description */}
       {/* <h3 id={titleId} className="text-lg font-semibold">{featureTitle}</h3> */}
       {/* <p id={descriptionId} className="text-muted-foreground mt-1 text-sm">{featureDescription}</p> */}

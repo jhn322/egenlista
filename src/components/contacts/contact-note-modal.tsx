@@ -9,7 +9,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Trash2, ShieldAlert } from 'lucide-react';
+import { TrashIcon } from '@/components/icons/trash-icon';
+import { ShieldAlertIcon } from '@/components/icons/shield-alert-icon';
 import MDEditor from '@uiw/react-md-editor';
 import {
   Tooltip,
@@ -123,7 +124,7 @@ export const ContactNoteModal = ({
             {!userIsPro && note.length > 1000 && (
               <div className="mt-1 flex flex-col items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
                 <div className="mb-1 flex items-center gap-2">
-                  <ShieldAlert className="h-6 w-6 text-amber-500" />
+                  <ShieldAlertIcon className="h-6 w-6 text-amber-500" />
                   <span className="font-semibold">PRO-funktion</span>
                 </div>
                 <div className="text-center leading-tight">
@@ -157,7 +158,7 @@ export const ContactNoteModal = ({
                         disabled={isSaving}
                         className="gap-2"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <TrashIcon className="h-4 w-4" color="black" />
                         Rensa anteckning
                       </Button>
                     </TooltipTrigger>

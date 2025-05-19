@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { StarIcon } from 'lucide-react';
+import { StarIcon } from '@/components/icons/star-icon';
 import { APP_NAME } from '@/lib/constants/site';
 
 const testimonials = [

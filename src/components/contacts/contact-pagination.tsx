@@ -1,10 +1,8 @@
 import { Button } from '@/components/ui/button';
-import {
-  ChevronsLeft,
-  ChevronsRight,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { ChevronsLeftIcon } from '@/components/icons/chevrons-left-icon';
+import { ChevronsRightIcon } from '@/components/icons/chevrons-right-icon';
+import { ChevronLeftIcon } from '@/components/icons/chevron-left-icon';
+import { ChevronRightIcon } from '@/components/icons/chevron-right-icon';
 import {
   Select,
   SelectContent,
@@ -60,7 +58,7 @@ export function ContactPagination({
           className="h-8 w-8 sm:h-9 sm:w-9"
           aria-label="Gå till första sidan"
         >
-          <ChevronsLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <ChevronsLeftIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </Button>
         <Button
           variant="outline"
@@ -70,7 +68,7 @@ export function ContactPagination({
           className="h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm"
           aria-label="Gå till föregående sida"
         >
-          <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <ChevronLeftIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           <span className="ml-1 hidden sm:inline">Föregående</span>
         </Button>
         <Button
@@ -82,7 +80,7 @@ export function ContactPagination({
           aria-label="Gå till nästa sida"
         >
           <span className="mr-1 hidden sm:inline">Nästa</span>
-          <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <ChevronRightIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </Button>
         <Button
           variant="outline"
@@ -92,7 +90,7 @@ export function ContactPagination({
           className="h-8 w-8 sm:h-9 sm:w-9"
           aria-label="Gå till sista sidan"
         >
-          <ChevronsRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <ChevronsRightIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </Button>
       </div>
     </div>

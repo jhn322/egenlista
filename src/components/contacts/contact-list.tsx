@@ -40,17 +40,13 @@ import {
 import { UpgradeToProContent } from '@/components/shared/upgrade-to-pro-content';
 
 import { Contact as PrismaContact, ContactType } from '@/generated/prisma';
-import {
-  Trash2,
-  MoreVertical,
-  Pencil,
-  StickyNote,
-  Save,
-  XCircle,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
+import { DotsVerticalIcon } from '@/components/icons/dots-vertical-icon';
+import { PencilEditIcon } from '@/components/icons/pencil-edit-icon';
+import { NoteIcon } from '@/components/icons/note-icon';
+import { SaveIcon } from '@/components/icons/save-icon';
+import { XCircleIcon } from '@/components/icons/x-circle-icon';
+import { ChevronDownIcon } from '@/components/icons/chevron-down-icon';
+import { ChevronUpIcon } from '@/components/icons/chevron-up-icon';
 import {
   CONTACT_LIST_EMPTY_STATE,
   TOAST_MESSAGES,
@@ -85,6 +81,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { TrashIcon } from '@/components/icons/trash-icon';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 export interface ContactWithInteractions extends PrismaContact {
   interactions: Array<{ lastViewedAt: Date | null }>;
@@ -539,9 +537,9 @@ export function ContactList({
                     </TooltipProvider>
                     {sort.column === 'firstName' &&
                       (sort.direction === 'desc' ? (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDownIcon className="h-4 w-4" />
                       ) : (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUpIcon className="h-4 w-4" />
                       ))}
                   </div>
                 </TableHead>
@@ -563,9 +561,9 @@ export function ContactList({
                     </TooltipProvider>
                     {sort.column === 'email' &&
                       (sort.direction === 'desc' ? (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDownIcon className="h-4 w-4" />
                       ) : (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUpIcon className="h-4 w-4" />
                       ))}
                   </div>
                 </TableHead>
@@ -587,9 +585,9 @@ export function ContactList({
                     </TooltipProvider>
                     {sort.column === 'phone' &&
                       (sort.direction === 'desc' ? (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDownIcon className="h-4 w-4" />
                       ) : (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUpIcon className="h-4 w-4" />
                       ))}
                   </div>
                 </TableHead>
@@ -611,9 +609,9 @@ export function ContactList({
                     </TooltipProvider>
                     {sort.column === 'type' &&
                       (sort.direction === 'desc' ? (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDownIcon className="h-4 w-4" />
                       ) : (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUpIcon className="h-4 w-4" />
                       ))}
                   </div>
                 </TableHead>
@@ -635,12 +633,12 @@ export function ContactList({
                     </TooltipProvider>
                     {sort.column === 'createdAt' ? (
                       sort.direction === 'desc' ? (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDownIcon className="h-4 w-4" />
                       ) : (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUpIcon className="h-4 w-4" />
                       )
                     ) : (
-                      <ChevronDown className="text-muted-foreground/50 h-4 w-4" />
+                      <ChevronDownIcon className="text-muted-foreground/50 h-4 w-4" />
                     )}
                   </div>
                 </TableHead>
@@ -881,9 +879,9 @@ export function ContactList({
                                 disabled={isPending}
                               >
                                 {isPending ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                  <LoadingCircleIcon className="h-4 w-4 animate-spin" />
                                 ) : (
-                                  <Save className="h-4 w-4 text-green-600" />
+                                  <SaveIcon className="h-4 w-4 text-green-600" />
                                 )}
                                 <span className="sr-only">Spara</span>
                               </Button>
@@ -904,7 +902,7 @@ export function ContactList({
                                 onClick={handleCancelEdit}
                                 disabled={isPending}
                               >
-                                <XCircle className="h-4 w-4 text-red-600" />
+                                <XCircleIcon className="h-4 w-4 text-red-600" />
                                 <span className="sr-only">Avbryt</span>
                               </Button>
                             </TooltipTrigger>
@@ -1049,7 +1047,7 @@ export function ContactList({
                               tabIndex={0}
                               className="group relative"
                             >
-                              <StickyNote
+                              <NoteIcon
                                 className={
                                   contact.note
                                     ? 'text-primary fill-primary/20 h-5 w-5'
@@ -1082,7 +1080,7 @@ export function ContactList({
                                   size="icon"
                                   disabled={isPending || !!editingContactId}
                                 >
-                                  <MoreVertical className="h-4 w-4" />
+                                  <DotsVerticalIcon className="h-4 w-4" />
                                   <span className="sr-only">Fler åtgärder</span>
                                 </Button>
                               </DropdownMenuTrigger>
@@ -1102,7 +1100,7 @@ export function ContactList({
                                   className="cursor-pointer"
                                   disabled={isPending || !!editingContactId}
                                 >
-                                  <Pencil className="mr-2 h-4 w-4" />
+                                  <PencilEditIcon className="mr-2 h-4 w-4" />
                                   <span>Redigera</span>
                                 </DropdownMenuItem>
                               </TooltipTrigger>
@@ -1127,7 +1125,7 @@ export function ContactList({
                                   className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer hover:text-white"
                                   disabled={isPending || !!editingContactId}
                                 >
-                                  <Trash2 className="mr-2 h-4 w-4 hover:text-white" />
+                                  <TrashIcon className="mr-2 h-4 w-4 hover:text-white" />
                                   <span>Ta bort</span>
                                 </DropdownMenuItem>
                               </TooltipTrigger>

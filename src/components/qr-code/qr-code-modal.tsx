@@ -22,7 +22,8 @@ import { APP_NAME } from '@/lib/constants/site';
 import { useEffect, useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { SITE_PATHS } from '@/lib/constants/routes';
-import { Download, Link as LinkIcon } from 'lucide-react';
+import { DownloadIcon } from '@/components/icons/download-icon';
+import { LinkIcon } from '@/components/icons/link-icon';
 import { toast } from 'sonner';
 
 interface QRCodeModalProps {
@@ -167,7 +168,7 @@ export function QRCodeModal({
               variant="outline"
               onClick={handleDownloadClick}
             >
-              <Download className="mr-2 h-4 w-4" />
+              <DownloadIcon className="mr-2 h-4 w-4" />
               Ladda ner QR
             </Button>
           )}

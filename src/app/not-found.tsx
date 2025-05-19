@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeftIcon } from '@/components/icons/arrow-left-icon';
 import { CardContent, CardTitle, CardDescription } from '@/components/ui/card';
 import { Metadata } from 'next';
 
@@ -40,7 +40,7 @@ export default function NotFound() {
             aria-label="Gå tillbaka till startsidan"
           >
             <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+              <ArrowLeftIcon className="mr-2 h-4 w-4" aria-hidden="true" />
               Gå tillbaka hem
             </Link>
           </Button>

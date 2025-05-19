@@ -35,7 +35,7 @@ import {
 } from '@/lib/contacts/constants/contact-charts-constants';
 import { DateRange } from 'react-day-picker';
 import { Badge } from '@/components/ui/badge';
-import { InfoIcon } from 'lucide-react';
+import { InfoIcon } from '@/components/icons/info-icon';
 
 // ** Local Interface for Legend Entry ** //
 interface SimpleLegendEntry {
@@ -471,7 +471,7 @@ export function ContactCharts({
 
           {/* Monthly Chart */}
           <TabsContent value="monthly">
-            <div className="h-full min-h-[520px] pt-4">
+            <div className="h-full min-h-[400px] pt-4">
               {hasComparison && (
                 <div className="mb-4 flex items-center gap-2 text-sm">
                   <InfoIcon className="text-muted-foreground h-3.5 w-3.5 flex-shrink-0" />
@@ -561,7 +561,7 @@ export function ContactCharts({
 
           {/* Contact Type Bar Chart */}
           <TabsContent value="category">
-            <div className="h-full min-h-[520px] pt-4">
+            <div className="h-full min-h-[400px] pt-4">
               {hasComparison && (
                 <div className="mb-4 flex items-center gap-2 text-sm">
                   <InfoIcon className="text-muted-foreground h-3.5 w-3.5 flex-shrink-0" />
@@ -656,7 +656,7 @@ export function ContactCharts({
 
           {/* Contact Type Pie Chart */}
           <TabsContent value="pie">
-            <div className="h-full min-h-[520px] pt-4">
+            <div className="h-full min-h-[400px] pt-4">
               {hasComparison && (
                 <div className="mb-4 flex items-center gap-2 text-sm">
                   <InfoIcon className="text-muted-foreground h-3.5 w-3.5 flex-shrink-0" />
