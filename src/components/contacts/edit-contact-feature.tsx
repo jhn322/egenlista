@@ -47,7 +47,7 @@ import {
   DIALOG_TEXTS,
 } from '@/lib/contacts/constants/contacts'; // Import constants
 
-import { Loader2 } from 'lucide-react';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 // ** Props Interface ** //
 interface EditContactFeatureProps {
@@ -299,7 +299,7 @@ export function EditContactFeature({
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
                     Sparar... {/* Kept in JSX */}
                   </>
                 ) : (

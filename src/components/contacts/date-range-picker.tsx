@@ -1,7 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { CalendarIcon, Check, X, ChevronDown, ClockIcon } from 'lucide-react';
+import { CalendarIcon } from '@/components/icons/calendar-icon';
+import { CheckIcon } from '@/components/icons/check-icon';
+import { XCircleIcon } from '@/components/icons/x-circle-icon';
+import { ChevronDownIcon } from '@/components/icons/chevron-down-icon';
+import { ClockIcon } from '@/components/icons/clock-icon';
 import { format, subMonths, subYears, subDays } from 'date-fns';
 import { sv } from 'date-fns/locale';
 import { DateRange } from 'react-day-picker';
@@ -295,7 +299,7 @@ export function DateRangePicker({
             ) : (
               <span>Välj datumintervall</span>
             )}
-            <ChevronDown
+            <ChevronDownIcon
               className={cn(
                 'ml-auto h-3 w-3 flex-shrink-0 transition-transform duration-200 sm:h-4 sm:w-4',
                 isOpen && 'rotate-180 transform'
@@ -416,7 +420,7 @@ export function DateRangePicker({
                   onClick={handleCancel}
                   className="hover:bg-destructive flex items-center hover:text-white"
                 >
-                  <X className="mr-1 h-4 w-4" />
+                  <XCircleIcon className="mr-1 h-4 w-4" />
                   Avbryt
                 </Button>
                 <TooltipProvider>
@@ -446,7 +450,7 @@ export function DateRangePicker({
                       onClick={handleApply}
                       className="flex items-center"
                     >
-                      <Check className="mr-1 h-4 w-4" />
+                      <CheckIcon className="mr-1 h-4 w-4" />
                       Tillämpa
                     </Button>
                   </TooltipTrigger>

@@ -37,7 +37,7 @@ import {
 } from '@/lib/contacts/constants/contacts'; // Import constants
 
 // Removed UpgradeToProModal and VisuallyHidden imports
-import { Loader2 } from 'lucide-react'; // Removed PlusCircle as button is now in parent
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 // **  Props Interface  ** //
 interface CreateContactFormProps {
@@ -355,7 +355,7 @@ export function CreateContactForm({ userId, onClose }: CreateContactFormProps) {
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
                 Sparar...
               </>
             ) : (

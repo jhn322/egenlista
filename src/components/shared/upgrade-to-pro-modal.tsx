@@ -1,9 +1,6 @@
 'use client';
 
-// * ==========================================================================
-// *                       UPGRADE TO PRO MODAL COMPONENT
-// * ==========================================================================
-// import { ShieldAlert } from 'lucide-react';
+// import { ShieldAlertIcon } from '@/components/icons/shield-alert-icon';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

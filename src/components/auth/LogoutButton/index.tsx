@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_LOGOUT_REDIRECT_PATH } from '@/lib/constants/routes';
-import { LogOut } from 'lucide-react'; // Importera ikon
+import { LogOutIcon } from '@/components/icons/logout-icon';
 
 interface LogoutButtonProps {
   children?: React.ReactNode;
@@ -23,7 +23,7 @@ export const LogoutButton = ({ children, className }: LogoutButtonProps) => {
     >
       {children || (
         <>
-          <LogOut className="h-4 w-4" />
+          <LogOutIcon className="h-4 w-4" />
           <span>Logga ut</span>
         </>
       )}

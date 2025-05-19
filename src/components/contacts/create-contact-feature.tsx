@@ -40,7 +40,8 @@ import {
 } from '@/lib/contacts/constants/contacts'; // Import constants
 
 // import { UpgradeToProModal } from '@/components/shared/upgrade-to-pro-modal'; // Removed import
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { PlusCircleIcon } from '@/components/icons/plus-circle-icon';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 // **  Props Interface  ** //
 interface CreateContactFeatureProps {
@@ -100,7 +101,7 @@ export function CreateContactFeature({ userId }: CreateContactFeatureProps) {
     >
       <DialogTrigger asChild>
         <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
+          <PlusCircleIcon className="mr-2 h-4 w-4" />
           Skapa Ny Kontakt
         </Button>
       </DialogTrigger>
@@ -197,7 +198,7 @@ export function CreateContactFeature({ userId }: CreateContactFeatureProps) {
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
                     Sparar...
                   </>
                 ) : (

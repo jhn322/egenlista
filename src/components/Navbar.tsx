@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AdminIcon } from '@/components/icons/admin-icon';
 import { ChevronIcon } from '@/components/icons/chevron-icon';
 import { FAQIcon } from '@/components/icons/faq-icon';
-import { LogoutIcon } from '@/components/icons/logout-icon';
+import { LogOutIcon } from '@/components/icons/logout-icon';
 import { SettingsIcon } from '@/components/icons/settings-icon';
 import { UserIcon } from '@/components/icons/user-icon';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
@@ -185,7 +185,7 @@ export function Navbar() {
                       onClick={() => signOut({ callbackUrl: '/' })}
                       className="cursor-pointer"
                     >
-                      <LogoutIcon className="mr-2" />
+                      <LogOutIcon className="mr-2" />
                       <span>Logga ut</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -269,7 +269,7 @@ export function Navbar() {
                       }}
                       className="cursor-pointer"
                     >
-                      <LogoutIcon className="mr-2" />
+                      <LogOutIcon className="mr-2" />
                       <span>Logga ut</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

@@ -6,7 +6,7 @@
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -112,7 +112,7 @@ export function DeleteContactFeature({
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
                 {DIALOG_TEXTS.DELETE_CONTACT_PENDING_BUTTON}
               </>
             ) : (

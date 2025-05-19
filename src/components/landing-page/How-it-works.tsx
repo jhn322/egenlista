@@ -1,6 +1,6 @@
 'use client';
 
-import { Check } from 'lucide-react';
+import { CheckIcon } from '@/components/icons/check-icon';
 import Image from 'next/image';
 import { APP_NAME } from '@/lib/constants/site';
 
@@ -51,7 +51,7 @@ export default function HowItWorksSection() {
               {steps.map((step, index) => (
                 <div key={index} className="flex items-start gap-4">
                   <div className="bg-primary mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg">
-                    <Check className="text-primary-foreground h-4 w-4" />
+                    <CheckIcon className="text-primary-foreground h-4 w-4" />
                   </div>
                   <div>
                     <h3 className="text-primary text-xl font-medium">

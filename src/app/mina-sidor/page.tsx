@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth/options';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Users } from 'lucide-react';
+import { MultipleUsersIcon } from '@/components/icons/multiple-users-icon';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
 import {
@@ -57,7 +57,7 @@ export default async function MinaSidorPage() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Users className="text-muted-foreground h-5 w-5" />
+                      <MultipleUsersIcon className="text-muted-foreground h-5 w-5" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Visa kontaktsidan</p>

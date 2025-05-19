@@ -1,0 +1,35 @@
+import * as React from 'react';
+
+interface InfoIconProps extends React.SVGProps<SVGSVGElement> {
+  color?: string;
+  iconSize?: number;
+}
+
+export const InfoIcon: React.FC<InfoIconProps> = ({
+  color = 'black',
+  iconSize = 24,
+  ...props
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    id="Information-Circle--Streamline-Ultimate"
+    height={iconSize}
+    width={iconSize}
+    fill="none"
+    stroke={color}
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <desc>
+      {'Information Circle Streamline Icon: https://streamlinehq.com'}
+    </desc>
+    <path d="M12 23c6.0751 0 11 -4.9249 11 -11 0 -6.07513 -4.9249 -11 -11 -11C5.92487 1 1 5.92487 1 12c0 6.0751 4.92487 11 11 11Z" />
+    <path d="M11.9412 16.8512v-6.1396c0 -0.2327 -0.0924 -0.4557 -0.2569 -0.6202 -0.1645 -0.16452 -0.3876 -0.25693 -0.6202 -0.25693h-0.8771" />
+    <path d="M11.5026 7.94752c-0.2422 0 -0.4385 -0.19634 -0.4385 -0.43854s0.1963 -0.43855 0.4385 -0.43855" />
+    <path d="M11.5027 7.94752c0.2422 0 0.4386 -0.19634 0.4386 -0.43854s-0.1964 -0.43855 -0.4386 -0.43855" />
+    <path d="M10.187 16.8512h3.626" />
+  </svg>
+);

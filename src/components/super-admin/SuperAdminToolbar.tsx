@@ -9,7 +9,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { ShieldCheck, Repeat, Settings2 } from 'lucide-react';
+import { ShieldCheckIcon } from '@/components/icons/shield-check-icon';
+import { RepeatIcon } from '@/components/icons/repeat-icon';
+import { Settings2Icon } from '@/components/icons/settings2-icon';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -83,7 +85,7 @@ export function SuperAdminToolbar() {
                     : 'Öppna SuperAdmin-verktyg'
                 }
               >
-                <ShieldCheck
+                <ShieldCheckIcon
                   className={cn(
                     'text-primary h-6 w-6 transition-transform duration-300',
                     isOpen && 'rotate-[360deg]'
@@ -113,9 +115,9 @@ export function SuperAdminToolbar() {
                     title="Växla din prenumeration"
                   >
                     {isLoading ? (
-                      <Settings2 className="h-5 w-5 animate-spin" />
+                      <Settings2Icon className="h-5 w-5 animate-spin" />
                     ) : (
-                      <Repeat className="h-5 w-5" />
+                      <RepeatIcon className="h-5 w-5" />
                     )}
                   </Button>
                 </TooltipTrigger>

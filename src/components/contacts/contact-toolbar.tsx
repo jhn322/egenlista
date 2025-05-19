@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+import { TrashIcon } from '@/components/icons/trash-icon';
 import { ContactType } from '@/generated/prisma';
 import { formatContactType } from '@/lib/contacts/utils/formatting';
 import { Switch } from '@/components/ui/switch';
@@ -145,7 +145,7 @@ export function ContactToolbar({
                     className="flex items-center"
                     aria-label={`Ta bort ${selectedCount} valda kontakter`}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <TrashIcon className="mr-2 h-4 w-4" />
                     Ta bort ({selectedCount})
                   </Button>
                 </TooltipTrigger>

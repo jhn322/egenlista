@@ -5,7 +5,9 @@
 // * ==========================================================================
 import { useState, useEffect, useTransition } from 'react';
 import { Contact as PrismaContact } from '@/generated/prisma';
-import { PlusCircle, Download, QrCode } from 'lucide-react';
+import { PlusCircleIcon } from '@/components/icons/plus-circle-icon';
+import { DownloadIcon } from '@/components/icons/download-icon';
+import { QrCodeIcon } from '@/components/icons/qr-code-icon';
 import { toast } from 'sonner';
 import { DateRange } from 'react-day-picker';
 import { startOfDay, endOfDay } from 'date-fns';
@@ -223,7 +225,7 @@ export function ContactsView({
                     className="w-full md:w-auto"
                     aria-label="Visa min QR-kod"
                   >
-                    <QrCode className="mr-2 h-4 w-4" />
+                    <QrCodeIcon className="mr-2 h-4 w-4" />
                     Min QR-kod
                   </Button>
                 }
@@ -236,7 +238,7 @@ export function ContactsView({
                 className="w-full md:w-auto"
                 aria-label="Exportera kontakter till CSV-fil"
               >
-                <Download className="mr-2 h-4 w-4" />
+                <DownloadIcon className="mr-2 h-4 w-4" />
                 Exportera CSV
               </Button>
               {/* Create Contact Button */}
@@ -245,7 +247,7 @@ export function ContactsView({
                 className="w-full md:w-auto"
                 aria-label="Skapa ny kontakt"
               >
-                <PlusCircle className="mr-2 h-4 w-4" />
+                <PlusCircleIcon className="mr-2 h-4 w-4" />
                 Skapa Ny Kontakt
               </Button>
             </div>

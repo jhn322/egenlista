@@ -5,7 +5,10 @@
 // * ==========================================================================
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Contact, ContactType } from '@/generated/prisma';
-import { Users, Briefcase, Star, UsersRound } from 'lucide-react';
+import { BriefcaseIcon } from '@/components/icons/briefcase-icon';
+import { StarIcon } from '@/components/icons/star-icon';
+import { MultipleUsersIcon } from '@/components/icons/multiple-users-icon';
+import { UserIcon } from '@/components/icons/user-icon';
 import React from 'react';
 
 // **  Props Interface  ** //
@@ -34,25 +37,25 @@ export function ContactStats({
     {
       title: 'Totalt Antal',
       value: totalContacts,
-      icon: <UsersRound className="text-muted-foreground h-5 w-5" />,
+      icon: <UserIcon className="text-muted-foreground h-5 w-5" />,
       description: 'Alla dina kontakter.',
     },
     {
       title: 'Leads',
       value: leadContacts,
-      icon: <Users className="text-muted-foreground h-5 w-5" />,
+      icon: <MultipleUsersIcon className="text-muted-foreground h-5 w-5" />,
       description: 'Potentiella kunder.',
     },
     {
       title: 'Kunder',
       value: customerContacts,
-      icon: <Briefcase className="text-muted-foreground h-5 w-5" />,
+      icon: <BriefcaseIcon className="text-muted-foreground h-5 w-5" />,
       description: 'Betalande kunder.',
     },
     {
       title: 'Ambassadörer',
       value: ambassadorContacts,
-      icon: <Star className="text-muted-foreground h-5 w-5" />,
+      icon: <StarIcon className="text-muted-foreground h-5 w-5" />,
       description: 'De som marknadsför dig.',
     },
   ];
