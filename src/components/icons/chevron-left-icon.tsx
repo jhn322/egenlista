@@ -6,7 +6,7 @@ interface ChevronLeftIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const ChevronLeftIcon: React.FC<ChevronLeftIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

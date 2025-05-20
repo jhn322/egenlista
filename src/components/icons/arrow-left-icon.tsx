@@ -6,7 +6,7 @@ interface ArrowLeftIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const ArrowLeftIcon: React.FC<ArrowLeftIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

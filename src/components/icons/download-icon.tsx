@@ -6,7 +6,7 @@ interface DownloadIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const DownloadIcon: React.FC<DownloadIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

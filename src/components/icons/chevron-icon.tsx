@@ -5,16 +5,16 @@ interface ChevronIconProps extends React.SVGProps<SVGSVGElement> {
   iconSize?: number;
 }
 
-export const ChevronIcon: React.FC<ChevronIconProps> = ({ 
-  color = 'black', 
+export const ChevronIcon: React.FC<ChevronIconProps> = ({
+  color = 'currentColor',
   iconSize = 24,
-  ...props 
+  ...props
 }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    xmlns="http://www.w3.org/2000/svg" 
-    id="Arrow-Down-1--Streamline-Ultimate" 
-    height={iconSize} 
+  <svg
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+    id="Arrow-Down-1--Streamline-Ultimate"
+    height={iconSize}
     width={iconSize}
     fill="none"
     stroke={color}
@@ -23,7 +23,7 @@ export const ChevronIcon: React.FC<ChevronIconProps> = ({
     strokeLinejoin="round"
     {...props}
   >
-    <desc>{"Arrow Down 1 Streamline Icon: https://streamlinehq.com"}</desc>
+    <desc>{'Arrow Down 1 Streamline Icon: https://streamlinehq.com'}</desc>
     <path d="M0.541 5.627 11.666 18.2a0.5 0.5 0 0 0 0.749 0L23.541 5.627" />
   </svg>
-); 
+);

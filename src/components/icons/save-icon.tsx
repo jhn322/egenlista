@@ -6,7 +6,7 @@ interface SaveIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const SaveIcon: React.FC<SaveIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

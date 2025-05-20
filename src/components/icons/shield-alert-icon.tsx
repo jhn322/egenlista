@@ -6,7 +6,7 @@ interface ShieldAlertIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const ShieldAlertIcon: React.FC<ShieldAlertIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

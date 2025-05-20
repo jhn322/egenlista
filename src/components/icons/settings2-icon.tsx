@@ -6,7 +6,7 @@ interface Settings2IconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const Settings2Icon: React.FC<Settings2IconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

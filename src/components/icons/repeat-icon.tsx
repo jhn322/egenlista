@@ -6,7 +6,7 @@ interface RepeatIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const RepeatIcon: React.FC<RepeatIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (
