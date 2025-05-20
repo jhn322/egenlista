@@ -39,6 +39,7 @@ import { exportContactsToCSV } from '@/lib/contacts/utils/actions';
 import { ContactCharts } from './contact-charts';
 import { QRCodeModal } from '@/components/qr-code/qr-code-modal';
 import { markContactAsViewed } from '@/lib/interactions/actions';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 // ** Props Interface ** //
 interface ContactsViewProps {
@@ -78,6 +79,7 @@ export function ContactsView({
   // State for controlling the dialogs
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   // useEffect to update local contacts state when initialContacts prop changes
   useEffect(() => {
@@ -150,6 +152,7 @@ export function ContactsView({
   };
 
   const handleExportClick = async () => {
+    setIsExporting(true);
     try {
       let exportStartDate: string | undefined = undefined;
       let exportEndDate: string | undefined = undefined;
@@ -191,6 +194,8 @@ export function ContactsView({
     } catch (error) {
       toast.error('Kunde inte exportera kontaktlistan');
       console.error('Export error:', error);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -237,8 +242,13 @@ export function ContactsView({
                 onClick={handleExportClick}
                 className="w-full md:w-auto"
                 aria-label="Exportera kontakter till CSV-fil"
+                disabled={isExporting}
               >
-                <DownloadIcon className="mr-2 h-4 w-4" />
+                {isExporting ? (
+                  <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <DownloadIcon className="mr-2 h-4 w-4" />
+                )}
                 Exportera CSV
               </Button>
               {/* Create Contact Button */}

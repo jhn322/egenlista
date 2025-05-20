@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 
 interface ContactNoteModalProps {
   contact: Contact | null;
@@ -91,7 +92,7 @@ export const ContactNoteModal = ({
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <div data-color-mode="light">
+            <div data-color-mode="light" className="w-full">
               <MDEditor
                 value={note}
                 onChange={(value) => {
@@ -105,8 +106,15 @@ export const ContactNoteModal = ({
                 textareaProps={{
                   placeholder: 'Skriv en anteckning...',
                   disabled: isSaving,
+                  style: {
+                    width: '100%',
+                    minHeight: 400,
+                    height: 400,
+                    resize: 'vertical',
+                  },
                 }}
-                className="!border-input"
+                className="!border-input h-[400px] w-full"
+                style={{ width: '100%' }}
               />
             </div>
             <div className="flex items-center justify-between text-xs">
@@ -190,11 +198,16 @@ export const ContactNoteModal = ({
                 }
                 aria-label="Spara anteckning"
               >
-                {!userIsPro && note.length > 1000
-                  ? 'Uppgradera till Pro'
-                  : isSaving
-                    ? 'Sparar...'
-                    : 'Spara'}
+                {isSaving ? (
+                  <>
+                    <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
+                    Sparar...
+                  </>
+                ) : !userIsPro && note.length > 1000 ? (
+                  'Uppgradera till Pro'
+                ) : (
+                  'Spara'
+                )}
               </Button>
             </div>
           </DialogFooter>
@@ -225,7 +238,14 @@ export const ContactNoteModal = ({
               onClick={handleClear}
               disabled={isSaving}
             >
-              {isSaving ? 'Rensar...' : 'Rensa'}
+              {isSaving ? (
+                <>
+                  <LoadingCircleIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Rensar...
+                </>
+              ) : (
+                'Rensa'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

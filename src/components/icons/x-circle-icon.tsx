@@ -23,7 +23,7 @@ export const XCircleIcon: React.FC<XCircleIconProps> = ({
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
     <path
       d="m23.5 0.499 -23 23"
@@ -31,7 +31,7 @@ export const XCircleIcon: React.FC<XCircleIconProps> = ({
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
   </svg>
 );
