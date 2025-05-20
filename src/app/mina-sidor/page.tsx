@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth/options';
 import { Metadata } from 'next';
 import { AUTH_PATHS, PROTECTED_PATHS } from '@/lib/constants/routes';
 import { APP_NAME } from '@/lib/constants/site';
-import { MinaSidorCards } from '@/app/mina-sidor/mina-sidor-cards';
+import { MinaSidorContent } from '@/app/mina-sidor/mina-sidor-content';
 
 export const metadata: Metadata = {
   title: `Mina Sidor | ${APP_NAME}`,
@@ -37,7 +37,7 @@ export default async function MinaSidorPage() {
         </div>
 
         {/* Grid for different sections */}
-        <MinaSidorCards />
+        <MinaSidorContent />
       </div>
     </main>
   );

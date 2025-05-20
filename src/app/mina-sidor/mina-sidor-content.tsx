@@ -14,7 +14,7 @@ import { LoadingCircleIcon } from '@/components/icons/loading-circle-icon';
 import { PROTECTED_PATHS } from '@/lib/constants/routes';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface MinaSidorCardsProps {}
+interface MinaSidorContentProps {}
 
 interface CardConfig {
   id: string;
@@ -51,7 +51,7 @@ const cardsData: CardConfig[] = [
   },
 ];
 
-export const MinaSidorCards: React.FC<MinaSidorCardsProps> = () => {
+export const MinaSidorContent: React.FC<MinaSidorContentProps> = () => {
   const [loadingCardHref, setLoadingCardHref] = useState<string | null>(null);
 
   const handleCardClick = (href: string) => {

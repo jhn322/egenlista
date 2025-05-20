@@ -41,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="sv" className={inter.variable}>
-      <body className="antialiased">
+      <body className="flex min-h-screen flex-col antialiased">
         <Providers>
           <PageWrapper>{children}</PageWrapper>
           <Toaster richColors position="bottom-right" />
