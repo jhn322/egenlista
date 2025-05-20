@@ -6,7 +6,7 @@ interface LogOutIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const LogOutIcon: React.FC<LogOutIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

@@ -153,3 +153,18 @@ div[data-state='open'] ~ div.fixed.inset-0 {
   width: 1.1em !important;
   height: 1.1em !important;
 }
+
+/* Markdown editor clickable area */
+.w-md-editor,
+.w-md-editor-content,
+.w-md-editor-text {
+  min-height: 400px !important;
+  /* height: 400px !important; */
+  /* max-height: 400px !important; */
+}
+.w-md-editor-text-input {
+  min-height: 400px !important;
+  /* height: 400px !important; */
+  /* max-height: 400px !important; */
+  resize: vertical;
+}

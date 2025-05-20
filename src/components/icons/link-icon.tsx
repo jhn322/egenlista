@@ -6,7 +6,7 @@ interface LinkIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const LinkIcon: React.FC<LinkIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

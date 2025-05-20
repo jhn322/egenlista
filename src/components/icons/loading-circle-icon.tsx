@@ -6,7 +6,7 @@ interface LoadingCircleIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const LoadingCircleIcon: React.FC<LoadingCircleIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

@@ -6,7 +6,7 @@ interface ClockIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const ClockIcon: React.FC<ClockIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

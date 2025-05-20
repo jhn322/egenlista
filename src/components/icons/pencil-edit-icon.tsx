@@ -6,7 +6,7 @@ interface PencilEditIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const PencilEditIcon: React.FC<PencilEditIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

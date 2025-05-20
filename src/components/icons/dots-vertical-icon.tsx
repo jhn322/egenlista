@@ -6,7 +6,7 @@ interface DotsVerticalIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const DotsVerticalIcon: React.FC<DotsVerticalIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

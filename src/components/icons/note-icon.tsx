@@ -23,7 +23,7 @@ export const NoteIcon: React.FC<NoteIconProps> = ({
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
     <path
       d="M16.5 23.5v-6a1 1 0 0 1 1 -1h6"
@@ -31,7 +31,7 @@ export const NoteIcon: React.FC<NoteIconProps> = ({
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
   </svg>
 );

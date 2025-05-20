@@ -6,7 +6,7 @@ interface InfoIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const InfoIcon: React.FC<InfoIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

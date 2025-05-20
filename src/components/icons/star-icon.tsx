@@ -6,7 +6,7 @@ interface StarIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const StarIcon: React.FC<StarIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

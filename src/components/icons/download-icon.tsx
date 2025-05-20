@@ -6,7 +6,7 @@ interface DownloadIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const DownloadIcon: React.FC<DownloadIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (
@@ -25,7 +25,7 @@ export const DownloadIcon: React.FC<DownloadIconProps> = ({
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
     <path
       d="M12 18.108 12 1"
@@ -33,7 +33,7 @@ export const DownloadIcon: React.FC<DownloadIconProps> = ({
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
     <path
       d="m19 11.108 -7 7 -7 -7"
@@ -41,7 +41,7 @@ export const DownloadIcon: React.FC<DownloadIconProps> = ({
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1}
+      strokeWidth={1.5}
     />
   </svg>
 );

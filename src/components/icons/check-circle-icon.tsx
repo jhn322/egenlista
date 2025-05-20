@@ -6,7 +6,7 @@ interface CheckCircleIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const CheckCircleIcon: React.FC<CheckCircleIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

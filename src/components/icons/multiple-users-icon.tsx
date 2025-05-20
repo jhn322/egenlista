@@ -6,7 +6,7 @@ interface MultipleUsersIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const MultipleUsersIcon: React.FC<MultipleUsersIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (

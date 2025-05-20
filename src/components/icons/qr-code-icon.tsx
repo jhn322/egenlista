@@ -6,7 +6,7 @@ interface QrCodeIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export const QrCodeIcon: React.FC<QrCodeIconProps> = ({
-  color = 'black',
+  color = 'currentColor',
   iconSize = 24,
   ...props
 }) => (
