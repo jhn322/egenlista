@@ -28,15 +28,18 @@ async function getUserInfo(userId: string) {
 
 // Update interface: params is a Promise
 interface ContactSignupThankYouPageProps {
-  params: { userId: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ userId: string }>;
+  searchParams?: Promise<
+    { [key: string]: string | string[] | undefined } | undefined
+  >;
 }
 
 // Dynamic metadata based on user - needs to await params
 export async function generateMetadata({
-  params,
+  params: paramsPromise,
 }: ContactSignupThankYouPageProps): Promise<Metadata> {
-  const user = await getUserInfo(params.userId);
+  const resolvedParams = await paramsPromise;
+  const user = await getUserInfo(resolvedParams.userId);
   return {
     title: `Tack för din registrering hos ${user?.name || 'företaget'}`,
     description: 'Din registrering har mottagits.',
@@ -47,9 +50,8 @@ export async function generateMetadata({
 export default async function ContactSignupThankYouPage(
   props: ContactSignupThankYouPageProps
 ) {
-  // Await the params promise
-  const params = await props.params;
-  const { userId } = params;
+  const resolvedParams = await props.params;
+  const { userId } = resolvedParams;
   const user = await getUserInfo(userId);
 
   // User not found (should ideally not happen if redirected from successful signup)
@@ -57,7 +59,8 @@ export default async function ContactSignupThankYouPage(
     notFound();
   }
 
-  const pendingVerify = props.searchParams?.pending === 'verify-email';
+  const resolvedSearchParams = await props.searchParams;
+  const pendingVerify = resolvedSearchParams?.pending === 'verify-email';
 
   return (
     <main
