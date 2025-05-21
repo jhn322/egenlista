@@ -35,15 +35,15 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     subject: `Verify your email address for ${APP_NAME}`,
     // TODO: Replace with a more robust HTML template solution (e.g., React Email)
     htmlContent: `
-      <h1>Verify your email address</h1>
-      <p>Thank you for registering with ${APP_NAME}!</p>
-      <p>Please click the link below to verify your email address:</p>
-      <a href="${verificationUrl}" target="_blank">Verify my email</a>
-      <p>This link is valid for 24 hours.</p>
-      <p>If you did not register, please ignore this email.</p>
+      <h1>Bekräfta din e-postadress</h1>
+      <p>Tack för att du registrerar dig!</p>
+      <p>Klicka på länken nedan för att bekräfta din e-postadress och slutföra din registrering:</p>
+      <a href="${verificationUrl}" target="_blank">Bekräfta min e-post</a>
+      <p>Denna länk är giltig i 24 timmar.</p>
+      <p>Om du inte har registrerat dig kan du ignorera detta mail.</p>
       <br>
-      <p>Best regards,</p>
-      <p>The ${APP_NAME} Team</p>
+      <p>Vänliga hälsningar,</p>
+      <p>${APP_NAME}</p>
     `,
   };
 
@@ -53,7 +53,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        'accept': 'application/json',
+        accept: 'application/json',
         'api-key': brevoApiKey,
         'content-type': 'application/json',
       },
@@ -94,4 +94,4 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     // Re-throw the error to allow the calling function (API route) to handle it
     throw error;
   }
-}; 
+};
