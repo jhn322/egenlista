@@ -28,15 +28,14 @@ async function getUserInfo(userId: string) {
 
 // Update interface: params is a Promise
 interface ContactSignupThankYouPageProps {
-  params: Promise<{ userId: string }>;
+  params: { userId: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 // Dynamic metadata based on user - needs to await params
 export async function generateMetadata({
-  params: paramsPromise, // Rename to avoid conflict
+  params,
 }: ContactSignupThankYouPageProps): Promise<Metadata> {
-  const params = await paramsPromise; // Await the params promise
   const user = await getUserInfo(params.userId);
   return {
     title: `Tack för din registrering hos ${user?.name || 'företaget'}`,
