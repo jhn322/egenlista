@@ -4,7 +4,6 @@
 import React, { useTransition } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'sonner'; // For potential future use
 import { useRouter } from 'next/navigation'; // Import useRouter
 
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,6 @@ import {
   TOAST_MESSAGES,
 } from '@/lib/contacts/constants/contacts';
 import { ConsentType } from '@/generated/prisma';
-import { createContact } from '@/lib/contacts/utils/actions';
 
 // **  Props Interface  ** //
 interface ContactPublicSignupFormProps {
@@ -46,6 +44,7 @@ export function ContactPublicSignupForm({
 }: ContactPublicSignupFormProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter(); // Initialize router
+  const [formError, setFormError] = React.useState<string | null>(null);
 
   const form = useForm<ContactCreateInput>({
     resolver: zodResolver(ContactCreateSchema),
@@ -73,20 +72,30 @@ export function ContactPublicSignupForm({
 
   const onSubmit = (values: ContactCreateInput) => {
     startTransition(async () => {
+      setFormError(null);
       try {
-        // Call the server action - no need to store result if not used
-        await createContact(values, userId);
-
-        // Redirect to thank you page
-        router.push(`/signup/${userId}/tack`);
+        const response = await fetch('/api/contacts/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...values, userId }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          if (response.status === 409) {
+            setFormError(
+              'En kontakt med denna e-postadress finns redan för detta företag. Om du inte fått ett verifieringsmail, kontrollera din skräppost eller försök igen senare.'
+            );
+            return;
+          }
+          throw new Error(data.message || 'Något gick fel vid registrering.');
+        }
+        router.push(`/signup/${userId}/tack?pending=verify-email`);
       } catch (error) {
         let errorMessage = TOAST_MESSAGES.UNKNOWN_ERROR_DESC;
         if (error instanceof Error) {
           errorMessage = error.message;
         }
-        toast.error(TOAST_MESSAGES.CREATE_ERROR_TITLE, {
-          description: errorMessage,
-        });
+        setFormError(errorMessage);
         console.error('Error creating contact:', error);
       }
     });
@@ -94,11 +103,17 @@ export function ContactPublicSignupForm({
 
   return (
     <Form {...form}>
+      {formError && (
+        <div className="border-destructive bg-destructive/10 text-destructive mb-6 rounded-md border p-4">
+          <div className="mb-1 font-semibold">Kunde inte skapa kontakt</div>
+          <div>{formError}</div>
+        </div>
+      )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
         {/* Personal Information and Address Section */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-2">
           {/* Personal Information */}
-          <div className="border-border space-y-6 rounded-lg border p-6 shadow-sm">
+          <div className="space-y-6 p-6">
             <div className="space-y-1">
               <h3 className="text-card-foreground text-lg leading-6 font-medium">
                 Personuppgifter
@@ -189,7 +204,7 @@ export function ContactPublicSignupForm({
           </div>
 
           {/* Address Section */}
-          <div className="border-border space-y-6 rounded-lg border p-6 shadow-sm">
+          <div className="space-y-6 p-6">
             <div className="space-y-1">
               <h3 className="text-card-foreground text-lg leading-6 font-medium">
                 Adress{' '}
@@ -304,7 +319,7 @@ export function ContactPublicSignupForm({
         </div>
 
         {/* Consents Section - Integrated */}
-        <div className="border-border space-y-6 rounded-lg border p-6 shadow-sm">
+        <div className="space-y-6 p-6">
           <div className="space-y-1">
             <h3 className="text-card-foreground text-lg leading-6 font-medium">
               Samtycken

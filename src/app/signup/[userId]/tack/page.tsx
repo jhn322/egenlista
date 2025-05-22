@@ -7,6 +7,7 @@ import React from 'react';
 import { CheckCircleIcon } from '@/components/icons/check-circle-icon';
 import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 // import { Button } from '@/components/ui/button'; // Removed unused import
 
 // Since this page shares the user fetching logic, we might refactor getUserInfo later
@@ -28,15 +29,17 @@ async function getUserInfo(userId: string) {
 // Update interface: params is a Promise
 interface ContactSignupThankYouPageProps {
   params: Promise<{ userId: string }>;
-  // searchParams: Promise<{ [key: string]: string | string[] | undefined }>; // Add if needed later
+  searchParams?: Promise<
+    { [key: string]: string | string[] | undefined } | undefined
+  >;
 }
 
 // Dynamic metadata based on user - needs to await params
 export async function generateMetadata({
-  params: paramsPromise, // Rename to avoid conflict
+  params: paramsPromise,
 }: ContactSignupThankYouPageProps): Promise<Metadata> {
-  const params = await paramsPromise; // Await the params promise
-  const user = await getUserInfo(params.userId);
+  const resolvedParams = await paramsPromise;
+  const user = await getUserInfo(resolvedParams.userId);
   return {
     title: `Tack för din registrering hos ${user?.name || 'företaget'}`,
     description: 'Din registrering har mottagits.',
@@ -47,15 +50,17 @@ export async function generateMetadata({
 export default async function ContactSignupThankYouPage(
   props: ContactSignupThankYouPageProps
 ) {
-  // Await the params promise
-  const params = await props.params;
-  const { userId } = params;
+  const resolvedParams = await props.params;
+  const { userId } = resolvedParams;
   const user = await getUserInfo(userId);
 
   // User not found (should ideally not happen if redirected from successful signup)
   if (!user) {
     notFound();
   }
+
+  const resolvedSearchParams = await props.searchParams;
+  const pendingVerify = resolvedSearchParams?.pending === 'verify-email';
 
   return (
     <main
@@ -67,10 +72,24 @@ export default async function ContactSignupThankYouPage(
         <h1 className="text-card-foreground mb-2 text-2xl font-semibold">
           Tack för din registrering!
         </h1>
-        <p className="text-muted-foreground mb-6">
-          Dina uppgifter har registrerats hos {user.name || 'företaget'}.
-        </p>
-        {/* Optional: Add a button to close or navigate somewhere else if relevant */}
+        {pendingVerify ? (
+          <p className="text-muted-foreground mb-6">
+            Kontrollera din e-post för att bekräfta din adress innan du är klar.
+          </p>
+        ) : (
+          <p className="text-muted-foreground mb-6">
+            Dina uppgifter har registrerats hos {user.name || 'företaget'}.
+          </p>
+        )}
+        <div className="mt-6 flex justify-center">
+          <Link
+            href={process.env.NEXT_PUBLIC_APP_URL || '/'}
+            className="bg-primary hover:bg-primary/90 inline-block rounded-md px-6 py-3 text-sm font-medium text-white shadow transition"
+            aria-label="Tillbaka till startsidan"
+          >
+            Tillbaka till startsidan
+          </Link>
+        </div>
       </div>
     </main>
   );
