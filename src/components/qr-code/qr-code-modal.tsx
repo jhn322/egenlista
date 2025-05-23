@@ -49,7 +49,7 @@ export function QRCodeModal({
     if (qrCodeText) {
       setUrlToEncode(qrCodeText);
     } else if (sessionStatus === 'authenticated' && session?.user?.id) {
-      const baseUrl = 'https://egen-lista.vercel.app';
+      const baseUrl = 'https://egenlista.vercel.app';
       setUrlToEncode(`${baseUrl}${SITE_PATHS.SIGNUP}/${session.user.id}`);
     } else if (sessionStatus !== 'loading' && !qrCodeText) {
       setUrlToEncode('');
